@@ -16,10 +16,16 @@ export const Directory = ({ navigateTo, currentUser }) => {
     }
     const loadData = async () => {
       const list = await getStudents();
-      setStudents(list);
+      // Filter out blocked users
+      const cleanList = list.filter(student => {
+        const blockedByMe = currentUser?.student?.blockedUsers?.includes(student.id);
+        const blockedByThem = student.blockedUsers?.includes(currentUser?.studentId);
+        return !blockedByMe && !blockedByThem;
+      });
+      setStudents(cleanList);
     };
     loadData();
-  }, [currentUser]);
+  }, [currentUser, currentUser?.student?.blockedUsers]);
 
   const handleDelete = async (student) => {
     const confirmMessage = `WARNING: You are about to permanently delete ${student.name}'s portfolio and user account. This action cannot be undone. Do you wish to proceed?`;

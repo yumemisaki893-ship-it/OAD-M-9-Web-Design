@@ -16,7 +16,13 @@ import {
   updateDoc, 
   deleteDoc, 
   query, 
-  where 
+  where,
+  onSnapshot,
+  orderBy,
+  arrayUnion,
+  arrayRemove,
+  deleteField,
+  writeBatch
 } from 'firebase/firestore';
 import { db, auth, googleProvider, isConfigured } from './firebase';
 import { DEFAULT_STUDENTS } from './mockData';
@@ -584,3 +590,413 @@ export const resetUserPasswordByEmail = async (email, newPassword) => {
   // Firebase auth standard password recovery flow
   await sendPasswordResetEmail(auth, cleanEmail);
 };
+
+// ==========================================
+// SOCIAL ACTIONS (FRIENDS, BLOCKS, POKES)
+// ==========================================
+
+// Helper: safe array extraction
+const getArrayField = (obj, field) => {
+  return Array.isArray(obj?.[field]) ? obj[field] : [];
+};
+
+// Mutate: Send friend request
+export const sendFriendRequest = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId);
+    const toIndex = students.findIndex(s => s.id === toId);
+    if (fromIndex !== -1 && toIndex !== -1) {
+      const sent = getArrayField(students[fromIndex], 'friendRequestsSent');
+      const received = getArrayField(students[toIndex], 'friendRequestsReceived');
+      
+      if (!sent.includes(toId)) sent.push(toId);
+      if (!received.includes(fromId)) received.push(fromId);
+      
+      students[fromIndex].friendRequestsSent = sent;
+      students[toIndex].friendRequestsReceived = received;
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  const toRef = doc(db, 'students', toId);
+  await updateDoc(fromRef, { friendRequestsSent: arrayUnion(toId) });
+  await updateDoc(toRef, { friendRequestsReceived: arrayUnion(fromId) });
+};
+
+// Mutate: Accept friend request
+export const acceptFriendRequest = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId); // sender
+    const toIndex = students.findIndex(s => s.id === toId); // receiver (current user)
+    
+    if (fromIndex !== -1 && toIndex !== -1) {
+      const sent = getArrayField(students[fromIndex], 'friendRequestsSent').filter(id => id !== toId);
+      const friendsFrom = getArrayField(students[fromIndex], 'friends');
+      if (!friendsFrom.includes(toId)) friendsFrom.push(toId);
+
+      const received = getArrayField(students[toIndex], 'friendRequestsReceived').filter(id => id !== fromId);
+      const friendsTo = getArrayField(students[toIndex], 'friends');
+      if (!friendsTo.includes(fromId)) friendsTo.push(fromId);
+
+      students[fromIndex].friendRequestsSent = sent;
+      students[fromIndex].friends = friendsFrom;
+      students[toIndex].friendRequestsReceived = received;
+      students[toIndex].friends = friendsTo;
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  const toRef = doc(db, 'students', toId);
+
+  await updateDoc(fromRef, {
+    friendRequestsSent: arrayRemove(toId),
+    friends: arrayUnion(toId)
+  });
+
+  await updateDoc(toRef, {
+    friendRequestsReceived: arrayRemove(fromId),
+    friends: arrayUnion(fromId)
+  });
+};
+
+// Mutate: Decline friend request
+export const declineFriendRequest = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId);
+    const toIndex = students.findIndex(s => s.id === toId);
+    
+    if (fromIndex !== -1 && toIndex !== -1) {
+      students[fromIndex].friendRequestsSent = getArrayField(students[fromIndex], 'friendRequestsSent').filter(id => id !== toId);
+      students[toIndex].friendRequestsReceived = getArrayField(students[toIndex], 'friendRequestsReceived').filter(id => id !== fromId);
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  const toRef = doc(db, 'students', toId);
+  await updateDoc(fromRef, { friendRequestsSent: arrayRemove(toId) });
+  await updateDoc(toRef, { friendRequestsReceived: arrayRemove(fromId) });
+};
+
+// Mutate: Remove friend
+export const removeFriend = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId);
+    const toIndex = students.findIndex(s => s.id === toId);
+    
+    if (fromIndex !== -1 && toIndex !== -1) {
+      students[fromIndex].friends = getArrayField(students[fromIndex], 'friends').filter(id => id !== toId);
+      students[toIndex].friends = getArrayField(students[toIndex], 'friends').filter(id => id !== fromId);
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  const toRef = doc(db, 'students', toId);
+  await updateDoc(fromRef, { friends: arrayRemove(toId) });
+  await updateDoc(toRef, { friends: arrayRemove(fromId) });
+};
+
+// Mutate: Poke user
+export const pokeUser = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const toIndex = students.findIndex(s => s.id === toId);
+    if (toIndex !== -1) {
+      const pokedBy = students[toIndex].pokedBy || {};
+      pokedBy[fromId] = new Date().toISOString();
+      students[toIndex].pokedBy = pokedBy;
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const toRef = doc(db, 'students', toId);
+  await updateDoc(toRef, {
+    [`pokedBy.${fromId}`]: new Date().toISOString()
+  });
+};
+
+// Mutate: Clear poke
+export const clearPoke = async (studentId, pokerId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const index = students.findIndex(s => s.id === studentId);
+    if (index !== -1 && students[index].pokedBy) {
+      delete students[index].pokedBy[pokerId];
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const ref = doc(db, 'students', studentId);
+  await updateDoc(ref, {
+    [`pokedBy.${pokerId}`]: deleteField()
+  });
+};
+
+// Mutate: Block user
+export const blockUser = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId);
+    const toIndex = students.findIndex(s => s.id === toId);
+    
+    if (fromIndex !== -1) {
+      const blocked = getArrayField(students[fromIndex], 'blockedUsers');
+      if (!blocked.includes(toId)) blocked.push(toId);
+      students[fromIndex].blockedUsers = blocked;
+      
+      students[fromIndex].friends = getArrayField(students[fromIndex], 'friends').filter(id => id !== toId);
+      students[fromIndex].friendRequestsSent = getArrayField(students[fromIndex], 'friendRequestsSent').filter(id => id !== toId);
+      students[fromIndex].friendRequestsReceived = getArrayField(students[fromIndex], 'friendRequestsReceived').filter(id => id !== toId);
+    }
+    if (toIndex !== -1) {
+      students[toIndex].friends = getArrayField(students[toIndex], 'friends').filter(id => id !== fromId);
+      students[toIndex].friendRequestsSent = getArrayField(students[toIndex], 'friendRequestsSent').filter(id => id !== fromId);
+      students[toIndex].friendRequestsReceived = getArrayField(students[toIndex], 'friendRequestsReceived').filter(id => id !== fromId);
+    }
+    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  const toRef = doc(db, 'students', toId);
+
+  await updateDoc(fromRef, {
+    blockedUsers: arrayUnion(toId),
+    friends: arrayRemove(toId),
+    friendRequestsSent: arrayRemove(toId),
+    friendRequestsReceived: arrayRemove(toId)
+  });
+
+  await updateDoc(toRef, {
+    friends: arrayRemove(fromId),
+    friendRequestsSent: arrayRemove(fromId),
+    friendRequestsReceived: arrayRemove(fromId)
+  });
+};
+
+// Mutate: Unblock user
+export const unblockUser = async (fromId, toId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const fromIndex = students.findIndex(s => s.id === fromId);
+    if (fromIndex !== -1) {
+      students[fromIndex].blockedUsers = getArrayField(students[fromIndex], 'blockedUsers').filter(id => id !== toId);
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  const fromRef = doc(db, 'students', fromId);
+  await updateDoc(fromRef, {
+    blockedUsers: arrayRemove(toId)
+  });
+};
+
+
+// ==========================================
+// REAL-TIME MESSAGING / CHAT SYSTEM
+// ==========================================
+
+const getChatId = (idA, idB) => {
+  const sorted = [idA, idB].sort();
+  return `chat_${sorted[0]}_${sorted[1]}`;
+};
+
+// Get or Create Chat Room
+export const getOrCreateChat = async (studentIdA, studentIdB) => {
+  const chatId = getChatId(studentIdA, studentIdB);
+
+  if (!isConfigured) {
+    const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
+    const chats = JSON.parse(chatsStr);
+    
+    if (!chats[chatId]) {
+      chats[chatId] = {
+        id: chatId,
+        participants: [studentIdA, studentIdB],
+        lastMessage: null,
+        messages: []
+      };
+      localStorage.setItem('portfolio_chats', JSON.stringify(chats));
+    }
+    return chats[chatId];
+  }
+
+  const docRef = doc(db, 'chats', chatId);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    const newChat = {
+      id: chatId,
+      participants: [studentIdA, studentIdB],
+      lastMessage: null,
+      createdAt: new Date().toISOString()
+    };
+    await setDoc(docRef, newChat);
+    return newChat;
+  }
+  return { id: docSnap.id, ...docSnap.data() };
+};
+
+// Send Message
+export const sendMessage = async (chatId, senderId, text) => {
+  const messageData = {
+    id: `msg-${Date.now()}`,
+    text,
+    senderId,
+    timestamp: new Date().toISOString(),
+    read: false
+  };
+
+  if (!isConfigured) {
+    const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
+    const chats = JSON.parse(chatsStr);
+    if (chats[chatId]) {
+      chats[chatId].messages.push(messageData);
+      chats[chatId].lastMessage = messageData;
+      localStorage.setItem('portfolio_chats', JSON.stringify(chats));
+    }
+    return;
+  }
+
+  // Add to messages subcollection
+  const msgDocRef = doc(collection(db, 'chats', chatId, 'messages'));
+  await setDoc(msgDocRef, messageData);
+
+  // Update last message in parent chat document
+  const chatDocRef = doc(db, 'chats', chatId);
+  await updateDoc(chatDocRef, {
+    lastMessage: messageData
+  });
+};
+
+// Mark Chat Messages as Read
+export const markChatAsRead = async (chatId, readerId) => {
+  if (!isConfigured) {
+    const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
+    const chats = JSON.parse(chatsStr);
+    if (chats[chatId]) {
+      let updated = false;
+      chats[chatId].messages = chats[chatId].messages.map(msg => {
+        if (msg.senderId !== readerId && !msg.read) {
+          updated = true;
+          return { ...msg, read: true };
+        }
+        return msg;
+      });
+      if (chats[chatId].lastMessage && chats[chatId].lastMessage.senderId !== readerId) {
+        chats[chatId].lastMessage.read = true;
+        updated = true;
+      }
+      if (updated) {
+        localStorage.setItem('portfolio_chats', JSON.stringify(chats));
+      }
+    }
+    return;
+  }
+
+  // 1. Update lastMessage in parent if unread and not sent by reader
+  const chatDocRef = doc(db, 'chats', chatId);
+  const chatSnap = await getDoc(chatDocRef);
+  if (chatSnap.exists()) {
+    const data = chatSnap.data();
+    if (data.lastMessage && data.lastMessage.senderId !== readerId && !data.lastMessage.read) {
+      await updateDoc(chatDocRef, {
+        'lastMessage.read': true
+      });
+    }
+  }
+
+  // 2. Query and update unread messages in subcollection
+  try {
+    const q = query(
+      collection(db, 'chats', chatId, 'messages'),
+      where('senderId', '!=', readerId)
+    );
+    const snap = await getDocs(q);
+    const batch = writeBatch(db);
+    let count = 0;
+    snap.forEach(docSnap => {
+      const msg = docSnap.data();
+      if (!msg.read) {
+        batch.update(docSnap.ref, { read: true });
+        count++;
+      }
+    });
+    if (count > 0) {
+      await batch.commit();
+    }
+  } catch (err) {
+    console.error("Error marking messages as read: ", err);
+  }
+};
+
+// Listen to Chats list (Real-time updates)
+export const listenToChats = (studentId, callback) => {
+  if (!isConfigured) {
+    const interval = setInterval(() => {
+      const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
+      const chats = JSON.parse(chatsStr);
+      const userChats = Object.values(chats).filter(c => c.participants.includes(studentId));
+      callback(userChats);
+    }, 1000);
+    return () => clearInterval(interval);
+  }
+
+  const q = query(
+    collection(db, 'chats'),
+    where('participants', 'array-contains', studentId)
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const list = [];
+    snapshot.forEach(doc => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+    callback(list);
+  }, (err) => {
+    console.error("Error listening to chats: ", err);
+  });
+};
+
+// Listen to messages inside a chat room (Real-time updates)
+export const listenToMessages = (chatId, callback) => {
+  if (!isConfigured) {
+    const interval = setInterval(() => {
+      const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
+      const chats = JSON.parse(chatsStr);
+      const messages = chats[chatId]?.messages || [];
+      callback(messages);
+    }, 1000);
+    return () => clearInterval(interval);
+  }
+
+  const q = query(
+    collection(db, 'chats', chatId, 'messages'),
+    orderBy('timestamp', 'asc')
+  );
+
+  return onSnapshot(q, (snapshot) => {
+    const list = [];
+    snapshot.forEach(doc => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+    callback(list);
+  }, (err) => {
+    console.error("Error listening to messages: ", err);
+  });
+};
+

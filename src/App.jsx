@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import { getCurrentSession, getSessionData, getStudentById } from './utils/storage';
 import { auth, isConfigured } from './utils/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { ChatBox } from './components/ChatBox';
 
 function App() {
   // Theme State
@@ -19,6 +20,9 @@ function App() {
   
   // Session Authentication State
   const [currentUser, setCurrentUser] = useState(null);
+
+  // Chat Integration State
+  const [activeChatTrigger, setActiveChatTrigger] = useState(null);
 
   // Sync session and theme on mount
   useEffect(() => {
@@ -96,6 +100,16 @@ function App() {
     setCurrentUser(null);
   };
 
+  const refreshUserSession = async () => {
+    if (!currentUser) return;
+    try {
+      const student = await getStudentById(currentUser.studentId);
+      setCurrentUser(prev => prev ? { ...prev, student } : null);
+    } catch (e) {
+      console.error("Error refreshing session: ", e);
+    }
+  };
+
   // Sync avatar/name in navbar instantly when profile edits save
   const handleProfileUpdate = (updatedProfile) => {
     if (isConfigured) {
@@ -124,6 +138,8 @@ function App() {
             currentUser={currentUser} 
             navigateTo={navigateTo} 
             onLogoutSuccess={handleLogoutSuccess}
+            onStartChat={(studentId) => setActiveChatTrigger(studentId)}
+            refreshUserSession={refreshUserSession}
           />
         );
       case 'auth':
@@ -164,6 +180,15 @@ function App() {
           {renderPage()}
         </div>
       </main>
+
+      {/* Floating Chat Widget */}
+      {currentUser && (
+        <ChatBox 
+          currentUser={currentUser} 
+          activeChatTrigger={activeChatTrigger} 
+          clearActiveChatTrigger={() => setActiveChatTrigger(null)} 
+        />
+      )}
 
       {/* Footer */}
       <footer className="footer">

@@ -1,24 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { getStudentById, deleteStudentProfileAndAccount, signOut } from '../utils/storage';
+import { 
+  getStudentById, 
+  getStudents, 
+  deleteStudentProfileAndAccount, 
+  signOut,
+  sendFriendRequest,
+  acceptFriendRequest,
+  declineFriendRequest,
+  removeFriend,
+  pokeUser,
+  clearPoke,
+  blockUser,
+  unblockUser
+} from '../utils/storage';
 import { AvatarImage } from '../components/AvatarPicker';
 
-export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess }) => {
+export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess, onStartChat, refreshUserSession }) => {
   const [student, setStudent] = useState(null);
   const studentId = params?.id;
+  const [allStudents, setAllStudents] = useState([]);
 
   // Lightbox Modal States
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  useEffect(() => {
+  const loadAllData = async () => {
     if (studentId) {
-      const loadStudent = async () => {
-        const profile = await getStudentById(studentId);
-        setStudent(profile);
-      };
-      loadStudent();
+      const profile = await getStudentById(studentId);
+      setStudent(profile);
     }
-  }, [studentId]);
+    const data = await getStudents();
+    setAllStudents(data);
+  };
+
+  useEffect(() => {
+    loadAllData();
+  }, [studentId, currentUser]);
+
+  const getStudentInfo = (id) => {
+    return allStudents.find(s => s.id === id) || { id, name: 'Student', avatarId: 'avatar1' };
+  };
 
   const openLightbox = (index) => {
     setPhotoIndex(index);
@@ -54,7 +75,9 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, student?.photos]);
 
-  if (!student) {
+  const isBlockedByThem = currentUser && student && student.blockedUsers?.includes(currentUser.studentId);
+
+  if (!student || isBlockedByThem) {
     return (
       <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
         <div style={{ marginBottom: '1rem', color: 'var(--text-muted)' }}>
@@ -75,9 +98,49 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     );
   }
 
+  const isBlockedByMe = currentUser && currentUser.student?.blockedUsers?.includes(student.id);
+
+  if (isBlockedByMe) {
+    return (
+      <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
+        <div style={{ marginBottom: '1.5rem', color: 'var(--accent)' }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '64px', height: '64px' }}>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+          </svg>
+        </div>
+        <h2 style={{ fontSize: '2rem', fontWeight: 700 }}>User Blocked</h2>
+        <p style={{ marginTop: '0.75rem', marginBottom: '2rem', color: 'var(--text-secondary)', maxWidth: '480px', margin: '0.75rem auto 2rem' }}>
+          You have blocked {student.name}. You must unblock them to view their portfolio and message them.
+        </p>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <button className="btn btn-secondary" onClick={() => navigateTo('directory')}>
+            Back to Directory
+          </button>
+          <button className="btn btn-primary" onClick={async () => {
+            await unblockUser(currentUser.studentId, student.id);
+            if (refreshUserSession) await refreshUserSession();
+            await loadAllData();
+          }}>
+            Unblock {student.name}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Check if the current viewed page belongs to the logged-in student
   const isOwnProfile = currentUser && currentUser.studentId === student.id;
   const canEdit = isOwnProfile || (currentUser && currentUser.isAdmin);
+
+  const pokedBy = student.pokedBy || {};
+  const myFriends = currentUser?.student?.friends || [];
+  const mySent = currentUser?.student?.friendRequestsSent || [];
+  const myReceived = currentUser?.student?.friendRequestsReceived || [];
+
+  const isFriend = myFriends.includes(student.id);
+  const hasSentRequest = mySent.includes(student.id);
+  const hasReceivedRequest = myReceived.includes(student.id);
 
   const handleDeleteProfile = async () => {
     const confirmMessage = currentUser?.isAdmin && currentUser.studentId !== student.id
@@ -289,6 +352,158 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 </a>
               )}
             </div>
+
+            {/* Social Actions (Friendship, Poke, Block, Message) */}
+            {currentUser && !isOwnProfile && (
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  flexWrap: 'wrap', 
+                  gap: '0.75rem', 
+                  marginTop: '1.25rem', 
+                  padding: '0.75rem 1rem', 
+                  borderRadius: 'var(--border-radius-md)', 
+                  background: 'rgba(255, 255, 255, 0.03)', 
+                  border: '1px solid var(--border-color)',
+                  width: 'fit-content'
+                }}
+              >
+                {/* Friendship Button */}
+                {isFriend ? (
+                  <button 
+                    className="btn btn-secondary btn-sm" 
+                    style={{ minHeight: '34px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}
+                    onClick={async () => {
+                      if (window.confirm(`Are you sure you want to remove ${student.name} from your friends list?`)) {
+                        await removeFriend(currentUser.studentId, student.id);
+                        if (refreshUserSession) await refreshUserSession();
+                        await loadAllData();
+                      }
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <line x1="17" y1="11" x2="23" y2="11" />
+                    </svg>
+                    Unfriend
+                  </button>
+                ) : hasSentRequest ? (
+                  <button 
+                    className="btn btn-secondary btn-sm" 
+                    style={{ minHeight: '34px', opacity: 0.8 }}
+                    onClick={async () => {
+                      await declineFriendRequest(currentUser.studentId, student.id);
+                      if (refreshUserSession) await refreshUserSession();
+                      await loadAllData();
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <line x1="19" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Cancel Request
+                  </button>
+                ) : hasReceivedRequest ? (
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button 
+                      className="btn btn-primary btn-sm" 
+                      style={{ minHeight: '34px' }}
+                      onClick={async () => {
+                        await acceptFriendRequest(student.id, currentUser.studentId);
+                        if (refreshUserSession) await refreshUserSession();
+                        await loadAllData();
+                      }}
+                    >
+                      Accept Friend
+                    </button>
+                    <button 
+                      className="btn btn-secondary btn-sm" 
+                      style={{ minHeight: '34px' }}
+                      onClick={async () => {
+                        await declineFriendRequest(student.id, currentUser.studentId);
+                        if (refreshUserSession) await refreshUserSession();
+                        await loadAllData();
+                      }}
+                    >
+                      Decline
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    className="btn btn-primary btn-sm" 
+                    style={{ minHeight: '34px' }}
+                    onClick={async () => {
+                      await sendFriendRequest(currentUser.studentId, student.id);
+                      if (refreshUserSession) await refreshUserSession();
+                      await loadAllData();
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <line x1="19" y1="8" x2="19" y2="14" />
+                      <line x1="16" y1="11" x2="22" y2="11" />
+                    </svg>
+                    Add Friend
+                  </button>
+                )}
+
+                {/* Poke Button */}
+                <button 
+                  className="btn btn-secondary btn-sm" 
+                  style={{ minHeight: '34px' }}
+                  disabled={pokedBy && pokedBy[currentUser.studentId]}
+                  onClick={async () => {
+                    await pokeUser(currentUser.studentId, student.id);
+                    await loadAllData();
+                    alert(`You poked ${student.name}!`);
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                  </svg>
+                  {pokedBy && pokedBy[currentUser.studentId] ? "Poked!" : "Poke"}
+                </button>
+
+                {/* Send Message (Chat) Button */}
+                <button 
+                  className="btn btn-secondary btn-sm" 
+                  style={{ minHeight: '34px' }}
+                  onClick={() => {
+                    if (onStartChat) {
+                      onStartChat(student.id);
+                    }
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Send Message
+                </button>
+
+                {/* Block Button */}
+                <button 
+                  className="btn btn-secondary btn-sm" 
+                  style={{ minHeight: '34px', background: 'rgba(239, 68, 68, 0.05)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.15)' }}
+                  onClick={async () => {
+                    if (window.confirm(`Are you sure you want to block ${student.name}? You will no longer be able to message or view each other's portfolios.`)) {
+                      await blockUser(currentUser.studentId, student.id);
+                      if (refreshUserSession) await refreshUserSession();
+                      navigateTo('directory');
+                    }
+                  }}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                  </svg>
+                  Block
+                </button>
+              </div>
+            )}
             {student.resume && (
               <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
                 <a
@@ -416,6 +631,185 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
         {/* Sidebar Column */}
         <div>
+          {/* Own Profile social dashboard */}
+          {isOwnProfile && currentUser && currentUser.student && (
+            <div className="profile-section glass" style={{ textAlign: 'left' }}>
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '18px', height: '18px', color: 'var(--accent)' }}>
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                Social Center
+              </h2>
+
+              {/* Friend Requests Received */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
+                  Friend Requests ({(currentUser.student?.friendRequestsReceived || []).length})
+                </h3>
+                {(currentUser.student?.friendRequestsReceived || []).length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {currentUser.student.friendRequestsReceived.map(reqId => {
+                      const peer = getStudentInfo(reqId);
+                      return (
+                        <div key={reqId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.5rem', borderRadius: 'var(--border-radius-sm)', background: 'rgba(255,255,255,0.02)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => navigateTo('profile-detail', { id: peer.id })}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden' }}>
+                              <AvatarImage avatarId={peer.avatarId} id={`req-${peer.id}`} />
+                            </div>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-primary)' }}>{peer.name}</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            <button 
+                              className="btn btn-primary btn-sm" 
+                              style={{ minHeight: '26px', padding: '0 0.5rem', fontSize: '0.75rem' }}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                await acceptFriendRequest(reqId, currentUser.studentId);
+                                if (refreshUserSession) await refreshUserSession();
+                                await loadAllData();
+                              }}
+                            >
+                              Accept
+                            </button>
+                            <button 
+                              className="btn btn-secondary btn-sm" 
+                              style={{ minHeight: '26px', padding: '0 0.5rem', fontSize: '0.75rem' }}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                await declineFriendRequest(reqId, currentUser.studentId);
+                                if (refreshUserSession) await refreshUserSession();
+                                await loadAllData();
+                              }}
+                            >
+                              Decline
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No pending requests</p>
+                )}
+              </div>
+
+              {/* Pokes Received */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
+                  Pokes Received ({Object.keys(currentUser.student?.pokedBy || {}).length})
+                </h3>
+                {Object.keys(currentUser.student?.pokedBy || {}).length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {Object.keys(currentUser.student.pokedBy).map(pokerId => {
+                      const peer = getStudentInfo(pokerId);
+                      return (
+                        <div key={pokerId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.5rem', borderRadius: 'var(--border-radius-sm)', background: 'rgba(255,255,255,0.02)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => navigateTo('profile-detail', { id: peer.id })}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden' }}>
+                              <AvatarImage avatarId={peer.avatarId} id={`poke-${peer.id}`} />
+                            </div>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-primary)' }}>{peer.name}</span>
+                          </div>
+                          <button 
+                            className="btn btn-secondary btn-sm" 
+                            style={{ minHeight: '26px', padding: '0 0.5rem', fontSize: '0.75rem', color: 'var(--accent)', border: '1px solid rgba(255,255,255,0.1)' }}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await pokeUser(currentUser.studentId, pokerId);
+                              await clearPoke(currentUser.studentId, pokerId);
+                              if (refreshUserSession) await refreshUserSession();
+                              await loadAllData();
+                              alert(`You poked ${peer.name} back!`);
+                            }}
+                          >
+                            Poke Back
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No pokes yet</p>
+                )}
+              </div>
+
+              {/* Friends List */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
+                  Friends ({(currentUser.student?.friends || []).length})
+                </h3>
+                {(currentUser.student?.friends || []).length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {currentUser.student.friends.map(friendId => {
+                      const peer = getStudentInfo(friendId);
+                      return (
+                        <div key={friendId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.5rem', borderRadius: 'var(--border-radius-sm)', background: 'rgba(255,255,255,0.02)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => navigateTo('profile-detail', { id: peer.id })}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden' }}>
+                              <AvatarImage avatarId={peer.avatarId} id={`friend-${peer.id}`} />
+                            </div>
+                            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-primary)' }}>{peer.name}</span>
+                          </div>
+                          <button 
+                            className="btn btn-secondary btn-sm" 
+                            style={{ minHeight: '26px', padding: '0 0.5rem', fontSize: '0.75rem', color: '#ef4444' }}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (window.confirm(`Are you sure you want to unfriend ${peer.name}?`)) {
+                                await removeFriend(currentUser.studentId, friendId);
+                                if (refreshUserSession) await refreshUserSession();
+                                await loadAllData();
+                              }
+                            }}
+                          >
+                            Unfriend
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No friends yet</p>
+                )}
+              </div>
+
+              {/* Blocked Users */}
+              <div>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
+                  Blocked Users ({(currentUser.student?.blockedUsers || []).length})
+                </h3>
+                {(currentUser.student?.blockedUsers || []).length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {currentUser.student.blockedUsers.map(blockedId => {
+                      const peer = getStudentInfo(blockedId);
+                      return (
+                        <div key={blockedId} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', padding: '0.5rem', borderRadius: 'var(--border-radius-sm)', background: 'rgba(255,255,255,0.02)' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-primary)' }}>{peer.name}</span>
+                          <button 
+                            className="btn btn-secondary btn-sm" 
+                            style={{ minHeight: '26px', padding: '0 0.5rem', fontSize: '0.75rem', color: 'var(--accent)' }}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await unblockUser(currentUser.studentId, blockedId);
+                              if (refreshUserSession) await refreshUserSession();
+                              await loadAllData();
+                            }}
+                          >
+                            Unblock
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No blocked users</p>
+                )}
+              </div>
+            </div>
+          )}
           {/* Skills Section */}
           <div className="profile-section glass">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

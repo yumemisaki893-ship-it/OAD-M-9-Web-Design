@@ -99,11 +99,13 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
       return;
     }
 
-    // Validate size (150KB for profile, 300KB for cover to fit localStorage boundaries)
-    const limit = type === 'avatar' ? 150 * 1024 : 300 * 1024;
-    if (file.size > limit) {
-      alert(`The selected file is too large (${Math.round(file.size / 1024)}KB). Maximum allowed size is ${type === 'avatar' ? '150KB' : '300KB'}.`);
-      return;
+    // Validate size (No limit for profile avatar, 300KB for cover to fit localStorage boundaries)
+    if (type === 'cover') {
+      const limit = 300 * 1024;
+      if (file.size > limit) {
+        alert(`The selected file is too large (${Math.round(file.size / 1024)}KB). Maximum allowed size is 300KB.`);
+        return;
+      }
     }
 
     const reader = new FileReader();
@@ -436,7 +438,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
             <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.25rem 0' }} />
             <div className="form-group">
               <label className="form-label">Or Custom Photo</label>
-              <span className="form-hint">JPEG or PNG format, max 150KB.</span>
+              <span className="form-hint">JPEG or PNG format, no size limit.</span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
                 <input
                   type="file"

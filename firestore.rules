@@ -51,5 +51,17 @@ service cloud.firestore {
       
       allow delete: if isAdmin() || isProfileOwner(studentId);
     }
+
+    match /chats/{chatId} {
+      allow read, update: if isAuthenticated() && (resource.data.participants[0] == getUserData().studentId || resource.data.participants[1] == getUserData().studentId || isAdmin());
+      allow create: if isAuthenticated() && (request.resource.data.participants[0] == getUserData().studentId || request.resource.data.participants[1] == getUserData().studentId || isAdmin());
+      
+      match /messages/{messageId} {
+        allow read, create, update: if isAuthenticated() && 
+          (get(/databases/$(database)/documents/chats/$(chatId)).data.participants[0] == getUserData().studentId ||
+           get(/databases/$(database)/documents/chats/$(chatId)).data.participants[1] == getUserData().studentId ||
+           isAdmin());
+      }
+    }
   }
 }
