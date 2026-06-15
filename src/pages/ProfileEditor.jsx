@@ -25,6 +25,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
   const [projects, setProjects] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [isPublic, setIsPublic] = useState(true);
+  const [resume, setResume] = useState(null);
   
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -72,6 +73,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
         setProjects(profile.projects || []);
         setPhotos(profile.photos || []);
         setIsPublic(profile.isPublic !== false);
+        setResume(profile.resume || null);
         setNewEmail(profile.email || '');
       }
     };
@@ -158,6 +160,45 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
   const handleRemovePhoto = (id) => {
     if (window.confirm("Are you sure you want to remove this photo from your album?")) {
       setPhotos(photos.filter(p => p.id !== id));
+    }
+  };
+
+  const handleResumeUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = [
+      'application/pdf', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    const extension = file.name.split('.').pop().toLowerCase();
+    
+    if (!validTypes.includes(file.type) && extension !== 'pdf' && extension !== 'docx') {
+      alert('Please upload PDF or DOCX files only.');
+      return;
+    }
+
+    const limit = 1 * 1024 * 1024; // 1MB limit
+    if (file.size > limit) {
+      alert(`The selected file is too large (${Math.round(file.size / 1024)}KB). Maximum allowed size is 1MB.`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setResume({
+        name: file.name,
+        dataUrl: reader.result,
+        uploadedAt: new Date().toISOString()
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleRemoveResume = () => {
+    if (window.confirm("Are you sure you want to remove your attached resume?")) {
+      setResume(null);
     }
   };
 
@@ -281,7 +322,8 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
         contactNumber,
         projects,
         photos,
-        isPublic
+        isPublic,
+        resume
       });
 
       onProfileUpdate(updatedProfile);
@@ -822,6 +864,72 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
                 />
+              </div>
+            </div>
+
+            {/* Resume / CV Attachment Card */}
+            <div className="editor-form-card glass">
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Resume / CV Attachment</h2>
+              <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                Upload your latest CV or Resume (PDF or DOCX, max 1MB). It will be available for download on your public portfolio page.
+              </p>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <input
+                  type="file"
+                  id="resume-upload"
+                  accept=".pdf, .docx, application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  style={{ display: 'none' }}
+                  onChange={handleResumeUpload}
+                />
+                
+                {resume ? (
+                  <div 
+                    style={{ 
+                      padding: '1rem', 
+                      borderRadius: 'var(--border-radius-sm)', 
+                      background: 'rgba(255, 255, 255, 0.04)', 
+                      border: '1px solid var(--border-color)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '1rem'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px', flexShrink: 0, color: 'var(--accent)' }}>
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                      </svg>
+                      <div style={{ textAlign: 'left', overflow: 'hidden' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                          {resume.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          Uploaded {new Date(resume.uploadedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm"
+                      style={{ minHeight: '30px', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                      onClick={handleRemoveResume}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <label 
+                      htmlFor="resume-upload" 
+                      className="btn btn-secondary" 
+                      style={{ cursor: 'pointer', width: '100%', textAlign: 'center' }}
+                    >
+                      Upload Resume / CV (PDF/DOCX)
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
 

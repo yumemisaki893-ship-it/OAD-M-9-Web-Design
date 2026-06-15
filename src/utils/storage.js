@@ -261,7 +261,8 @@ export const signUp = async (name, email, password) => {
     twitter: "",
     contactNumber: "",
     photos: [],
-    projects: []
+    projects: [],
+    resume: null
   };
 
   if (!isConfigured) {
@@ -358,7 +359,8 @@ export const signInWithGoogle = async () => {
       twitter: "",
       contactNumber: "",
       photos: [],
-      projects: []
+      projects: [],
+      resume: null
     };
 
     await setDoc(doc(db, 'students', studentId), student);

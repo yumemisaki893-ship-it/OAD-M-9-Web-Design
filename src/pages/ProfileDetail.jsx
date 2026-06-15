@@ -289,6 +289,42 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 </a>
               )}
             </div>
+            {student.resume && (
+              <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+                <a
+                  href={student.resume.dataUrl}
+                  download={student.resume.name}
+                  className="btn btn-secondary btn-sm"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.6rem',
+                    minHeight: '34px',
+                    padding: '0.35rem 0.85rem',
+                    fontSize: '0.8rem',
+                    background: 'rgba(255, 255, 255, 0.06)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--text-primary)',
+                    borderRadius: 'var(--border-radius-sm)',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: 'var(--accent)' }}>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                  <span>View/Download Resume ({student.resume.name.split('.').pop().toUpperCase()})</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
