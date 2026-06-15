@@ -619,6 +619,7 @@ export const sendFriendRequest = async (fromId, toId) => {
       students[toIndex].friendRequestsReceived = received;
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
     }
+    await createNotification(toId, 'friend_request', fromId);
     return;
   }
 
@@ -626,6 +627,7 @@ export const sendFriendRequest = async (fromId, toId) => {
   const toRef = doc(db, 'students', toId);
   await updateDoc(fromRef, { friendRequestsSent: arrayUnion(toId) });
   await updateDoc(toRef, { friendRequestsReceived: arrayUnion(fromId) });
+  await createNotification(toId, 'friend_request', fromId);
 };
 
 // Mutate: Accept friend request
@@ -650,6 +652,7 @@ export const acceptFriendRequest = async (fromId, toId) => {
       students[toIndex].friends = friendsTo;
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
     }
+    await createNotification(fromId, 'friend_accept', toId);
     return;
   }
 
@@ -665,6 +668,8 @@ export const acceptFriendRequest = async (fromId, toId) => {
     friendRequestsReceived: arrayRemove(fromId),
     friends: arrayUnion(fromId)
   });
+
+  await createNotification(fromId, 'friend_accept', toId);
 };
 
 // Mutate: Decline friend request
@@ -720,6 +725,7 @@ export const pokeUser = async (fromId, toId) => {
       students[toIndex].pokedBy = pokedBy;
       localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
     }
+    await createNotification(toId, 'poke', fromId);
     return;
   }
 
@@ -727,6 +733,7 @@ export const pokeUser = async (fromId, toId) => {
   await updateDoc(toRef, {
     [`pokedBy.${fromId}`]: new Date().toISOString()
   });
+  await createNotification(toId, 'poke', fromId);
 };
 
 // Mutate: Clear poke
@@ -863,6 +870,8 @@ export const sendMessage = async (chatId, senderId, text) => {
     read: false
   };
 
+  const recipientId = chatId.replace('chat_', '').split('_').find(id => id !== senderId);
+
   if (!isConfigured) {
     const chatsStr = localStorage.getItem('portfolio_chats') || '{}';
     const chats = JSON.parse(chatsStr);
@@ -870,6 +879,9 @@ export const sendMessage = async (chatId, senderId, text) => {
       chats[chatId].messages.push(messageData);
       chats[chatId].lastMessage = messageData;
       localStorage.setItem('portfolio_chats', JSON.stringify(chats));
+    }
+    if (recipientId) {
+      await createNotification(recipientId, 'message', senderId);
     }
     return;
   }
@@ -883,6 +895,10 @@ export const sendMessage = async (chatId, senderId, text) => {
   await updateDoc(chatDocRef, {
     lastMessage: messageData
   });
+
+  if (recipientId) {
+    await createNotification(recipientId, 'message', senderId);
+  }
 };
 
 // Mark Chat Messages as Read
@@ -1000,5 +1016,96 @@ export const listenToMessages = (chatId, callback) => {
   }, (err) => {
     console.error("Error listening to messages: ", err);
   });
+};
+
+
+// ==========================================
+// NOTIFICATION SYSTEM
+// ==========================================
+
+export const createNotification = async (toId, type, fromId) => {
+  const notif = {
+    id: `notif-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    type, // 'friend_request' | 'friend_accept' | 'poke' | 'message'
+    senderId: fromId,
+    timestamp: new Date().toISOString(),
+    read: false
+  };
+
+  if (!isConfigured) {
+    const students = await getStudents();
+    const index = students.findIndex(s => s.id === toId);
+    if (index !== -1) {
+      const list = students[index].notifications || [];
+      const exists = list.some(n => n.type === type && n.senderId === fromId && !n.read);
+      if (!exists) {
+        list.unshift(notif);
+        students[index].notifications = list;
+        localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+      }
+    }
+    return;
+  }
+
+  try {
+    const docRef = doc(db, 'students', toId);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      const list = data.notifications || [];
+      const exists = list.some(n => n.type === type && n.senderId === fromId && !n.read);
+      if (!exists) {
+        list.unshift(notif);
+        await updateDoc(docRef, { notifications: list });
+      }
+    }
+  } catch (err) {
+    console.error("Error creating notification: ", err);
+  }
+};
+
+export const markNotificationsAsRead = async (studentId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const index = students.findIndex(s => s.id === studentId);
+    if (index !== -1 && students[index].notifications) {
+      students[index].notifications = students[index].notifications.map(n => ({ ...n, read: true }));
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  try {
+    const docRef = doc(db, 'students', studentId);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data.notifications) {
+        const updated = data.notifications.map(n => ({ ...n, read: true }));
+        await updateDoc(docRef, { notifications: updated });
+      }
+    }
+  } catch (err) {
+    console.error("Error marking notifications as read: ", err);
+  }
+};
+
+export const clearNotifications = async (studentId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const index = students.findIndex(s => s.id === studentId);
+    if (index !== -1) {
+      students[index].notifications = [];
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    return;
+  }
+
+  try {
+    const docRef = doc(db, 'students', studentId);
+    await updateDoc(docRef, { notifications: [] });
+  } catch (err) {
+    console.error("Error clearing notifications: ", err);
+  }
 };
 

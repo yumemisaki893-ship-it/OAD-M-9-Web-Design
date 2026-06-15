@@ -11,7 +11,9 @@ import {
   pokeUser,
   clearPoke,
   blockUser,
-  unblockUser
+  unblockUser,
+  markNotificationsAsRead,
+  clearNotifications
 } from '../utils/storage';
 import { AvatarImage } from '../components/AvatarPicker';
 
@@ -36,6 +38,18 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
   useEffect(() => {
     loadAllData();
   }, [studentId, currentUser]);
+
+  useEffect(() => {
+    if (isOwnProfile && currentUser) {
+      const markAsRead = async () => {
+        setTimeout(async () => {
+          await markNotificationsAsRead(currentUser.studentId);
+          if (refreshUserSession) await refreshUserSession();
+        }, 1500);
+      };
+      markAsRead();
+    }
+  }, [isOwnProfile, currentUser?.studentId]);
 
   const getStudentInfo = (id) => {
     return allStudents.find(s => s.id === id) || { id, name: 'Student', avatarId: 'avatar1' };
@@ -643,6 +657,165 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 </svg>
                 Social Center
               </h2>
+
+              {/* Notification System Feed */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.35rem', marginBottom: '0.75rem' }}>
+                  <h3 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                    Notifications Feed
+                  </h3>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      style={{ minHeight: '22px', height: '22px', padding: '0 0.5rem', fontSize: '0.7rem' }}
+                      onClick={async () => {
+                        await markNotificationsAsRead(currentUser.studentId);
+                        if (refreshUserSession) await refreshUserSession();
+                        await loadAllData();
+                      }}
+                    >
+                      Mark all read
+                    </button>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      style={{ minHeight: '22px', height: '22px', padding: '0 0.5rem', fontSize: '0.7rem', color: '#ef4444' }}
+                      onClick={async () => {
+                        await clearNotifications(currentUser.studentId);
+                        if (refreshUserSession) await refreshUserSession();
+                        await loadAllData();
+                      }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+
+                {(currentUser.student?.notifications || []).length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '300px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                    {currentUser.student.notifications.map(notif => {
+                      const sender = getStudentInfo(notif.senderId);
+                      
+                      let icon = '🔔';
+                      let text = '';
+                      let action = null;
+
+                      if (notif.type === 'friend_request') {
+                        icon = '➕';
+                        text = `${sender.name} sent you a friend request.`;
+                        
+                        const isStillPending = currentUser.student.friendRequestsReceived?.includes(notif.senderId);
+                        if (isStillPending) {
+                          action = (
+                            <div style={{ display: 'flex', gap: '0.25rem', marginTop: '0.5rem' }}>
+                              <button 
+                                className="btn btn-primary btn-sm" 
+                                style={{ minHeight: '24px', height: '24px', padding: '0 0.5rem', fontSize: '0.7rem' }}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  await acceptFriendRequest(notif.senderId, currentUser.studentId);
+                                  if (refreshUserSession) await refreshUserSession();
+                                  await loadAllData();
+                                }}
+                              >
+                                Accept
+                              </button>
+                              <button 
+                                className="btn btn-secondary btn-sm" 
+                                style={{ minHeight: '24px', height: '24px', padding: '0 0.5rem', fontSize: '0.7rem' }}
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  await declineFriendRequest(notif.senderId, currentUser.studentId);
+                                  if (refreshUserSession) await refreshUserSession();
+                                  await loadAllData();
+                                }}
+                              >
+                                Decline
+                              </button>
+                            </div>
+                          );
+                        } else {
+                          text = `${sender.name} sent you a friend request (handled).`;
+                        }
+                      } else if (notif.type === 'friend_accept') {
+                        icon = '🤝';
+                        text = `${sender.name} accepted your friend request.`;
+                      } else if (notif.type === 'poke') {
+                        icon = '👋';
+                        text = `${sender.name} poked you!`;
+                        
+                        const isStillPoked = currentUser.student.pokedBy && currentUser.student.pokedBy[notif.senderId];
+                        if (isStillPoked) {
+                          action = (
+                            <button 
+                              className="btn btn-secondary btn-sm" 
+                              style={{ minHeight: '24px', height: '24px', padding: '0 0.5rem', fontSize: '0.7rem', marginTop: '0.5rem', color: 'var(--accent)', border: '1px solid rgba(255,255,255,0.1)' }}
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                await pokeUser(currentUser.studentId, notif.senderId);
+                                await clearPoke(currentUser.studentId, notif.senderId);
+                                if (refreshUserSession) await refreshUserSession();
+                                await loadAllData();
+                                alert(`You poked ${sender.name} back!`);
+                              }}
+                            >
+                              Poke Back
+                            </button>
+                          );
+                        }
+                      } else if (notif.type === 'message') {
+                        icon = '✉️';
+                        text = `${sender.name} sent you a message.`;
+                        action = (
+                          <button 
+                            className="btn btn-secondary btn-sm" 
+                            style={{ minHeight: '24px', height: '24px', padding: '0 0.5rem', fontSize: '0.7rem', marginTop: '0.5rem' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (onStartChat) onStartChat(notif.senderId);
+                            }}
+                          >
+                            Open Chat
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <div 
+                          key={notif.id} 
+                          style={{ 
+                            padding: '0.65rem 0.75rem', 
+                            borderRadius: 'var(--border-radius-sm)', 
+                            background: notif.read ? 'rgba(255,255,255,0.01)' : 'rgba(124, 58, 237, 0.05)', 
+                            border: '1px solid var(--border-color)',
+                            display: 'flex',
+                            gap: '0.6rem',
+                            alignItems: 'flex-start',
+                            position: 'relative'
+                          }}
+                        >
+                          <div style={{ fontSize: '1.1rem', marginTop: '0.1rem' }}>{icon}</div>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--text-primary)', lineHeight: '1.35', fontWeight: notif.read ? 400 : 600 }}>
+                              {text}
+                            </div>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                              {new Date(notif.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                            {action}
+                          </div>
+                          {!notif.read && (
+                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent)', position: 'absolute', top: '0.75rem', right: '0.75rem' }} />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                    No recent notifications.
+                  </p>
+                )}
+              </div>
 
               {/* Friend Requests Received */}
               <div style={{ marginBottom: '1.5rem' }}>
