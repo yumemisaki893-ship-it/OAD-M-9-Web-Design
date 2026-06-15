@@ -831,6 +831,94 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
             )}
           </div>
 
+          {/* Public Friends List Section (with privacy controls) */}
+          {!isOwnProfile && (
+            <div className="profile-section glass" style={{ textAlign: 'left' }}>
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: 'var(--accent)' }}>
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                Friends List
+              </h2>
+
+              {(() => {
+                const targetPrivacy = student.friendListPrivacy || 'public';
+                const isListVisible = targetPrivacy === 'public' || (targetPrivacy === 'friends' && isFriend) || currentUser?.isAdmin;
+                const targetFriends = student.friends || [];
+
+                if (!isListVisible) {
+                  return (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: 'var(--border-radius-sm)', background: 'rgba(239, 68, 68, 0.03)', border: '1px solid rgba(239, 68, 68, 0.1)', color: 'var(--text-muted)' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', flexShrink: 0 }}>
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                      </svg>
+                      <span style={{ fontSize: '0.85rem' }}>
+                        {targetPrivacy === 'friends' ? 'This friends list is visible to friends only.' : 'This friends list is private.'}
+                      </span>
+                    </div>
+                  );
+                }
+
+                if (targetFriends.length === 0) {
+                  return (
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                      No friends added yet.
+                    </p>
+                  );
+                }
+
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {targetFriends.map(friendId => {
+                      const peer = getStudentInfo(friendId);
+                      return (
+                        <div 
+                          key={friendId} 
+                          style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '0.75rem', 
+                            padding: '0.5rem', 
+                            borderRadius: 'var(--border-radius-sm)', 
+                            background: 'rgba(255, 255, 255, 0.02)',
+                            border: '1px solid transparent',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                          onClick={() => navigateTo('profile-detail', { id: peer.id })}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
+                            e.currentTarget.style.borderColor = 'var(--border-color)';
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                            e.currentTarget.style.borderColor = 'transparent';
+                          }}
+                        >
+                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0 }}>
+                            <AvatarImage avatarId={peer.avatarId} id={`friend-list-${peer.id}`} />
+                          </div>
+                          <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                              {peer.name}
+                            </div>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                              {peer.major}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
           {/* Contact Cards Sidebar */}
           <div className="profile-section glass">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

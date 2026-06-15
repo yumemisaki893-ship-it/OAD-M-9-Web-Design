@@ -25,6 +25,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
   const [projects, setProjects] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [isPublic, setIsPublic] = useState(true);
+  const [friendListPrivacy, setFriendListPrivacy] = useState('public');
   const [resume, setResume] = useState(null);
   
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -73,6 +74,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
         setProjects(profile.projects || []);
         setPhotos(profile.photos || []);
         setIsPublic(profile.isPublic !== false);
+        setFriendListPrivacy(profile.friendListPrivacy || 'public');
         setResume(profile.resume || null);
         setNewEmail(profile.email || '');
       }
@@ -325,6 +327,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
         projects,
         photos,
         isPublic,
+        friendListPrivacy,
         resume
       });
 
@@ -493,6 +496,25 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
               </div>
               <span className="form-hint" style={{ marginTop: '0.5rem' }}>
                 If unchecked, your profile will be hidden from the directory.
+              </span>
+            </div>
+
+            <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.25rem 0' }} />
+            <div className="form-group">
+              <label htmlFor="friend-list-privacy" className="form-label">Friend List Privacy</label>
+              <select
+                id="friend-list-privacy"
+                className="form-control"
+                value={friendListPrivacy}
+                onChange={(e) => setFriendListPrivacy(e.target.value)}
+                style={{ marginTop: '0.5rem', minHeight: '40px', padding: '0.5rem 1rem' }}
+              >
+                <option value="public">Public (Everyone can see your friends)</option>
+                <option value="friends">Friends Only (Only your friends can see)</option>
+                <option value="private">Private (Only you and admins can see)</option>
+              </select>
+              <span className="form-hint" style={{ marginTop: '0.5rem' }}>
+                Control who can view your friends list on your public portfolio page.
               </span>
             </div>
           </div>
