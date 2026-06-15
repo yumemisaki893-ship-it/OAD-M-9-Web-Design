@@ -86,14 +86,14 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     );
   }
 
-  // Handle profile & cover photo uploads (Validates JPEG & limits Base64 sizes)
+  // Handle profile & cover photo uploads (Validates JPEG/PNG & limits Base64 sizes)
   const handleImageUpload = (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate type is JPEG/JPG
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      alert('Please upload JPEG or JPG format images only.');
+    // Validate type is JPEG/JPG/PNG
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      alert('Please upload JPEG, JPG, or PNG format images only.');
       return;
     }
 
@@ -120,13 +120,13 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     const file = e.target.files[0];
     if (!file) return;
 
-    if (photos.length >= 6) {
-      alert("Maximum of 6 photos allowed in your gallery album.");
+    if (photos.length >= 50) {
+      alert("Maximum of 50 photos allowed in your gallery album.");
       return;
     }
 
-    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg') {
-      alert('Please upload JPEG or JPG format images only.');
+    if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
+      alert('Please upload JPEG, JPG, or PNG format images only.');
       return;
     }
 
@@ -394,12 +394,12 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
             <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.25rem 0' }} />
             <div className="form-group">
               <label className="form-label">Or Custom Photo</label>
-              <span className="form-hint">JPEG format only, max 150KB.</span>
+              <span className="form-hint">JPEG or PNG format, max 150KB.</span>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
                 <input
                   type="file"
                   id="profile-upload"
-                  accept="image/jpeg, image/jpg"
+                  accept="image/jpeg, image/jpg, image/png"
                   style={{ display: 'none' }}
                   onChange={(e) => handleImageUpload(e, 'avatar')}
                 />
@@ -460,7 +460,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
             <div className="editor-form-card glass">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Profile Banner</h2>
               <p style={{ fontSize: '0.85rem', marginBottom: '1.25rem' }}>
-                Upload a custom JPEG banner photo for the top of your public portfolio view (Max 300KB).
+                Upload a custom JPEG or PNG banner photo for the top of your public portfolio view (Max 300KB).
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -498,7 +498,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                   <input
                     type="file"
                     id="cover-upload"
-                    accept="image/jpeg, image/jpg"
+                    accept="image/jpeg, image/jpg, image/png"
                     style={{ display: 'none' }}
                     onChange={(e) => handleImageUpload(e, 'cover')}
                   />
@@ -648,29 +648,29 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
             <div className="editor-form-card glass">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Photo Gallery Album</h2>
               <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                Upload up to 6 showcase photos for your portfolio gallery (JPEG only, max 200KB each).
+                Upload up to 50 showcase photos for your portfolio gallery (JPEG or PNG, max 200KB each).
               </p>
 
               <div style={{ marginBottom: '1.5rem' }}>
                 <input
                   type="file"
                   id="gallery-photo-upload"
-                  accept="image/jpeg, image/jpg"
+                  accept="image/jpeg, image/jpg, image/png"
                   style={{ display: 'none' }}
                   onChange={handlePhotoUpload}
-                  disabled={photos.length >= 6}
+                  disabled={photos.length >= 50}
                 />
                 <label 
                   htmlFor="gallery-photo-upload" 
-                  className={`btn btn-secondary ${photos.length >= 6 ? 'disabled' : ''}`} 
+                  className={`btn btn-secondary ${photos.length >= 50 ? 'disabled' : ''}`} 
                   style={{ 
-                    cursor: photos.length >= 6 ? 'not-allowed' : 'pointer', 
+                    cursor: photos.length >= 50 ? 'not-allowed' : 'pointer', 
                     width: '100%', 
                     textAlign: 'center',
-                    opacity: photos.length >= 6 ? 0.5 : 1
+                    opacity: photos.length >= 50 ? 0.5 : 1
                   }}
                 >
-                  Upload New Gallery Photo ({photos.length}/6)
+                  Upload New Gallery Photo ({photos.length}/50)
                 </label>
               </div>
 
