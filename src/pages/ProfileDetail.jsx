@@ -12,7 +12,11 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
   useEffect(() => {
     if (studentId) {
-      setStudent(getStudentById(studentId));
+      const loadStudent = async () => {
+        const profile = await getStudentById(studentId);
+        setStudent(profile);
+      };
+      loadStudent();
     }
   }, [studentId]);
 
@@ -75,20 +79,20 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
   const isOwnProfile = currentUser && currentUser.studentId === student.id;
   const canEdit = isOwnProfile || (currentUser && currentUser.isAdmin);
 
-  const handleDeleteProfile = () => {
+  const handleDeleteProfile = async () => {
     const confirmMessage = currentUser?.isAdmin && currentUser.studentId !== student.id
       ? `WARNING: You are about to permanently delete ${student.name}'s portfolio and user account. This action cannot be undone. Do you wish to proceed?`
       : "Are you sure you want to permanently delete your portfolio profile and user account? This will sign you out and cannot be undone.";
       
     if (window.confirm(confirmMessage)) {
       if (window.confirm("FINAL CONFIRMATION: Are you absolutely certain you want to proceed?")) {
-        deleteStudentProfileAndAccount(student.id);
+        await deleteStudentProfileAndAccount(student.id);
         
         if (currentUser?.isAdmin && currentUser.studentId !== student.id) {
           alert(`${student.name}'s portfolio was successfully deleted.`);
           navigateTo('directory');
         } else {
-          signOut();
+          await signOut();
           if (onLogoutSuccess) onLogoutSuccess();
           navigateTo('home');
         }

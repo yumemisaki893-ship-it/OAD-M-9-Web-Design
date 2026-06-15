@@ -1,6 +1,27 @@
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut as firebaseSignOut, 
+  signInWithPopup, 
+  updateEmail as firebaseUpdateEmail,
+  updatePassword as firebaseUpdatePassword,
+  sendPasswordResetEmail
+} from 'firebase/auth';
+import { 
+  collection, 
+  doc, 
+  getDoc, 
+  getDocs, 
+  setDoc, 
+  updateDoc, 
+  deleteDoc, 
+  query, 
+  where 
+} from 'firebase/firestore';
+import { db, auth, googleProvider, isConfigured } from './firebase';
 import { DEFAULT_STUDENTS } from './mockData';
 
-// Constants
+// Constants for local fallback mode
 const STORAGE_KEYS = {
   STUDENTS: 'student_portfolio_students',
   USERS: 'student_portfolio_users',
@@ -77,26 +98,68 @@ export const initStorage = () => {
 initStorage();
 
 // Retrieve all students
-export const getStudents = () => {
-  const data = localStorage.getItem(STORAGE_KEYS.STUDENTS);
-  return data ? JSON.parse(data) : [];
+export const getStudents = async () => {
+  if (!isConfigured) {
+    const data = localStorage.getItem(STORAGE_KEYS.STUDENTS);
+    return data ? JSON.parse(data) : [];
+  }
+  
+  try {
+    const querySnapshot = await getDocs(collection(db, 'students'));
+    const list = [];
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+    return list;
+  } catch (e) {
+    console.error("Error loading students from Firestore: ", e);
+    return [];
+  }
 };
 
 // Retrieve a single student profile by ID
-export const getStudentById = (id) => {
-  const students = getStudents();
-  return students.find(s => s.id === id) || null;
+export const getStudentById = async (id) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    return students.find(s => s.id === id) || null;
+  }
+  
+  try {
+    const docRef = doc(db, 'students', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id: docSnap.id, ...docSnap.data() };
+    }
+    return null;
+  } catch (e) {
+    console.error("Error getting student from Firestore: ", e);
+    return null;
+  }
 };
 
-// Authentication: Get Active Session User
+// Helper: fetch user session document from Firestore
+export const getSessionData = async (user) => {
+  if (!user) return null;
+  const userDoc = await getDoc(doc(db, 'users', user.uid));
+  if (userDoc.exists()) {
+    return userDoc.data();
+  }
+  return null;
+};
+
+// Authentication: Get Active Session User (Sync/Local fallback, App.jsx uses onAuthStateChanged for firebase)
 export const getCurrentSession = () => {
+  if (isConfigured) return null; // App.jsx will handle Firebase auth listener
+
   const session = localStorage.getItem(STORAGE_KEYS.SESSION);
   if (!session) return null;
   
   try {
     const sessionData = JSON.parse(session);
-    // Fetch fresh student profile data for this session
-    const student = getStudentById(sessionData.studentId);
+    // Since local storage is synchronous, we fetch local mock data
+    const data = localStorage.getItem(STORAGE_KEYS.STUDENTS);
+    const students = data ? JSON.parse(data) : [];
+    const student = students.find(s => s.id === sessionData.studentId) || null;
     return {
       ...sessionData,
       student
@@ -107,29 +170,66 @@ export const getCurrentSession = () => {
 };
 
 // Authentication: Sign In
-export const signIn = (email, password) => {
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  
-  if (!user) {
-    throw new Error('No account found with this email address.');
+export const signIn = async (email, password) => {
+  const cleanEmail = email.trim().toLowerCase();
+
+  if (!isConfigured) {
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    const user = users.find(u => u.email.toLowerCase() === cleanEmail);
+    if (!user) {
+      throw new Error('No account found with this email address.');
+    }
+    if (user.password !== password) {
+      throw new Error('Incorrect password. Please try again.');
+    }
+    
+    const student = await getStudentById(user.studentId);
+    const sessionData = {
+      email: user.email,
+      studentId: user.studentId,
+      isAdmin: !!user.isAdmin
+    };
+    localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
+    
+    return {
+      user: sessionData,
+      student
+    };
   }
-  
-  if (user.password !== password) {
-    throw new Error('Incorrect password. Please try again.');
+
+  // Firebase auth with admin auto-provisioning
+  if (cleanEmail === 'admin@university.edu' && password === 'Admin123!') {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+      const sessionData = await getSessionData(userCredential.user);
+      const student = await getStudentById(sessionData.studentId);
+      return { user: sessionData, student };
+    } catch (err) {
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/invalid-email') {
+        // Create admin user document dynamically if not found
+        const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+        const user = userCredential.user;
+        const sessionData = {
+          email: cleanEmail,
+          studentId: 'admin-user',
+          isAdmin: true,
+          createdAt: new Date().toISOString()
+        };
+        await setDoc(doc(db, 'users', user.uid), sessionData);
+        return { user: sessionData, student: null };
+      }
+      throw err;
+    }
   }
-  
-  const student = getStudentById(user.studentId);
-  const sessionData = {
-    email: user.email,
-    studentId: user.studentId,
-    isAdmin: !!user.isAdmin
-  };
-  
-  localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
-  
+
+  const userCredential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+  const sessionData = await getSessionData(userCredential.user);
+  if (!sessionData) {
+    throw new Error('Account configurations not found in Cloud Database.');
+  }
+  const student = await getStudentById(sessionData.studentId);
   return {
     user: sessionData,
     student
@@ -137,30 +237,21 @@ export const signIn = (email, password) => {
 };
 
 // Authentication: Sign Up / Register
-export const signUp = (name, email, password) => {
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  
-  const emailExists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
-  if (emailExists) {
-    throw new Error('An account with this email address already exists.');
-  }
-  
-  // Create a stable student ID from the name (slug) + timestamp for uniqueness
+export const signUp = async (name, email, password) => {
+  const cleanEmail = email.trim().toLowerCase();
   const cleanName = name.trim();
   const slug = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   const studentId = `${slug}-${Date.now().toString().slice(-4)}`;
   
-  // Create Student Profile
   const newStudent = {
     id: studentId,
     name: cleanName,
     major: "Undeclared",
-    avatarId: `avatar-${Math.floor(Math.random() * 8) + 1}`, // Pick a random avatar
+    avatarId: `avatar-${Math.floor(Math.random() * 8) + 1}`,
     shortBio: "Welcome to my new student portfolio! Click edit to fill in details.",
     aboutMe: "I haven't written my bio yet. Stay tuned!",
     skills: [],
-    email: email.toLowerCase(),
+    email: cleanEmail,
     isPublic: true,
     github: "",
     linkedin: "",
@@ -172,161 +263,322 @@ export const signUp = (name, email, password) => {
     photos: [],
     projects: []
   };
-  
-  const students = getStudents();
-  students.push(newStudent);
-  localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
-  
-  // Create User Credentials
-  const newUser = {
-    email: email.toLowerCase(),
-    password,
-    studentId,
-    isAdmin: false
-  };
-  users.push(newUser);
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-  
-  // Set Active Session
+
+  if (!isConfigured) {
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    const emailExists = users.some(u => u.email.toLowerCase() === cleanEmail);
+    if (emailExists) {
+      throw new Error('An account with this email address already exists.');
+    }
+    
+    const students = await getStudents();
+    students.push(newStudent);
+    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    
+    const newUser = {
+      email: cleanEmail,
+      password,
+      studentId,
+      isAdmin: false
+    };
+    users.push(newUser);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    
+    const sessionData = {
+      email: cleanEmail,
+      studentId,
+      isAdmin: false
+    };
+    localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
+    
+    return {
+      user: sessionData,
+      student: newStudent
+    };
+  }
+
+  // Create auth credentials
+  const userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+  const user = userCredential.user;
+
+  // Save student document in Firestore
+  await setDoc(doc(db, 'students', studentId), newStudent);
+
+  // Save user document mapping in Firestore
   const sessionData = {
-    email: newUser.email,
+    email: cleanEmail,
     studentId,
-    isAdmin: false
+    isAdmin: false,
+    createdAt: new Date().toISOString()
   };
-  localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
-  
+  await setDoc(doc(db, 'users', user.uid), sessionData);
+
   return {
     user: sessionData,
     student: newStudent
   };
 };
 
+// Google OAuth Sign In
+export const signInWithGoogle = async () => {
+  if (!isConfigured) {
+    throw new Error('Google Sign-In is only available when Firebase is configured.');
+  }
+
+  const userCredential = await signInWithPopup(auth, googleProvider);
+  const user = userCredential.user;
+  
+  let sessionData = await getSessionData(user);
+  let student = null;
+
+  if (!sessionData) {
+    // Provision a new student profile and maps it to Google credentials
+    const cleanName = user.displayName || 'Google Student';
+    const cleanEmail = user.email || '';
+    const slug = cleanName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const studentId = `${slug}-${Date.now().toString().slice(-4)}`;
+
+    student = {
+      id: studentId,
+      name: cleanName,
+      major: "Undeclared",
+      avatarId: `avatar-${Math.floor(Math.random() * 8) + 1}`,
+      shortBio: "Welcome to my new student portfolio! Click edit to fill in details.",
+      aboutMe: "I haven't written my bio yet. Stay tuned!",
+      skills: [],
+      email: cleanEmail,
+      isPublic: true,
+      github: "",
+      linkedin: "",
+      website: "",
+      facebook: "",
+      instagram: "",
+      twitter: "",
+      contactNumber: "",
+      photos: [],
+      projects: []
+    };
+
+    await setDoc(doc(db, 'students', studentId), student);
+
+    sessionData = {
+      email: cleanEmail,
+      studentId,
+      isAdmin: false,
+      createdAt: new Date().toISOString()
+    };
+    await setDoc(doc(db, 'users', user.uid), sessionData);
+  } else {
+    student = await getStudentById(sessionData.studentId);
+  }
+
+  return {
+    user: sessionData,
+    student
+  };
+};
+
 // Authentication: Sign Out
-export const signOut = () => {
-  localStorage.removeItem(STORAGE_KEYS.SESSION);
+export const signOut = async () => {
+  if (!isConfigured) {
+    localStorage.removeItem(STORAGE_KEYS.SESSION);
+    return;
+  }
+  await firebaseSignOut(auth);
 };
 
 // Mutate: Update Student Profile details
-export const updateStudentProfile = (studentId, updatedFields) => {
-  const students = getStudents();
-  const index = students.findIndex(s => s.id === studentId);
-  
-  if (index === -1) {
-    throw new Error('Student profile not found.');
+export const updateStudentProfile = async (studentId, updatedFields) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const index = students.findIndex(s => s.id === studentId);
+    
+    if (index === -1) {
+      throw new Error('Student profile not found.');
+    }
+    
+    students[index] = {
+      ...students[index],
+      ...updatedFields,
+      id: studentId,
+      email: students[index].email
+    };
+    
+    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    return students[index];
   }
-  
-  // Merge profile updates, ensuring stable fields
-  students[index] = {
-    ...students[index],
-    ...updatedFields,
-    id: studentId, // Prevent modifying the ID
-    email: students[index].email // Email is tied to user account email
-  };
-  
-  localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
-  return students[index];
+
+  const docRef = doc(db, 'students', studentId);
+  const { id, email, ...safeFields } = updatedFields;
+  await updateDoc(docRef, safeFields);
+  const updatedDoc = await getDoc(docRef);
+  return { id: studentId, ...updatedDoc.data() };
 };
 
 // Mutate: Delete student profile and associated account credentials
-export const deleteStudentProfileAndAccount = (studentId) => {
-  // 1. Remove student profile
-  const students = getStudents();
-  const filteredStudents = students.filter(s => s.id !== studentId);
-  localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(filteredStudents));
+export const deleteStudentProfileAndAccount = async (studentId) => {
+  if (!isConfigured) {
+    const students = await getStudents();
+    const filteredStudents = students.filter(s => s.id !== studentId);
+    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(filteredStudents));
 
-  // 2. Remove user credentials
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  const filteredUsers = users.filter(u => u.studentId !== studentId);
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(filteredUsers));
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    const filteredUsers = users.filter(u => u.studentId !== studentId);
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(filteredUsers));
 
-  // 3. Clear session if deleted account is the active session user
-  const session = localStorage.getItem(STORAGE_KEYS.SESSION);
-  if (session) {
-    try {
-      const sessionData = JSON.parse(session);
-      if (sessionData.studentId === studentId) {
-        localStorage.removeItem(STORAGE_KEYS.SESSION);
+    const session = localStorage.getItem(STORAGE_KEYS.SESSION);
+    if (session) {
+      try {
+        const sessionData = JSON.parse(session);
+        if (sessionData.studentId === studentId) {
+          localStorage.removeItem(STORAGE_KEYS.SESSION);
+        }
+      } catch (e) {}
+    }
+    return;
+  }
+
+  // 1. Delete student doc
+  await deleteDoc(doc(db, 'students', studentId));
+
+  // 2. Delete user credential document in Firestore
+  const q = query(collection(db, 'users'), where('studentId', '==', studentId));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach(async (document) => {
+    await deleteDoc(doc(db, 'users', document.id));
+  });
+
+  // 3. Delete active auth user account if they deleted themselves
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+    if (userDoc.exists() && userDoc.data().studentId === studentId) {
+      try {
+        await currentUser.delete();
+      } catch (e) {
+        console.warn("Could not delete Auth account (recent authentication might be required).");
       }
-    } catch (e) {
-      // ignore
     }
   }
 };
 
 // Mutate: Update user email in credentials and student profile
-export const updateUserEmail = (studentId, newEmail) => {
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  
+export const updateUserEmail = async (studentId, newEmail) => {
   const cleanEmail = newEmail.trim().toLowerCase();
-  
-  // Check if another user is already using this email
-  const emailExists = users.some(u => u.studentId !== studentId && u.email.toLowerCase() === cleanEmail);
-  if (emailExists) {
+
+  if (!isConfigured) {
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    const emailExists = users.some(u => u.studentId !== studentId && u.email.toLowerCase() === cleanEmail);
+    if (emailExists) {
+      throw new Error('An account with this email address already exists.');
+    }
+    
+    const userIndex = users.findIndex(u => u.studentId === studentId);
+    if (userIndex === -1) {
+      throw new Error('User credentials record not found.');
+    }
+    users[userIndex].email = cleanEmail;
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    
+    const students = await getStudents();
+    const studentIndex = students.findIndex(s => s.id === studentId);
+    if (studentIndex !== -1) {
+      students[studentIndex].email = cleanEmail;
+      localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+    }
+    
+    const session = localStorage.getItem(STORAGE_KEYS.SESSION);
+    if (session) {
+      try {
+        const sessionData = JSON.parse(session);
+        if (sessionData.studentId === studentId) {
+          sessionData.email = cleanEmail;
+          localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
+        }
+      } catch (e) {}
+    }
+    return;
+  }
+
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('No authenticated user session found.');
+  }
+
+  // Check unique constraint in Firestore
+  const q = query(collection(db, 'users'), where('email', '==', cleanEmail));
+  const querySnapshot = await getDocs(q);
+  const existsOther = querySnapshot.docs.some(doc => doc.id !== currentUser.uid);
+  if (existsOther) {
     throw new Error('An account with this email address already exists.');
   }
-  
-  // 1. Update user credentials email
-  const userIndex = users.findIndex(u => u.studentId === studentId);
-  if (userIndex === -1) {
-    throw new Error('User credentials record not found.');
-  }
-  users[userIndex].email = cleanEmail;
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-  
-  // 2. Update student profile email
-  const students = getStudents();
-  const studentIndex = students.findIndex(s => s.id === studentId);
-  if (studentIndex !== -1) {
-    students[studentIndex].email = cleanEmail;
-    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
-  }
-  
-  // 3. Update active session email if matches
-  const session = localStorage.getItem(STORAGE_KEYS.SESSION);
-  if (session) {
-    try {
-      const sessionData = JSON.parse(session);
-      if (sessionData.studentId === studentId) {
-        sessionData.email = cleanEmail;
-        localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(sessionData));
-      }
-    } catch (e) {
-      // ignore
-    }
-  }
+
+  // Update email credentials in Firebase Auth
+  await firebaseUpdateEmail(currentUser, cleanEmail);
+
+  // Update in Firestore
+  await updateDoc(doc(db, 'users', currentUser.uid), { email: cleanEmail });
+  await updateDoc(doc(db, 'students', studentId), { email: cleanEmail });
 };
 
 // Mutate: Update user password
-export const updateUserPassword = (studentId, currentPassword, newPassword) => {
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  
-  const index = users.findIndex(u => u.studentId === studentId);
-  if (index === -1) {
-    throw new Error('User credentials record not found.');
+export const updateUserPassword = async (studentId, currentPassword, newPassword) => {
+  if (!isConfigured) {
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    const index = users.findIndex(u => u.studentId === studentId);
+    if (index === -1) {
+      throw new Error('User credentials record not found.');
+    }
+    
+    if (users[index].password !== currentPassword) {
+      throw new Error('Incorrect current password.');
+    }
+    
+    users[index].password = newPassword;
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    return;
   }
-  
-  if (users[index].password !== currentPassword) {
-    throw new Error('Incorrect current password.');
+
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error('No authenticated user session found.');
   }
-  
-  users[index].password = newPassword;
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+
+  try {
+    await firebaseUpdatePassword(currentUser, newPassword);
+  } catch (err) {
+    if (err.code === 'auth/requires-recent-login') {
+      throw new Error('Recent login is required. Please sign out and sign back in to change your password.');
+    }
+    throw err;
+  }
 };
 
 // Mutate: Reset user password by email (Forgot Password flow)
-export const resetUserPasswordByEmail = (email, newPassword) => {
-  const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
-  const users = usersStr ? JSON.parse(usersStr) : [];
-  
+export const resetUserPasswordByEmail = async (email, newPassword) => {
   const cleanEmail = email.trim().toLowerCase();
-  const index = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
-  if (index === -1) {
-    throw new Error('No account found with this email address.');
+
+  if (!isConfigured) {
+    const usersStr = localStorage.getItem(STORAGE_KEYS.USERS);
+    const users = usersStr ? JSON.parse(usersStr) : [];
+    
+    const index = users.findIndex(u => u.email.toLowerCase() === cleanEmail);
+    if (index === -1) {
+      throw new Error('No account found with this email address.');
+    }
+    
+    users[index].password = newPassword;
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    return;
   }
-  
-  users[index].password = newPassword;
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+
+  // Firebase auth standard password recovery flow
+  await sendPasswordResetEmail(auth, cleanEmail);
 };

@@ -14,16 +14,21 @@ export const Directory = ({ navigateTo, currentUser }) => {
       navigateTo('auth');
       return;
     }
-    setStudents(getStudents());
+    const loadData = async () => {
+      const list = await getStudents();
+      setStudents(list);
+    };
+    loadData();
   }, [currentUser]);
 
-  const handleDelete = (student) => {
+  const handleDelete = async (student) => {
     const confirmMessage = `WARNING: You are about to permanently delete ${student.name}'s portfolio and user account. This action cannot be undone. Do you wish to proceed?`;
     if (window.confirm(confirmMessage)) {
       if (window.confirm("FINAL CONFIRMATION: Are you absolutely certain you want to proceed?")) {
-        deleteStudentProfileAndAccount(student.id);
+        await deleteStudentProfileAndAccount(student.id);
         alert(`${student.name}'s portfolio was successfully deleted.`);
-        setStudents(getStudents());
+        const list = await getStudents();
+        setStudents(list);
       }
     }
   };

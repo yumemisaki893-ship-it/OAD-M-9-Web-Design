@@ -5,7 +5,9 @@ import ProfileDetail from './pages/ProfileDetail';
 import Auth from './pages/Auth';
 import ProfileEditor from './pages/ProfileEditor';
 import Home from './pages/Home';
-import { getCurrentSession } from './utils/storage';
+import { getCurrentSession, getSessionData, getStudentById } from './utils/storage';
+import { auth, isConfigured } from './utils/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   // Theme State
@@ -21,12 +23,40 @@ function App() {
   // Sync session and theme on mount
   useEffect(() => {
     // 1. Session Setup
-    setCurrentUser(getCurrentSession());
+    let unsubscribe = () => {};
+    
+    if (isConfigured) {
+      unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+        if (firebaseUser) {
+          try {
+            const sessionData = await getSessionData(firebaseUser);
+            if (sessionData) {
+              const student = await getStudentById(sessionData.studentId);
+              setCurrentUser({
+                ...sessionData,
+                student
+              });
+            } else {
+              setCurrentUser(null);
+            }
+          } catch (e) {
+            console.error("Error setting session: ", e);
+            setCurrentUser(null);
+          }
+        } else {
+          setCurrentUser(null);
+        }
+      });
+    } else {
+      setCurrentUser(getCurrentSession());
+    }
 
     // 2. Theme Setup
     const savedTheme = localStorage.getItem('portfolio_theme') || 'dark';
     setTheme(savedTheme);
     document.documentElement.setAttribute('data-theme', savedTheme);
+
+    return () => unsubscribe();
   }, []);
 
   // Theme toggle action
@@ -52,8 +82,14 @@ function App() {
   };
 
   // Auth Callbacks
-  const handleLoginSuccess = (user) => {
-    setCurrentUser(getCurrentSession());
+  const handleLoginSuccess = (userSession) => {
+    if (isConfigured) {
+      if (userSession) {
+        setCurrentUser(userSession);
+      }
+    } else {
+      setCurrentUser(getCurrentSession());
+    }
   };
 
   const handleLogoutSuccess = () => {
@@ -61,8 +97,17 @@ function App() {
   };
 
   // Sync avatar/name in navbar instantly when profile edits save
-  const handleProfileUpdate = () => {
-    setCurrentUser(getCurrentSession());
+  const handleProfileUpdate = (updatedProfile) => {
+    if (isConfigured) {
+      if (currentUser && updatedProfile) {
+        setCurrentUser({
+          ...currentUser,
+          student: updatedProfile
+        });
+      }
+    } else {
+      setCurrentUser(getCurrentSession());
+    }
   };
 
   // Render active page component based on routing state

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { signIn, signUp, resetUserPasswordByEmail } from '../utils/storage';
+import { signIn, signUp, resetUserPasswordByEmail, signInWithGoogle } from '../utils/storage';
+import { isConfigured } from '../utils/firebase';
 
 export const Auth = ({ navigateTo, onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -21,7 +22,7 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [forgotStep, setForgotStep] = useState(1);
 
-  const handleSendForgotCode = (e) => {
+  const handleSendForgotCode = async (e) => {
     e.preventDefault();
     setForgotError('');
     setForgotSuccess(false);
@@ -31,13 +32,29 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
       return;
     }
 
+    if (isConfigured) {
+      try {
+        await resetUserPasswordByEmail(forgotEmail, "");
+        setForgotSuccess(true);
+        alert(`A password reset link has been sent to your email address: ${forgotEmail}. Please check your inbox.`);
+        setTimeout(() => {
+          setShowForgot(false);
+          setForgotSuccess(false);
+          setForgotEmail('');
+        }, 2000);
+      } catch (err) {
+        setForgotError(err.message || 'Failed to send reset email.');
+      }
+      return;
+    }
+
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setSentCode(code);
     setForgotStep(2);
     alert(`DEMO BANNER: A password reset verification code was sent to ${forgotEmail}.\n\nYour 6-digit verification code is: ${code}`);
   };
 
-  const handleResetPassword = (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     setForgotError('');
     
@@ -53,7 +70,7 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
     }
 
     try {
-      resetUserPasswordByEmail(forgotEmail, newForgotPass);
+      await resetUserPasswordByEmail(forgotEmail, newForgotPass);
       setForgotSuccess(true);
       setTimeout(() => {
         setShowForgot(false);
@@ -78,7 +95,7 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
     setShowPassword(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
@@ -90,17 +107,32 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
 
     try {
       if (isLogin) {
-        const session = signIn(email, password);
+        const session = await signIn(email, password);
         onLoginSuccess(session.user);
         navigateTo('directory');
       } else {
-        const session = signUp(name, email, password);
+        const session = await signUp(name, email, password);
         onLoginSuccess(session.user);
         // Navigate straight to profile creator/editor page for newly registered students!
         navigateTo('edit-profile');
       }
     } catch (err) {
-      setErrorMessage(err.message || 'An error occurred. Please check your credentials.');
+      setErrorMessage(err.message || 'Authentication failed. Please verify credentials.');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setErrorMessage('');
+    try {
+      const session = await signInWithGoogle();
+      onLoginSuccess(session.user);
+      if (session.student && session.student.major !== 'Undeclared') {
+        navigateTo('directory');
+      } else {
+        navigateTo('edit-profile');
+      }
+    } catch (err) {
+      setErrorMessage(err.message || 'Google authentication failed.');
     }
   };
 
@@ -248,8 +280,44 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
           </button>
         </form>
 
+          {/* OR separator for Google */}
+          {isConfigured && (
+            <div style={{ margin: '1.25rem 0 0.25rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border-color)', margin: 0 }} />
+                <span style={{ padding: '0 0.75rem', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Or Continue With</span>
+                <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border-color)', margin: 0 }} />
+              </div>
+              
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.65rem',
+                  fontWeight: 600,
+                  minHeight: '40px',
+                  background: 'rgba(255,255,255,0.02)',
+                  borderColor: 'var(--border-color)'
+                }}
+                onClick={handleGoogleSignIn}
+              >
+                <svg viewBox="0 0 48 48" style={{ width: '15px', height: '15px', display: 'block' }}>
+                  <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                  <path fill="#4285F4" d="M46.5 24c0-1.55-.15-3.24-.47-4.75H24v9.03h12.75c-.53 2.87-2.14 5.3-4.54 6.92l7.12 5.52C43.5 36.42 46.5 30.76 46.5 24z"/>
+                  <path fill="#FBBC05" d="M10.54 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.98-6.19z"/>
+                  <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.12-5.52c-1.97 1.32-4.59 2.13-8.77 2.13-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                Sign in with Google
+              </button>
+            </div>
+          )}
+
         {isLogin && (
-          <div style={{ margin: '1.5rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
+          <div style={{ margin: '1.25rem 0 0.5rem 0', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
               <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--border-color)', margin: 0 }} />
               <span style={{ padding: '0 0.75rem', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Or Special Access</span>
@@ -270,12 +338,12 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
                 justifyContent: 'center',
                 gap: '0.5rem'
               }}
-              onClick={() => {
+              onClick={async () => {
                 setEmail('admin@university.edu');
                 setPassword('Admin123!');
                 setErrorMessage('');
                 try {
-                  const session = signIn('admin@university.edu', 'Admin123!');
+                  const session = await signIn('admin@university.edu', 'Admin123!');
                   onLoginSuccess(session.user);
                   navigateTo('directory');
                 } catch (err) {

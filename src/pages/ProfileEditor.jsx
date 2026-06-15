@@ -47,32 +47,35 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
       return;
     }
     
-    const targetStudentId = (currentUser.isAdmin && params?.id) 
-      ? params.id 
-      : currentUser.studentId;
-      
-    const profile = getStudentById(targetStudentId);
-    if (profile) {
-      setStudent(profile);
-      setName(profile.name || '');
-      setMajor(profile.major || '');
-      setAvatarId(profile.avatarId || 'avatar-1');
-      setCoverPhotoUrl(profile.coverPhotoUrl || '');
-      setShortBio(profile.shortBio || '');
-      setAboutMe(profile.aboutMe || '');
-      setSkills(profile.skills || []);
-      setGithub(profile.github || '');
-      setLinkedin(profile.linkedin || '');
-      setWebsite(profile.website || '');
-      setFacebook(profile.facebook || '');
-      setInstagram(profile.instagram || '');
-      setTwitter(profile.twitter || '');
-      setContactNumber(profile.contactNumber || '');
-      setProjects(profile.projects || []);
-      setPhotos(profile.photos || []);
-      setIsPublic(profile.isPublic !== false);
-      setNewEmail(profile.email || '');
-    }
+    const loadProfile = async () => {
+      const targetStudentId = (currentUser.isAdmin && params?.id) 
+        ? params.id 
+        : currentUser.studentId;
+        
+      const profile = await getStudentById(targetStudentId);
+      if (profile) {
+        setStudent(profile);
+        setName(profile.name || '');
+        setMajor(profile.major || '');
+        setAvatarId(profile.avatarId || 'avatar-1');
+        setCoverPhotoUrl(profile.coverPhotoUrl || '');
+        setShortBio(profile.shortBio || '');
+        setAboutMe(profile.aboutMe || '');
+        setSkills(profile.skills || []);
+        setGithub(profile.github || '');
+        setLinkedin(profile.linkedin || '');
+        setWebsite(profile.website || '');
+        setFacebook(profile.facebook || '');
+        setInstagram(profile.instagram || '');
+        setTwitter(profile.twitter || '');
+        setContactNumber(profile.contactNumber || '');
+        setProjects(profile.projects || []);
+        setPhotos(profile.photos || []);
+        setIsPublic(profile.isPublic !== false);
+        setNewEmail(profile.email || '');
+      }
+    };
+    loadProfile();
   }, [currentUser]);
 
   if (!currentUser || !student) {
@@ -158,20 +161,20 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
   };
 
-  const handleDeleteProfile = () => {
+  const handleDeleteProfile = async () => {
     const confirmMessage = currentUser?.isAdmin && currentUser.studentId !== student.id
       ? `WARNING: You are about to permanently delete ${student.name}'s portfolio and user account. This action cannot be undone. Do you wish to proceed?`
       : "Are you sure you want to permanently delete your portfolio profile and user account? This will sign you out and cannot be undone.";
 
     if (window.confirm(confirmMessage)) {
       if (window.confirm("FINAL CONFIRMATION: Are you absolutely certain you want to proceed?")) {
-        deleteStudentProfileAndAccount(student.id);
+        await deleteStudentProfileAndAccount(student.id);
         
         if (currentUser?.isAdmin && currentUser.studentId !== student.id) {
           alert(`${student.name}'s portfolio was successfully deleted.`);
           navigateTo('directory');
         } else {
-          signOut();
+          await signOut();
           onProfileUpdate(); // Triggers session refresh in App.jsx
           navigateTo('home');
         }
@@ -179,7 +182,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
   };
 
-  const handleUpdateEmail = (e) => {
+  const handleUpdateEmail = async (e) => {
     e.preventDefault();
     setEmailError('');
     setEmailSuccess(false);
@@ -190,7 +193,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
 
     try {
-      updateUserEmail(student.id, newEmail);
+      await updateUserEmail(student.id, newEmail);
       setEmailSuccess(true);
       onProfileUpdate(); // Sync navbar email instantly
       setTimeout(() => setEmailSuccess(false), 3000);
@@ -199,7 +202,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
   };
 
-  const handleUpdatePassword = (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
     setPasswordError('');
     setPasswordSuccess(false);
@@ -222,7 +225,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
 
     try {
-      updateUserPassword(student.id, currentPassword, newPassword);
+      await updateUserPassword(student.id, currentPassword, newPassword);
       setPasswordSuccess(true);
       setCurrentPassword('');
       setNewPassword('');
@@ -250,7 +253,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
   };
 
   // Handle Save
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage('');
     setSaveSuccess(false);
@@ -261,7 +264,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
 
     try {
-      const updatedProfile = updateStudentProfile(student.id, {
+      const updatedProfile = await updateStudentProfile(student.id, {
         name,
         major,
         avatarId,
