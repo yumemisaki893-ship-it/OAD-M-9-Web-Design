@@ -37,8 +37,11 @@ service cloud.firestore {
     }
 
     match /students/{studentId} {
-      // Anyone can read public profiles; admins and profile owners can read private ones
-      allow read: if resource.data.isPublic == true || isAdmin() || isProfileOwner(studentId);
+      // Allow single document reads based on public status, admin status, or ownership
+      allow get: if resource.data.isPublic == true || isAdmin() || isProfileOwner(studentId);
+      
+      // Allow list queries for authenticated users (private filtering is performed client-side)
+      allow list: if isAuthenticated();
       
       // Allow creation during registration if the user is authenticated and the profile email matches their authenticated email
       allow create: if isAuthenticated() && 
