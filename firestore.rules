@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper: Check if the request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper: Get user document for the authenticated user
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    // Helper: Check if the authenticated user is an administrator
+    function isAdmin() {
+      return isAuthenticated() && 
+        (getUserData().isAdmin == true || request.auth.token.email == 'admin@university.edu');
+    }
+    
+    // Helper: Check if the user owns the student profile
+    function isProfileOwner(studentId) {
+      return isAuthenticated() && 
+        (getUserData().studentId == studentId || request.auth.token.email == 'admin@university.edu');
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+        (request.resource.data.isAdmin == false || request.auth.token.email == 'admin@university.edu');
+        
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin()) && 
+        (request.resource.data.isAdmin == resource.data.isAdmin || isAdmin());
+        
+      allow delete: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+
+    match /students/{studentId} {
+      // Anyone can read public profiles; admins and profile owners can read private ones
+      allow read: if resource.data.isPublic == true || isAdmin() || isProfileOwner(studentId);
+      
+      // Allow creation during registration if the user is authenticated and the profile email matches their authenticated email
+      allow create: if isAuthenticated() && 
+        (request.resource.data.email == request.auth.token.email || isAdmin());
+        
+      allow update: if isAdmin() || isProfileOwner(studentId);
+      
+      allow delete: if isAdmin() || isProfileOwner(studentId);
+    }
+  }
+}
