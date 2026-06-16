@@ -3184,3 +3184,55 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
     transform: translateY(0);
   }
 }
+
+/* Registrar Specific Styles */
+.badge-success {
+  background: var(--success-bg) !important;
+  color: var(--success) !important;
+  border-color: var(--success-border) !important;
+}
+.badge-warning {
+  background: var(--logo-gold-glow) !important;
+  color: var(--logo-gold) !important;
+  border-color: rgba(244, 180, 0, 0.25) !important;
+}
+.badge-danger {
+  background: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger-border) !important;
+}
+.badge-secondary {
+  background: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+/* Course list item highlight */
+.course-list-item-block {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.course-list-item-block.active-course {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 15px var(--primary-glow);
+}
+
+/* Admin table styles */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+.admin-table tr {
+  transition: background-color 0.2s ease;
+}
+.admin-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+[data-theme="light"] .admin-table tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}

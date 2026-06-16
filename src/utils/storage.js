@@ -662,4 +662,84 @@ export const resetUserPasswordByEmail = async (email, newPassword) => {
   await sendPasswordResetEmail(auth, cleanEmail);
 };
 
+// Courses CRUD Operations
+export const getCourses = async () => {
+  if (!isConfigured) {
+    const data = localStorage.getItem('student_portfolio_courses');
+    if (!data) {
+      const defaultCourses = [
+        { id: 'CS-101', code: 'CS-101', title: 'Introduction to Computer Science', units: 3, department: 'Computer Science', instructor: 'Dr. Evelyn Vance', capacity: 40, feePerUnit: 150 },
+        { id: 'CS-202', code: 'CS-202', title: 'Data Structures & Algorithms', units: 4, department: 'Computer Science', instructor: 'Prof. Robert Chen', capacity: 30, feePerUnit: 150 },
+        { id: 'MATH-301', code: 'MATH-301', title: 'Advanced Calculus', units: 3, department: 'Mathematics', instructor: 'Dr. Chloe Smith', capacity: 35, feePerUnit: 150 },
+        { id: 'BSOAD-111', code: 'BSOAD-111', title: 'Administrative Office Management', units: 3, department: 'Office Administration', instructor: 'Prof. Sarah Jenkins', capacity: 45, feePerUnit: 150 },
+        { id: 'BSOAD-212', code: 'BSOAD-212', title: 'Advanced Document Processing', units: 3, department: 'Office Administration', instructor: 'Dr. James Cole', capacity: 30, feePerUnit: 150 },
+        { id: 'LIT-105', code: 'LIT-105', title: 'World Literature', units: 3, department: 'Humanities', instructor: 'Prof. Maria Santos', capacity: 50, feePerUnit: 150 },
+        { id: 'ENG-201', code: 'ENG-201', title: 'Technical Writing', units: 3, department: 'Humanities', instructor: 'Dr. Arthur Pendelton', capacity: 40, feePerUnit: 150 }
+      ];
+      localStorage.setItem('student_portfolio_courses', JSON.stringify(defaultCourses));
+      return defaultCourses;
+    }
+    return JSON.parse(data);
+  }
+  try {
+    const querySnapshot = await getDocs(collection(db, 'courses'));
+    const list = [];
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+    if (list.length === 0) {
+      const defaultCourses = [
+        { code: 'CS-101', title: 'Introduction to Computer Science', units: 3, department: 'Computer Science', instructor: 'Dr. Evelyn Vance', capacity: 40, feePerUnit: 150 },
+        { code: 'CS-202', title: 'Data Structures & Algorithms', units: 4, department: 'Computer Science', instructor: 'Prof. Robert Chen', capacity: 30, feePerUnit: 150 },
+        { code: 'MATH-301', title: 'Advanced Calculus', units: 3, department: 'Mathematics', instructor: 'Dr. Chloe Smith', capacity: 35, feePerUnit: 150 },
+        { code: 'BSOAD-111', title: 'Administrative Office Management', units: 3, department: 'Office Administration', instructor: 'Prof. Sarah Jenkins', capacity: 45, feePerUnit: 150 },
+        { code: 'BSOAD-212', title: 'Advanced Document Processing', units: 3, department: 'Office Administration', instructor: 'Dr. James Cole', capacity: 30, feePerUnit: 150 },
+        { code: 'LIT-105', title: 'World Literature', units: 3, department: 'Humanities', instructor: 'Prof. Maria Santos', capacity: 50, feePerUnit: 150 },
+        { code: 'ENG-201', title: 'Technical Writing', units: 3, department: 'Humanities', instructor: 'Dr. Arthur Pendelton', capacity: 40, feePerUnit: 150 }
+      ];
+      for (const course of defaultCourses) {
+        await setDoc(doc(db, 'courses', course.code), course);
+      }
+      return defaultCourses.map(c => ({ id: c.code, ...c }));
+    }
+    return list;
+  } catch (e) {
+    console.error("Error loading courses: ", e);
+    return [];
+  }
+};
+
+export const saveCourse = async (course) => {
+  const courseId = course.code || course.id;
+  if (!isConfigured) {
+    const courses = await getCourses();
+    const index = courses.findIndex(c => c.id === courseId || c.code === courseId);
+    const saved = { ...course, id: courseId, code: courseId };
+    if (index === -1) {
+      courses.push(saved);
+    } else {
+      courses[index] = { ...courses[index], ...saved };
+    }
+    localStorage.setItem('student_portfolio_courses', JSON.stringify(courses));
+    return saved;
+  }
+  const docRef = doc(db, 'courses', courseId);
+  const data = { ...course, code: courseId };
+  await setDoc(docRef, data, { merge: true });
+  return { id: courseId, ...data };
+};
+
+export const deleteCourse = async (courseId) => {
+  if (!isConfigured) {
+    const courses = await getCourses();
+    const filtered = courses.filter(c => c.id !== courseId && c.code !== courseId);
+    localStorage.setItem('student_portfolio_courses', JSON.stringify(filtered));
+    return true;
+  }
+  const docRef = doc(db, 'courses', courseId);
+  await deleteDoc(docRef);
+  return true;
+};
+
+
 

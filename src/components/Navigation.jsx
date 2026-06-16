@@ -119,48 +119,56 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
               </a>
               
               {currentUser ? (
-                <>
-                  {currentUser.isAdmin ? (
-                    <>
-                      <div 
-                        style={{ 
-                          padding: '0.4rem 0.75rem', 
-                          fontSize: '0.75rem', 
-                          fontWeight: 700, 
-                          color: 'var(--accent)', 
-                          background: 'var(--danger-bg)', 
-                          border: '1px solid var(--danger-border)',
-                          borderRadius: 'var(--border-radius-sm)', 
-                          marginBottom: '0.75rem', 
-                          display: 'block',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                          textAlign: 'center'
-                        }}
-                      >
-                        Admin Maintenance Mode
-                      </div>
-                      <a 
-                        href="#" 
-                        onClick={(e) => { e.preventDefault(); setFlyoutOpen(false); navigateTo('office-admin'); }}
-                        className="flyout-link"
-                        style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.75rem' }}
-                      >
-                        Maintenance Room
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <a 
-                        href="#" 
-                        onClick={(e) => { e.preventDefault(); handleMyProfile(); }}
-                        className="flyout-link"
-                      >
-                        My Profile
-                      </a>
-                    </>
-                  )}
-                  <a 
+                 <>
+                   {currentUser.isAdmin ? (
+                     <>
+                       <div 
+                         style={{ 
+                           padding: '0.4rem 0.75rem', 
+                           fontSize: '0.75rem', 
+                           fontWeight: 700, 
+                           color: 'var(--accent)', 
+                           background: 'var(--danger-bg)', 
+                           border: '1px solid var(--danger-border)',
+                           borderRadius: 'var(--border-radius-sm)', 
+                           marginBottom: '0.75rem', 
+                           display: 'block',
+                           textTransform: 'uppercase',
+                           letterSpacing: '0.05em',
+                           textAlign: 'center'
+                         }}
+                       >
+                         Registrar Staff Mode
+                       </div>
+                       <a 
+                         href="#" 
+                         onClick={(e) => { e.preventDefault(); setFlyoutOpen(false); navigateTo('office-admin'); }}
+                         className="flyout-link"
+                         style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.75rem' }}
+                       >
+                         Registrar Dashboard
+                       </a>
+                     </>
+                   ) : (
+                     <>
+                       <a 
+                         href="#" 
+                         onClick={(e) => { e.preventDefault(); handleMyProfile(); }}
+                         className="flyout-link"
+                       >
+                         My Profile
+                       </a>
+                       <a 
+                         href="#" 
+                         onClick={(e) => { e.preventDefault(); setFlyoutOpen(false); navigateTo('registrar-portal'); }}
+                         className="flyout-link"
+                         style={{ color: 'var(--primary)', fontWeight: '600', marginBottom: '0.75rem' }}
+                       >
+                         Registrar Portal
+                       </a>
+                     </>
+                   )}
+                   <a 	
                     href="#" 
                     onClick={(e) => { e.preventDefault(); setFlyoutOpen(false); navigateTo('edit-profile'); }}
                     className="flyout-link"

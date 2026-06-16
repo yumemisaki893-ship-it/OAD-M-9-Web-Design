@@ -7,6 +7,7 @@ import { AccountSettings } from './pages/AccountSettings';
 import Home from './pages/Home';
 import { OfficeAdmin } from './pages/OfficeAdmin';
 import { OfficePromotion } from './pages/OfficePromotion';
+import { RegistrarPortal } from './pages/RegistrarPortal';
 import { getCurrentSession, getSessionData, getStudentById } from './utils/storage';
 import { auth, isConfigured } from './utils/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -154,6 +155,14 @@ function App() {
             navigateTo={navigateTo}
             onProfileUpdate={handleProfileUpdate}
             initialTab="security"
+          />
+        );
+      case 'registrar-portal':
+        return (
+          <RegistrarPortal 
+            currentUser={currentUser} 
+            navigateTo={navigateTo} 
+            onProfileUpdate={handleProfileUpdate}
           />
         );
       case 'office-admin':
