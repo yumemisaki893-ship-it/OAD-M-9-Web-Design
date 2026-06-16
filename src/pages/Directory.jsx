@@ -10,10 +10,8 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
 
   // Load students on mount
   useEffect(() => {
-    if (!currentUser) {
-      navigateTo('auth');
-      return;
-    }
+    // Allow public access: do not redirect unauthenticated users.
+    // If needed, you can show a login prompt elsewhere.
     const loadData = async () => {
       const list = await getStudents();
       setStudents(list);
