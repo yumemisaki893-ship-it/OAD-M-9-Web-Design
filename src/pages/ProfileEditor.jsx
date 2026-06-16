@@ -779,30 +779,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                 <div className="form-error-msg">Please enter a valid URL (including https://).</div>
               </div>
 
-/* Styles for Skills Add button */
-.add-skill-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 0.75rem;
-  border-radius: var(--border-radius-sm);
-  background: var(--primary);
-  color: var(--text-on-primary);
-  border: none;
-  cursor: pointer;
-}
 
-@media (max-width: 600px) {
-  .tags-input-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .add-skill-btn {
-    margin-left: 0;
-    margin-top: 0.5rem;
-    width: 100%;
-  }
-}
               <div className="form-group">
                 <label className="form-label" htmlFor="edit-twitter">Twitter / X Profile Link (URL)</label>
                 <input
