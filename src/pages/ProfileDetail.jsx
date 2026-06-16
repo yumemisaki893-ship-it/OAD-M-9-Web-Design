@@ -546,7 +546,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       borderRadius: '50%',
       overflow: 'hidden',
       border: '6px solid var(--bg-card)',
-      background: 'var(--bg-card)',
+      background: 'transparent',
       boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
       marginTop: '-50px',
       position: 'relative',
