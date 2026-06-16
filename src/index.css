@@ -1289,16 +1289,23 @@ a:hover {
   font-size: 1.15rem;
 }
 
+.mandates-card,
+.vision-card,
+.mission-card {
+  border-left: 4px solid var(--logo-gold);
+}
+
 .mandates-card {
-  border-left: 4px solid #ffffff;
   min-height: auto;
   padding: 2.5rem;
   margin-bottom: 2rem;
   width: 100%;
 }
 
-.mandates-card:hover {
-  border-left: 4px solid #000000;
+.mandates-card:hover,
+.vision-card:hover,
+.mission-card:hover {
+  border-left: 4px solid var(--logo-gold);
 }
 
 .mandates-text {
