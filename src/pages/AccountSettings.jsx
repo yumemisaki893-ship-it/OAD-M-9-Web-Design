@@ -654,22 +654,24 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
 
   return (
     <div className="app-page-wrapper">
+      {student && (
+        <button 
+          className="btn-back-profile"
+          onClick={() => navigateTo('profile-detail', { id: student.id })}
+          aria-label="Back to Profile"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back to Profile
+        </button>
+      )}
+
       <div className="container editor-page animate-fade-in" style={{ paddingBottom: '4rem', paddingTop: '2.5rem' }}>
         
-        {/* Back button */}
-        <div className="animate-slide-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <button 
-            className="btn btn-secondary btn-sm"
-            onClick={() => navigateTo('profile-detail', { id: student.id })}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            Back to Profile
-          </button>
-
+        {/* Title Header */}
+        <div className="animate-slide-up" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '2rem' }}>
           <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800 }}>Account Settings</h1>
         </div>
 
