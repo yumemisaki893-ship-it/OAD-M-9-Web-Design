@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getStudents } from '../utils/storage';
 
 const goalsData = [
   {
@@ -65,6 +66,56 @@ const goalsData = [
 const Home = ({ navigateTo, currentUser }) => {
   const [activeLang, setActiveLang] = useState('en'); // 'en' | 'fil' | 'kr'
   const [activeGoal, setActiveGoal] = useState(null);
+  const [time, setTime] = useState('');
+  const [dateStr, setDateStr] = useState('');
+  const [registeredCount, setRegisteredCount] = useState(0);
+  const [uaStudentCount, setUaStudentCount] = useState(19482);
+
+  useEffect(() => {
+    // 1. Digital Clock ticking
+    const updateTime = () => {
+      const now = new Date();
+      
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const displayHours = hours % 12 || 12;
+      const pad = (num) => String(num).padStart(2, '0');
+      
+      setTime(`${pad(displayHours)}:${pad(minutes)}:${pad(seconds)} ${ampm}`);
+      
+      const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      setDateStr(now.toLocaleDateString('en-US', options));
+    };
+    
+    updateTime();
+    const clockInterval = setInterval(updateTime, 1000);
+
+    // 2. Fetch actual registered portfolios count
+    const loadRegisteredCount = async () => {
+      try {
+        const list = await getStudents();
+        setRegisteredCount(list.length);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    loadRegisteredCount();
+
+    // 3. Real-time UA student number dynamic updates (fluctuates to simulate activity)
+    const uaCountInterval = setInterval(() => {
+      setUaStudentCount(prev => {
+        const change = Math.floor(Math.random() * 3) - 1; // -1, 0, 1, or 2
+        return prev + change;
+      });
+    }, 4000);
+
+    return () => {
+      clearInterval(clockInterval);
+      clearInterval(uaCountInterval);
+    };
+  }, []);
 
   return (
     <div className="home-container">
@@ -113,6 +164,49 @@ const Home = ({ navigateTo, currentUser }) => {
             >
               Explore Directory
             </button>
+          </div>
+
+          <div className="hero-stats-panel animate-slide-up-delay-3">
+            <div className="stat-card clock-card">
+              <div className="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-value clock-value">{time}</span>
+                <span className="stat-label">{dateStr || 'Local Time'}</span>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-value">{registeredCount}</span>
+                <span className="stat-label">Portfolios Created</span>
+              </div>
+            </div>
+
+            <div className="stat-card">
+              <div className="stat-icon-wrapper">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                </svg>
+              </div>
+              <div className="stat-content">
+                <span className="stat-value">{uaStudentCount.toLocaleString()}</span>
+                <span className="stat-label">UA Student Population</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
