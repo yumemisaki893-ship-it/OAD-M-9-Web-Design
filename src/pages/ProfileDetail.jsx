@@ -25,6 +25,104 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
   const [isEditingAboutMe, setIsEditingAboutMe] = useState(false);
   const [aboutMeText, setAboutMeText] = useState(initialStudent?.aboutMe || '');
   const [savingAboutMe, setSavingAboutMe] = useState(false);
+
+  // States for unified Header & Contacts editing
+  const [isEditingHeader, setIsEditingHeader] = useState(false);
+  const [headerName, setHeaderName] = useState(initialStudent?.name || '');
+  const [headerMajor, setHeaderMajor] = useState(initialStudent?.major || '');
+  const [headerBio, setHeaderBio] = useState(initialStudent?.shortBio || '');
+  const [headerEmail, setHeaderEmail] = useState(initialStudent?.email || '');
+  const [headerPhone, setHeaderPhone] = useState(initialStudent?.contactNumber || '');
+  const [headerGithub, setHeaderGithub] = useState(initialStudent?.github || '');
+  const [headerLinkedin, setHeaderLinkedin] = useState(initialStudent?.linkedin || '');
+  const [headerWebsite, setHeaderWebsite] = useState(initialStudent?.website || '');
+  const [headerFacebook, setHeaderFacebook] = useState(initialStudent?.facebook || '');
+  const [headerInstagram, setHeaderInstagram] = useState(initialStudent?.instagram || '');
+  const [headerTwitter, setHeaderTwitter] = useState(initialStudent?.twitter || '');
+
+  // States for Educational Background editing
+  const [isEditingEdu, setIsEditingEdu] = useState(false);
+  const [eduColSchool, setEduColSchool] = useState(initialStudent?.education?.college?.school || '');
+  const [eduColDegree, setEduColDegree] = useState(initialStudent?.education?.college?.degree || '');
+  const [eduColYears, setEduColYears] = useState(initialStudent?.education?.college?.years || '');
+  const [eduShsSchool, setEduShsSchool] = useState(initialStudent?.education?.seniorHigh?.school || '');
+  const [eduShsStrand, setEduShsStrand] = useState(initialStudent?.education?.seniorHigh?.strand || '');
+  const [eduShsYears, setEduShsYears] = useState(initialStudent?.education?.seniorHigh?.years || '');
+  const [eduJhsSchool, setEduJhsSchool] = useState(initialStudent?.education?.juniorHigh?.school || '');
+  const [eduJhsYears, setEduJhsYears] = useState(initialStudent?.education?.juniorHigh?.years || '');
+  const [eduElemSchool, setEduElemSchool] = useState(initialStudent?.education?.elementary?.school || '');
+  const [eduElemYears, setEduElemYears] = useState(initialStudent?.education?.elementary?.years || '');
+
+  // States for Work Experience, Seminars, Certificates, Skills, Projects
+  const [isEditingExp, setIsEditingExp] = useState(false);
+  const [expList, setExpList] = useState(initialStudent?.experience || []);
+  
+  const [isEditingSem, setIsEditingSem] = useState(false);
+  const [semList, setSemList] = useState(initialStudent?.seminars || []);
+
+  const [isEditingCert, setIsEditingCert] = useState(false);
+  const [certList, setCertList] = useState(initialStudent?.certificates || []);
+
+  const [isEditingSkills, setIsEditingSkills] = useState(false);
+  const [skillsList, setSkillsList] = useState(initialStudent?.skills || []);
+  const [skillsInput, setSkillsInput] = useState('');
+
+  const [isEditingProjects, setIsEditingProjects] = useState(false);
+  const [projList, setProjList] = useState(initialStudent?.projects || []);
+
+  // Temporary input states for adding items in-place
+  const [newExpTitle, setNewExpTitle] = useState('');
+  const [newExpCompany, setNewExpCompany] = useState('');
+  const [newExpPeriod, setNewExpPeriod] = useState('');
+  const [newExpDesc, setNewExpDesc] = useState('');
+
+  const [newSemTitle, setNewSemTitle] = useState('');
+  const [newSemOrganizer, setNewSemOrganizer] = useState('');
+  const [newSemDate, setNewSemDate] = useState('');
+  const [newSemDesc, setNewSemDesc] = useState('');
+
+  const [newCertName, setNewCertName] = useState('');
+  const [newCertIssuer, setNewCertIssuer] = useState('');
+  const [newCertDate, setNewCertDate] = useState('');
+  const [newCertUrl, setNewCertUrl] = useState('');
+
+  const [newProjTitle, setNewProjTitle] = useState('');
+  const [newProjDesc, setNewProjDesc] = useState('');
+  const [newProjLink, setNewProjLink] = useState('');
+
+  // Sync state values when student data loads or updates
+  useEffect(() => {
+    if (student) {
+      setHeaderName(student.name || '');
+      setHeaderMajor(student.major || '');
+      setHeaderBio(student.shortBio || '');
+      setHeaderEmail(student.email || '');
+      setHeaderPhone(student.contactNumber || '');
+      setHeaderGithub(student.github || '');
+      setHeaderLinkedin(student.linkedin || '');
+      setHeaderWebsite(student.website || '');
+      setHeaderFacebook(student.facebook || '');
+      setHeaderInstagram(student.instagram || '');
+      setHeaderTwitter(student.twitter || '');
+
+      setEduColSchool(student.education?.college?.school || '');
+      setEduColDegree(student.education?.college?.degree || '');
+      setEduColYears(student.education?.college?.years || '');
+      setEduShsSchool(student.education?.seniorHigh?.school || '');
+      setEduShsStrand(student.education?.seniorHigh?.strand || '');
+      setEduShsYears(student.education?.seniorHigh?.years || '');
+      setEduJhsSchool(student.education?.juniorHigh?.school || '');
+      setEduJhsYears(student.education?.juniorHigh?.years || '');
+      setEduElemSchool(student.education?.elementary?.school || '');
+      setEduElemYears(student.education?.elementary?.years || '');
+
+      setExpList(student.experience || []);
+      setSemList(student.seminars || []);
+      setCertList(student.certificates || []);
+      setSkillsList(student.skills || []);
+      setProjList(student.projects || []);
+    }
+  }, [student]);
   const [loading, setLoading] = useState(!student);
   const [bannerDismissed, setBannerDismissed] = useState(() => {
     if (!studentId) return true;
@@ -373,7 +471,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
             title={student.coverPhotoUrl ? 'Click to view full size' : ''}
           ></div>
         {canEdit && (
-          <div style={{ position: 'absolute', right: '1.5rem', bottom: '1.5rem', zIndex: 10, display: 'flex', gap: '0.5rem' }}>
+          <div className="cover-edit-actions">
             <input 
               type="file" 
               id="inplace-cover-upload" 
@@ -381,26 +479,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
               style={{ display: 'none' }} 
               onChange={handleInPlaceCoverUpload} 
             />
-            <label 
-              htmlFor="inplace-cover-upload" 
-              className="btn btn-secondary btn-sm" 
-              style={{ 
-                cursor: 'pointer', 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '6px', 
-                background: 'rgba(255, 255, 255, 0.85)',
-                color: 'var(--text-primary)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid var(--border-color)',
-                padding: '0.4rem 0.8rem',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                transition: 'all 0.2s ease'
-              }}
-            >
+            <label htmlFor="inplace-cover-upload">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '13px', height: '13px' }}>
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                 <circle cx="12" cy="13" r="4" />
@@ -409,21 +488,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
             </label>
             {student.coverPhotoUrl && (
               <button
-                className="btn btn-danger btn-sm"
-                style={{
-                  minHeight: '32px',
-                  minWidth: '32px',
-                  borderRadius: '50%',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: 'rgba(255, 240, 240, 0.9)',
-                  borderColor: 'var(--danger-border)',
-                  color: 'var(--danger)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                  cursor: 'pointer',
-                  padding: 0
-                }}
+                className="cover-remove-btn"
                 onClick={handleInPlaceRemoveCover}
                 title="Remove Cover Photo"
               >
@@ -583,109 +648,217 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           
           {/* Column 2: Meta Info */}
           <div className="profile-meta" style={{ flex: 1, paddingTop: '0.5rem', paddingLeft: '0.5rem' }}>
-            <h1 style={{ fontSize: '2rem', marginBottom: '0.35rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-              {student.name}
-            </h1>
-            
-            {/* Sleek Major/Department Gold Badge */}
-            <div style={{ marginBottom: '0.75rem' }}>
-              <span 
-                className="profile-major-badge"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '0.35rem 0.85rem',
-                  borderRadius: '20px',
-                  background: 'rgba(244, 180, 0, 0.1)',
-                  border: '1px solid rgba(244, 180, 0, 0.3)',
-                  color: 'var(--logo-gold, #F4B400)',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em'
+            {isEditingHeader ? (
+              <div 
+                className="glass animate-fade-in"
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem', 
+                  padding: '1.5rem', 
+                  borderRadius: '16px', 
+                  border: '1px solid rgba(244, 180, 0, 0.25)', 
+                  background: 'rgba(255, 255, 255, 0.02)',
+                  width: '100%' 
                 }}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px' }}>
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
-                {student.major}
-              </span>
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Full Name</label>
+                    <input className="form-control" type="text" value={headerName} onChange={(e) => setHeaderName(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Major / Department</label>
+                    <input className="form-control" type="text" value={headerMajor} onChange={(e) => setHeaderMajor(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Short Biography</label>
+                  <input className="form-control" type="text" value={headerBio} onChange={(e) => setHeaderBio(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Email Address</label>
+                    <input className="form-control" type="email" value={headerEmail} onChange={(e) => setHeaderEmail(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Contact Number</label>
+                    <input className="form-control" type="text" value={headerPhone} onChange={(e) => setHeaderPhone(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>GitHub URL</label>
+                    <input className="form-control" type="text" placeholder="https://github.com/..." value={headerGithub} onChange={(e) => setHeaderGithub(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>LinkedIn URL</label>
+                    <input className="form-control" type="text" placeholder="https://linkedin.com/in/..." value={headerLinkedin} onChange={(e) => setHeaderLinkedin(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Personal Website</label>
+                    <input className="form-control" type="text" placeholder="https://..." value={headerWebsite} onChange={(e) => setHeaderWebsite(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Facebook URL</label>
+                    <input className="form-control" type="text" placeholder="https://facebook.com/..." value={headerFacebook} onChange={(e) => setHeaderFacebook(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Instagram URL</label>
+                    <input className="form-control" type="text" placeholder="https://instagram.com/..." value={headerInstagram} onChange={(e) => setHeaderInstagram(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.25rem', display: 'block' }}>Twitter / X URL</label>
+                    <input className="form-control" type="text" placeholder="https://x.com/..." value={headerTwitter} onChange={(e) => setHeaderTwitter(e.target.value)} style={{ padding: '0.4rem 0.75rem', fontSize: '0.875rem', borderRadius: '8px' }} />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                  <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingHeader(false); }} style={{ padding: '0.4rem 1rem', minHeight: '32px', borderRadius: '20px' }}>Cancel</button>
+                  <button className="btn btn-primary btn-sm" onClick={async () => {
+                    if (!headerName.trim()) { alert('Name is required'); return; }
+                    try {
+                      const updated = await updateStudentProfile(student.id, {
+                        name: headerName,
+                        major: headerMajor,
+                        shortBio: headerBio,
+                        email: headerEmail,
+                        contactNumber: headerPhone,
+                        github: headerGithub,
+                        linkedin: headerLinkedin,
+                        website: headerWebsite,
+                        facebook: headerFacebook,
+                        instagram: headerInstagram,
+                        twitter: headerTwitter
+                      });
+                      setStudent(updated);
+                      setIsEditingHeader(false);
+                    } catch (e) {
+                      alert('Failed to save header info: ' + e.message);
+                    }
+                  }} style={{ padding: '0.4rem 1rem', minHeight: '32px', borderRadius: '20px' }}>Save Changes</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <h1 style={{ fontSize: '2rem', marginBottom: '0.35rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  {student.name}
+                  {canEdit && (
+                    <button 
+                      onClick={() => setIsEditingHeader(true)}
+                      style={{ background: 'none', border: 'none', padding: '4px', cursor: 'pointer', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center' }}
+                      title="Edit Header Info"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', height: '16px' }}>
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                    </button>
+                  )}
+                </h1>
+                
+                {/* Sleek Major/Department Gold Badge */}
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <span 
+                    className="profile-major-badge"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '0.35rem 0.85rem',
+                      borderRadius: '20px',
+                      background: 'rgba(244, 180, 0, 0.1)',
+                      border: '1px solid rgba(244, 180, 0, 0.3)',
+                      color: 'var(--logo-gold, #F4B400)',
+                      fontSize: '0.8rem',
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px' }}>
+                      <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                      <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                    </svg>
+                    {student.major}
+                  </span>
+                </div>
 
-            <p style={{ fontSize: '0.925rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', maxWidth: '720px', lineHeight: '1.5' }}>
-              {student.shortBio}
-            </p>
-            
-            {/* Quick Contacts & Socials */}
-            <div className="profile-contact-list">
-              {student.email && (
-                <a href={`mailto:${student.email}`} className="contact-link-pill" title={`Email: ${student.email}`}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
-                  {student.email}
-                </a>
-              )}
-              {student.contactNumber && (
-                <a href={`tel:${student.contactNumber.replace(/[^\d+]/g, '')}`} className="contact-link-pill" title={`Call: ${student.contactNumber}`}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                  {student.contactNumber}
-                </a>
-              )}
-              {student.github && (
-                <a href={student.github} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="GitHub Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                  </svg>
-                </a>
-              )}
-              {student.linkedin && (
-                <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="LinkedIn Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <rect x="2" y="9" width="4" height="12" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
-                </a>
-              )}
-              {student.website && (
-                <a href={student.website} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Personal Website">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                </a>
-              )}
-              {student.facebook && (
-                <a href={student.facebook} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Facebook Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                </a>
-              )}
-              {student.instagram && (
-                <a href={student.instagram} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Instagram Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                  </svg>
-                </a>
-              )}
-              {student.twitter && (
-                <a href={student.twitter} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Twitter / X Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                  </svg>
-                </a>
-              )}
-            </div>
+                <p style={{ fontSize: '0.925rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', maxWidth: '720px', lineHeight: '1.5' }}>
+                  {student.shortBio}
+                </p>
+                
+                {/* Quick Contacts & Socials */}
+                <div className="profile-contact-list">
+                  {student.email && (
+                    <a href={`mailto:${student.email}`} className="contact-link-pill" title={`Email: ${student.email}`}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                      {student.email}
+                    </a>
+                  )}
+                  {student.contactNumber && (
+                    <a href={`tel:${student.contactNumber.replace(/[^\d+]/g, '')}`} className="contact-link-pill" title={`Call: ${student.contactNumber}`}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                      {student.contactNumber}
+                    </a>
+                  )}
+                  {student.github && (
+                    <a href={student.github} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="GitHub Profile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                      </svg>
+                    </a>
+                  )}
+                  {student.linkedin && (
+                    <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="LinkedIn Profile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                      </svg>
+                    </a>
+                  )}
+                  {student.website && (
+                    <a href={student.website} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Personal Website">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="2" y1="12" x2="22" y2="12" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                    </a>
+                  )}
+                  {student.facebook && (
+                    <a href={student.facebook} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Facebook Profile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                      </svg>
+                    </a>
+                  )}
+                  {student.instagram && (
+                    <a href={student.instagram} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Instagram Profile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                      </svg>
+                    </a>
+                  )}
+                  {student.twitter && (
+                    <a href={student.twitter} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Twitter / X Profile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Column 3: Action Panel */}
@@ -808,185 +981,654 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           </div>
 
           {/* Educational Background Section */}
-          {(student.education?.elementary?.school || student.education?.juniorHigh?.school || student.education?.seniorHigh?.school || student.education?.college?.school) && (
+          {((student.education?.elementary?.school || student.education?.juniorHigh?.school || student.education?.seniorHigh?.school || student.education?.college?.school) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
-                Educational Background
-              </h2>
-              
-              <div className="profile-timeline">
-                {/* College */}
-                {student.education?.college?.school && (
-                  <div className="profile-timeline-item">
-                    <div className="profile-timeline-date">
-                      {student.education.college.years || "College"}
+              {isEditingEdu ? (
+                <>
+                  <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                      </svg>
+                      Educational Background
                     </div>
-                    <div className="profile-timeline-title">
-                      {student.education.college.school}
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {/* College */}
+                    <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>College</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                        <input className="form-control" type="text" placeholder="School Name" value={eduColSchool} onChange={(e) => setEduColSchool(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Degree / Course" value={eduColDegree} onChange={(e) => setEduColDegree(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Years (e.g., 2022 - Present)" value={eduColYears} onChange={(e) => setEduColYears(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                      </div>
                     </div>
-                    {student.education.college.degree && (
-                      <div className="profile-timeline-subtitle">
-                        {student.education.college.degree}
+                    {/* SHS */}
+                    <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Senior High School</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                        <input className="form-control" type="text" placeholder="School Name" value={eduShsSchool} onChange={(e) => setEduShsSchool(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Track / Strand" value={eduShsStrand} onChange={(e) => setEduShsStrand(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Years (e.g., 2020 - 2022)" value={eduShsYears} onChange={(e) => setEduShsYears(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                      </div>
+                    </div>
+                    {/* JHS */}
+                    <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Junior High School</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.75rem' }}>
+                        <input className="form-control" type="text" placeholder="School Name" value={eduJhsSchool} onChange={(e) => setEduJhsSchool(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Years (e.g., 2016 - 2020)" value={eduJhsYears} onChange={(e) => setEduJhsYears(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                      </div>
+                    </div>
+                    {/* Elem */}
+                    <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 600 }}>Elementary School</h4>
+                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.75rem' }}>
+                        <input className="form-control" type="text" placeholder="School Name" value={eduElemSchool} onChange={(e) => setEduElemSchool(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                        <input className="form-control" type="text" placeholder="Years (e.g., 2010 - 2016)" value={eduElemYears} onChange={(e) => setEduElemYears(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.875rem' }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                      <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingEdu(false); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                      <button className="btn btn-primary btn-sm" onClick={async () => {
+                        try {
+                          const updated = await updateStudentProfile(student.id, {
+                            education: {
+                              elementary: { school: eduElemSchool, years: eduElemYears },
+                              juniorHigh: { school: eduJhsSchool, years: eduJhsYears },
+                              seniorHigh: { school: eduShsSchool, strand: eduShsStrand, years: eduShsYears },
+                              college: { school: eduColSchool, degree: eduColDegree, years: eduColYears }
+                            }
+                          });
+                          setStudent(updated);
+                          setIsEditingEdu(false);
+                        } catch (e) {
+                          alert('Failed to save education: ' + e.message);
+                        }
+                      }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                        <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                      </svg>
+                      Educational Background
+                    </div>
+                    {canEdit && (
+                      <button 
+                        className="btn btn-secondary" 
+                        onClick={() => setIsEditingEdu(true)}
+                        style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Edit Education
+                      </button>
+                    )}
+                  </h2>
+                  
+                  <div className="profile-timeline">
+                    {/* College */}
+                    {student.education?.college?.school && (
+                      <div className="profile-timeline-item">
+                        <div className="profile-timeline-date">
+                          {student.education.college.years || "College"}
+                        </div>
+                        <div className="profile-timeline-title">
+                          {student.education.college.school}
+                        </div>
+                        {student.education.college.degree && (
+                          <div className="profile-timeline-subtitle">
+                            {student.education.college.degree}
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* Senior High School */}
-                {student.education?.seniorHigh?.school && (
-                  <div className="profile-timeline-item">
-                    <div className="profile-timeline-date" style={{ color: 'var(--accent)' }}>
-                      {student.education.seniorHigh.years || "High School (Senior High)"}
-                    </div>
-                    <div className="profile-timeline-title">
-                      {student.education.seniorHigh.school}
-                    </div>
-                    {student.education.seniorHigh.strand && (
-                      <div className="profile-timeline-subtitle">
-                        Track / Strand: {student.education.seniorHigh.strand}
+                    {/* Senior High School */}
+                    {student.education?.seniorHigh?.school && (
+                      <div className="profile-timeline-item">
+                        <div className="profile-timeline-date" style={{ color: 'var(--accent)' }}>
+                          {student.education.seniorHigh.years || "High School (Senior High)"}
+                        </div>
+                        <div className="profile-timeline-title">
+                          {student.education.seniorHigh.school}
+                        </div>
+                        {student.education.seniorHigh.strand && (
+                          <div className="profile-timeline-subtitle">
+                            Track / Strand: {student.education.seniorHigh.strand}
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* Junior High School */}
-                {student.education?.juniorHigh?.school && (
-                  <div className="profile-timeline-item">
-                    <div className="profile-timeline-date" style={{ color: 'var(--logo-gold)' }}>
-                      {student.education.juniorHigh.years || "High School (Junior High)"}
-                    </div>
-                    <div className="profile-timeline-title">
-                      {student.education.juniorHigh.school}
-                    </div>
-                  </div>
-                )}
+                    {/* Junior High School */}
+                    {student.education?.juniorHigh?.school && (
+                      <div className="profile-timeline-item">
+                        <div className="profile-timeline-date" style={{ color: 'var(--logo-gold)' }}>
+                          {student.education.juniorHigh.years || "High School (Junior High)"}
+                        </div>
+                        <div className="profile-timeline-title">
+                          {student.education.juniorHigh.school}
+                        </div>
+                      </div>
+                    )}
 
-                {/* Elementary */}
-                {student.education?.elementary?.school && (
-                  <div className="profile-timeline-item">
-                    <div className="profile-timeline-date" style={{ color: 'var(--text-muted)' }}>
-                      {student.education.elementary.years || "Elementary School"}
-                    </div>
-                    <div className="profile-timeline-title">
-                      {student.education.elementary.school}
-                    </div>
+                    {/* Elementary */}
+                    {student.education?.elementary?.school && (
+                      <div className="profile-timeline-item">
+                        <div className="profile-timeline-date" style={{ color: 'var(--text-muted)' }}>
+                          {student.education.elementary.years || "Elementary School"}
+                        </div>
+                        <div className="profile-timeline-title">
+                          {student.education.elementary.school}
+                        </div>
+                      </div>
+                    )}
+
+                    {!(student.education?.elementary?.school || student.education?.juniorHigh?.school || student.education?.seniorHigh?.school || student.education?.college?.school) && (
+                      <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No education background added yet.</p>
+                    )}
                   </div>
-                )}
-              </div>
+                </>
+              )}
             </div>
           )}
 
           {/* Work Experience Section */}
-          {student.experience && student.experience.length > 0 && (
+          {((student.experience && student.experience.length > 0) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-                Work Experience
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  Work Experience
+                </div>
+                {canEdit && !isEditingExp && (
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsEditingExp(true)}
+                    style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit Experience
+                  </button>
+                )}
               </h2>
-              <div className="profile-timeline">
-                {student.experience.map((exp, idx) => (
-                  <div key={exp.id || idx} className="profile-timeline-item">
-                    <div className="profile-timeline-date">{exp.period}</div>
-                    <div className="profile-timeline-title">{exp.title}</div>
-                    <div className="profile-timeline-subtitle">{exp.company}</div>
-                    {exp.description && (
-                      <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '0.5rem 0 0', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
-                        {exp.description}
-                      </p>
-                    )}
+
+              {isEditingExp ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {expList.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {expList.map((exp, index) => (
+                        <div key={exp.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: 'rgba(255, 255, 255, 0.02)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                          <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{exp.title}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 500 }}>{exp.company} | <span style={{ color: 'var(--text-muted)' }}>{exp.period}</span></div>
+                            {exp.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem', margin: 0 }}>{exp.description}</p>}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            style={{ minHeight: '28px', padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                            onClick={() => setExpList(expList.filter((_, i) => i !== index))}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Add Experience Entry</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Job Title / Position</label>
+                        <input className="form-control" type="text" placeholder="E.g. Administrative Intern" value={newExpTitle} onChange={(e) => setNewExpTitle(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Company / Office</label>
+                        <input className="form-control" type="text" placeholder="E.g. Capitol Governor's Office" value={newExpCompany} onChange={(e) => setNewExpCompany(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Date Period</label>
+                      <input className="form-control" type="text" placeholder="E.g. April 2025 - June 2025 (OJT)" value={newExpPeriod} onChange={(e) => setNewExpPeriod(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Job Description / Key Tasks</label>
+                      <textarea className="form-control" placeholder="Detail your responsibilities..." value={newExpDesc} onChange={(e) => setNewExpDesc(e.target.value)} style={{ minHeight: '60px', padding: '0.4rem 0.6rem', fontSize: '0.8rem', resize: 'vertical' }} />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      style={{ alignSelf: 'flex-end', minHeight: '28px', padding: '0.2rem 0.6rem', fontSize: '0.75rem' }}
+                      onClick={() => {
+                        const newExp = {
+                          id: `exp-${Date.now()}`,
+                          title: newExpTitle,
+                          company: newExpCompany,
+                          period: newExpPeriod,
+                          description: newExpDesc
+                        };
+                        setExpList([...expList, newExp]);
+                        setNewExpTitle('');
+                        setNewExpCompany('');
+                        setNewExpPeriod('');
+                        setNewExpDesc('');
+                      }}
+                      disabled={!newExpTitle.trim() || !newExpCompany.trim() || !newExpPeriod.trim()}
+                    >
+                      Add Entry
+                    </button>
                   </div>
-                ))}
-              </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingExp(false); setExpList(student.experience || []); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={async () => {
+                      try {
+                        const updated = await updateStudentProfile(student.id, { experience: expList });
+                        setStudent(updated);
+                        setIsEditingExp(false);
+                      } catch (e) {
+                        alert('Failed to save experience: ' + e.message);
+                      }
+                    }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="profile-timeline">
+                  {student.experience && student.experience.length > 0 ? (
+                    student.experience.map((exp, idx) => (
+                      <div key={exp.id || idx} className="profile-timeline-item">
+                        <div className="profile-timeline-date">{exp.period}</div>
+                        <div className="profile-timeline-title">{exp.title}</div>
+                        <div className="profile-timeline-subtitle">{exp.company}</div>
+                        {exp.description && (
+                          <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '0.5rem 0 0', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
+                            {exp.description}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No work experience added yet.</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
-          {/* Seminars & Trainings Section */}
-          {student.seminars && student.seminars.length > 0 && (
+          {/* Seminars & Workshops Section */}
+          {((student.seminars && student.seminars.length > 0) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-                Seminars & Workshops
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
+                  Seminars & Workshops
+                </div>
+                {canEdit && !isEditingSem && (
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsEditingSem(true)}
+                    style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit Seminars
+                  </button>
+                )}
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-                {student.seminars.map((sem, idx) => (
-                  <div key={sem.id || idx} className="glass" style={{ padding: '1.25rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)', background: 'rgba(255, 255, 255, 0.01)' }}>
-                    <h3 style={{ fontSize: '1rem', margin: '0 0 0.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{sem.title}</h3>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, marginBottom: '0.5rem' }}>
-                      Host: {sem.organizer} | <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{sem.date}</span>
+
+              {isEditingSem ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {semList.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {semList.map((sem, index) => (
+                        <div key={sem.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: 'rgba(255, 255, 255, 0.02)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                          <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{sem.title}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 500 }}>Host: {sem.organizer} | <span style={{ color: 'var(--text-muted)' }}>{sem.date}</span></div>
+                            {sem.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem', margin: 0 }}>{sem.description}</p>}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            style={{ minHeight: '28px', padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                            onClick={() => setSemList(semList.filter((_, i) => i !== index))}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                    {sem.description && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{sem.description}</p>}
+                  )}
+
+                  <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Add Seminar / Workshop</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Seminar Title</label>
+                        <input className="form-control" type="text" placeholder="E.g. National Summit on Records" value={newSemTitle} onChange={(e) => setNewSemTitle(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Host / Organizer</label>
+                        <input className="form-control" type="text" placeholder="E.g. Association of Office Professionals" value={newSemOrganizer} onChange={(e) => setNewSemOrganizer(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Date / Period</label>
+                      <input className="form-control" type="text" placeholder="E.g. October 14, 2025" value={newSemDate} onChange={(e) => setNewSemDate(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Key Highlights (Optional)</label>
+                      <textarea className="form-control" placeholder="Briefly detail what you gained..." value={newSemDesc} onChange={(e) => setNewSemDesc(e.target.value)} style={{ minHeight: '60px', padding: '0.4rem 0.6rem', fontSize: '0.8rem', resize: 'vertical' }} />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      style={{ alignSelf: 'flex-end', minHeight: '28px', padding: '0.2rem 0.6rem', fontSize: '0.75rem' }}
+                      onClick={() => {
+                        const newSem = {
+                          id: `sem-${Date.now()}`,
+                          title: newSemTitle,
+                          organizer: newSemOrganizer,
+                          date: newSemDate,
+                          description: newSemDesc
+                        };
+                        setSemList([...semList, newSem]);
+                        setNewSemTitle('');
+                        setNewSemOrganizer('');
+                        setNewSemDate('');
+                        setNewSemDesc('');
+                      }}
+                      disabled={!newSemTitle.trim() || !newSemOrganizer.trim() || !newSemDate.trim()}
+                    >
+                      Add Seminar
+                    </button>
                   </div>
-                ))}
-              </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingSem(false); setSemList(student.seminars || []); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={async () => {
+                      try {
+                        const updated = await updateStudentProfile(student.id, { seminars: semList });
+                        setStudent(updated);
+                        setIsEditingSem(false);
+                      } catch (e) {
+                        alert('Failed to save seminars: ' + e.message);
+                      }
+                    }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  {student.seminars && student.seminars.length > 0 ? (
+                    student.seminars.map((sem, idx) => (
+                      <div key={sem.id || idx} className="glass" style={{ padding: '1.25rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)', background: 'rgba(255, 255, 255, 0.01)' }}>
+                        <h3 style={{ fontSize: '1rem', margin: '0 0 0.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{sem.title}</h3>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600, marginBottom: '0.5rem' }}>
+                          Host: {sem.organizer} | <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>{sem.date}</span>
+                        </div>
+                        {sem.description && <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.4' }}>{sem.description}</p>}
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No seminars or workshops added yet.</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
           {/* Certificates Section */}
-          {student.certificates && student.certificates.length > 0 && (
+          {((student.certificates && student.certificates.length > 0) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <circle cx="12" cy="8" r="7" />
-                  <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-                </svg>
-                Certifications & Achievements
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <circle cx="12" cy="8" r="7" />
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
+                  </svg>
+                  Certifications & Achievements
+                </div>
+                {canEdit && !isEditingCert && (
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsEditingCert(true)}
+                    style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit Certificates
+                  </button>
+                )}
               </h2>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-                {student.certificates.map((cert, idx) => (
-                  <div key={cert.id || idx} className="glass" style={{ padding: '1.25rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)', background: 'rgba(255, 255, 255, 0.01)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1rem', margin: '0 0 0.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{cert.name}</h3>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-                        Issuer: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{cert.issuer}</span> | <span style={{ color: 'var(--text-muted)' }}>{cert.date}</span>
+
+              {isEditingCert ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {certList.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {certList.map((cert, index) => (
+                        <div key={cert.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: 'rgba(255, 255, 255, 0.02)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                          <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{cert.name}</div>
+                            <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 500 }}>Issuer: {cert.issuer} | <span style={{ color: 'var(--text-muted)' }}>{cert.date}</span></div>
+                            {cert.url && <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>{cert.url}</div>}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            style={{ minHeight: '28px', padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                            onClick={() => setCertList(certList.filter((_, i) => i !== index))}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Add Certificate / Distinction</h4>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Certificate Name</label>
+                        <input className="form-control" type="text" placeholder="E.g. Civil Service Eligibility" value={newCertName} onChange={(e) => setNewCertName(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Issuing Authority</label>
+                        <input className="form-control" type="text" placeholder="E.g. Civil Service Commission" value={newCertIssuer} onChange={(e) => setNewCertIssuer(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
                       </div>
                     </div>
-                    {cert.url && (
-                      <a 
-                        href={cert.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="btn btn-secondary btn-sm"
-                        style={{ marginTop: '1rem', display: 'inline-flex', alignItems: 'center', gap: '4px', minHeight: '30px', justifyContent: 'center', textDecoration: 'none', fontSize: '0.8rem' }}
-                      >
-                        View Credential ↗
-                      </a>
-                    )}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Issue Date</label>
+                        <input className="form-control" type="text" placeholder="E.g. November 2025" value={newCertDate} onChange={(e) => setNewCertDate(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                      <div>
+                        <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Credential URL (Optional)</label>
+                        <input className="form-control" type="url" placeholder="https://..." value={newCertUrl} onChange={(e) => setNewCertUrl(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      style={{ alignSelf: 'flex-end', minHeight: '28px', padding: '0.2rem 0.6rem', fontSize: '0.75rem' }}
+                      onClick={() => {
+                        const newCert = {
+                          id: `cert-${Date.now()}`,
+                          name: newCertName,
+                          issuer: newCertIssuer,
+                          date: newCertDate,
+                          url: newCertUrl
+                        };
+                        setCertList([...certList, newCert]);
+                        setNewCertName('');
+                        setNewCertIssuer('');
+                        setNewCertDate('');
+                        setNewCertUrl('');
+                      }}
+                      disabled={!newCertName.trim() || !newCertIssuer.trim() || !newCertDate.trim()}
+                    >
+                      Add Certificate
+                    </button>
                   </div>
-                ))}
-              </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingCert(false); setCertList(student.certificates || []); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={async () => {
+                      try {
+                        const updated = await updateStudentProfile(student.id, { certificates: certList });
+                        setStudent(updated);
+                        setIsEditingCert(false);
+                      } catch (e) {
+                        alert('Failed to save certificates: ' + e.message);
+                      }
+                    }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
+                  {student.certificates && student.certificates.length > 0 ? (
+                    student.certificates.map((cert, idx) => (
+                      <div key={cert.id || idx} className="glass" style={{ padding: '1.25rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--border-color)', background: 'rgba(255, 255, 255, 0.01)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <h3 style={{ fontSize: '1rem', margin: '0 0 0.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{cert.name}</h3>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                            Issuer: <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{cert.issuer}</span> | <span style={{ color: 'var(--text-muted)' }}>{cert.date}</span>
+                          </div>
+                        </div>
+                        {cert.url && (
+                          <a 
+                            href={cert.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="btn btn-secondary btn-sm"
+                            style={{ marginTop: '1rem', display: 'inline-flex', alignItems: 'center', gap: '4px', minHeight: '30px', justifyContent: 'center', textDecoration: 'none', fontSize: '0.8rem' }}
+                          >
+                            View Credential ↗
+                          </a>
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No certifications added yet.</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
           {/* Skills Section */}
-          {student.skills && student.skills.length > 0 && (
+          {((student.skills && student.skills.length > 0) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
-                  <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                </svg>
-                Specialized Skills
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                    <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                  Specialized Skills
+                </div>
+                {canEdit && !isEditingSkills && (
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsEditingSkills(true)}
+                    style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit Skills
+                  </button>
+                )}
               </h2>
-              <div className="detail-skills-list">
-                {student.skills.map((skill, index) => (
-                  <span key={index} className="badge badge-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
-                    {skill}
-                  </span>
-                ))}
-              </div>
-          </div>
-        )}
+
+              {isEditingSkills ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', padding: '0.5rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
+                    {skillsList.map((skill, index) => (
+                      <span key={index} className="badge badge-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '0.4rem 0.8rem', fontSize: '0.8rem' }}>
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => setSkillsList(skillsList.filter(s => s !== skill))}
+                          style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, fontSize: '1.1rem', lineHeight: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                    <input
+                      type="text"
+                      placeholder="Type a skill and press Enter..."
+                      value={skillsInput}
+                      onChange={(e) => setSkillsInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ',') {
+                          e.preventDefault();
+                          const val = skillsInput.trim().replace(/,$/, '');
+                          if (val && !skillsList.includes(val)) {
+                            setSkillsList([...skillsList, val]);
+                          }
+                          setSkillsInput('');
+                        }
+                      }}
+                      style={{ background: 'none', border: 'none', color: 'var(--text-primary)', outline: 'none', padding: '0.2rem 0.5rem', fontSize: '0.8rem', flex: 1, minWidth: '120px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingSkills(false); setSkillsList(student.skills || []); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={async () => {
+                      try {
+                        const updated = await updateStudentProfile(student.id, { skills: skillsList });
+                        setStudent(updated);
+                        setIsEditingSkills(false);
+                      } catch (e) {
+                        alert('Failed to save skills: ' + e.message);
+                      }
+                    }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="detail-skills-list">
+                  {student.skills && student.skills.length > 0 ? (
+                    student.skills.map((skill, index) => (
+                      <span key={index} className="badge badge-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
+                        {skill}
+                      </span>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No skills added yet.</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* CV / Resume Section (Default) */}
           <div className="profile-section glass">
@@ -1120,36 +1762,131 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           </div>
 
           {/* Project Showcase Section */}
-          {student.projects && student.projects.length > 0 && (
+          {((student.projects && student.projects.length > 0) || canEdit) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                </svg>
-                Project Showreel
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  Project Showreel
+                </div>
+                {canEdit && !isEditingProjects && (
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => setIsEditingProjects(true)}
+                    style={{ padding: '0.2rem 0.6rem', fontSize: '0.75rem', minHeight: '28px', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid var(--border-color)' }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '11px', height: '11px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Edit Projects
+                  </button>
+                )}
               </h2>
-              <div className="projects-grid">
-                {student.projects.map((proj, idx) => (
-                  <div key={proj.id || idx} className="project-item">
-                    <h3>
-                      <span>{proj.title}</span>
-                      {proj.link && (
-                        <a 
-                          href={proj.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="btn btn-secondary btn-sm project-link"
-                          style={{ minHeight: '32px', padding: '0 0.75rem', textDecoration: 'none' }}
-                        >
-                          View Project ↗
-                        </a>
-                      )}
-                    </h3>
-                    <p>{proj.description}</p>
+
+              {isEditingProjects ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                  {projList.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {projList.map((proj, index) => (
+                        <div key={proj.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: 'rgba(255, 255, 255, 0.02)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                          <div style={{ textAlign: 'left' }}>
+                            <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{proj.title}</div>
+                            {proj.link && <div style={{ fontSize: '0.8rem', color: 'var(--primary)', marginTop: '0.15rem' }}>{proj.link}</div>}
+                            {proj.description && <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.25rem', margin: 0 }}>{proj.description}</p>}
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            style={{ minHeight: '28px', padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}
+                            onClick={() => setProjList(projList.filter((_, i) => i !== index))}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0 }}>Add New Project</h4>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Project Title *</label>
+                      <input className="form-control" type="text" placeholder="e.g. Smart Irrigation System" value={newProjTitle} onChange={(e) => setNewProjTitle(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Project Description</label>
+                      <textarea className="form-control" placeholder="Briefly explain what you built..." value={newProjDesc} onChange={(e) => setNewProjDesc(e.target.value)} style={{ minHeight: '60px', padding: '0.4rem 0.6rem', fontSize: '0.8rem', resize: 'vertical' }} />
+                    </div>
+                    <div>
+                      <label className="form-label" style={{ fontSize: '0.75rem', marginBottom: '0.25rem' }}>Project Link (URL)</label>
+                      <input className="form-control" type="url" placeholder="https://github.com/..." value={newProjLink} onChange={(e) => setNewProjLink(e.target.value)} style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      style={{ alignSelf: 'flex-end', minHeight: '28px', padding: '0.2rem 0.6rem', fontSize: '0.75rem' }}
+                      onClick={() => {
+                        const newProj = {
+                          id: `proj-${Date.now()}`,
+                          title: newProjTitle,
+                          description: newProjDesc,
+                          link: newProjLink
+                        };
+                        setProjList([...projList, newProj]);
+                        setNewProjTitle('');
+                        setNewProjDesc('');
+                        setNewProjLink('');
+                      }}
+                      disabled={!newProjTitle.trim()}
+                    >
+                      Add Project
+                    </button>
                   </div>
-                ))}
-              </div>
+
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+                    <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingProjects(false); setProjList(student.projects || []); }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Cancel</button>
+                    <button className="btn btn-primary btn-sm" onClick={async () => {
+                      try {
+                        const updated = await updateStudentProfile(student.id, { projects: projList });
+                        setStudent(updated);
+                        setIsEditingProjects(false);
+                      } catch (e) {
+                        alert('Failed to save projects: ' + e.message);
+                      }
+                    }} style={{ padding: '0.3rem 0.8rem', minHeight: '32px' }}>Save Changes</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="projects-grid">
+                  {student.projects && student.projects.length > 0 ? (
+                    student.projects.map((proj, idx) => (
+                      <div key={proj.id || idx} className="project-item">
+                        <h3>
+                          <span>{proj.title}</span>
+                          {proj.link && (
+                            <a 
+                              href={proj.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="btn btn-secondary btn-sm project-link"
+                              style={{ minHeight: '32px', padding: '0 0.75rem', textDecoration: 'none' }}
+                            >
+                              View Project ↗
+                            </a>
+                          )}
+                        </h3>
+                        <p>{proj.description}</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', margin: 0 }}>No projects added yet.</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
