@@ -518,7 +518,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                 </label>
               </div>
               <span className="form-hint" style={{ marginTop: '0.5rem' }}>
-                If unchecked, your profile will be hidden from the directory.
+                If unchecked, your profile will be hidden from public portfolios
               </span>
             </div>
 

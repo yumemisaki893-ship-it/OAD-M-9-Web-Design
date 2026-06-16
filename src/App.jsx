@@ -188,13 +188,13 @@ function App() {
         <button 
           className="btn-back-directory" 
           onClick={() => navigateTo('directory')}
-          aria-label="Back to Directory"
+          aria-label="Browse Portfolios"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
             <line x1="19" y1="12" x2="5" y2="12" />
             <polyline points="12 19 5 12 12 5" />
           </svg>
-          Back to Directory
+          Browse Portfolios
         </button>
       )}
 
