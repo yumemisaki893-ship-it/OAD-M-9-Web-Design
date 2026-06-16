@@ -938,6 +938,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 ))}
               </div>
           </div>
+        )}
 
           {/* CV / Resume Section (Default) */}
           <div className="profile-section glass">
