@@ -30,7 +30,7 @@ export const OfficePromotion = ({ navigateTo, currentUser }) => {
               className="btn btn-primary btn-lg-premium btn-view-portfolio" 
               onClick={handleExplorePortfolios}
             >
-              Explore BSOA Portfolios
+              Explore BSOAD Portfolios
             </button>
             <button 
               className="btn btn-secondary btn-lg-premium" 
@@ -51,7 +51,7 @@ export const OfficePromotion = ({ navigateTo, currentUser }) => {
               Curriculum & Major Topics
             </h2>
             <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.85)', marginBottom: '0.5rem', lineHeight: '1.6' }}>
-              The BSOA curriculum blends advanced technical skills, administrative software processing, and organizational management methodologies.
+              The BSOAD curriculum blends advanced technical skills, administrative software processing, and organizational management methodologies.
             </p>
             <ul className="objectives-list" style={{ marginTop: '0.5rem' }}>
               <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
@@ -182,7 +182,7 @@ export const OfficePromotion = ({ navigateTo, currentUser }) => {
             onClick={handleExplorePortfolios}
             style={{ marginTop: '0.5rem', background: 'var(--logo-gold)', borderColor: 'var(--logo-gold)', color: '#000' }}
           >
-            View BSOA Portfolios
+            View BSOAD Portfolios
           </button>
         </section>
 
