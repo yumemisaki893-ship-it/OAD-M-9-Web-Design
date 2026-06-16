@@ -1020,18 +1020,19 @@ a:hover {
   display: inline-block;
   padding: 0.5rem 1.2rem;
   border-radius: var(--border-radius-sm);
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--logo-gold-glow);
+  border: 1.5px solid var(--logo-gold);
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--logo-gold);
   margin-bottom: 2rem;
   letter-spacing: -0.01em;
 }
 
 [data-theme="dark"] .badge-promo {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--logo-gold-glow);
+  border: 1.5px solid var(--logo-gold);
+  color: var(--logo-gold);
 }
 
 .hero-title {
@@ -1058,10 +1059,9 @@ a:hover {
 
 .hero-title-gradient {
   background: linear-gradient(135deg, 
-    var(--primary) 0%, 
-    var(--accent) 33%, 
-    var(--logo-gold) 66%, 
-    var(--primary) 100%
+    var(--accent) 0%, 
+    var(--logo-gold) 50%, 
+    var(--accent) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -1072,10 +1072,9 @@ a:hover {
 
 [data-theme="dark"] .hero-title-gradient {
   background: linear-gradient(135deg, 
-    #ffffff 0%, 
-    var(--accent) 33%, 
-    var(--logo-gold) 66%, 
-    #ffffff 100%
+    var(--accent) 0%, 
+    var(--logo-gold) 50%, 
+    var(--accent) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
@@ -1192,7 +1191,7 @@ a:hover {
 }
 
 .lang-tab.active {
-  color: var(--bg-primary);
+  color: #000000;
 }
 
 .lang-slider {
@@ -1201,7 +1200,7 @@ a:hover {
   bottom: 4px;
   left: 4px;
   width: calc((100% - 8px) / 3);
-  background: var(--primary);
+  background: var(--logo-gold);
   z-index: 1;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border-radius: var(--border-radius-sm);
@@ -1317,10 +1316,10 @@ a:hover {
 }
 
 .btn-view-portfolio:hover {
-  background: #ffffff !important;
-  border-color: #000000 !important;
+  background: var(--logo-gold) !important;
+  border-color: var(--logo-gold) !important;
   color: #000000 !important;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
 }
 
 /* Smooth global theme switching transitions */
@@ -1718,7 +1717,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   left: 25%;
   width: 50%;
   height: 3px;
-  background: var(--accent);
+  background: var(--logo-gold);
   border-radius: var(--border-radius-sm);
 }
 
@@ -1738,9 +1737,9 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   background: var(--bg-card);
 }
 
-.goal-item:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+.goal-item:hover, .goal-item.active {
+  border-color: var(--logo-gold);
+  box-shadow: 0 4px 16px var(--logo-gold-glow);
 }
 
 .goal-header {
@@ -1789,7 +1788,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 .goal-item.active .goal-icon {
   transform: rotate(180deg);
-  color: var(--accent);
+  color: var(--logo-gold);
 }
 
 .goal-content {
@@ -1827,7 +1826,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   content: '•';
   position: absolute;
   left: 0.4rem;
-  color: var(--accent);
+  color: var(--logo-gold);
   font-weight: bold;
 }
 
