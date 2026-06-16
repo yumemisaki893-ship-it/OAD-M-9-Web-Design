@@ -31,7 +31,7 @@ Live Demo: **[https://agustin-lovely-jane.vercel.app](https://agustin-lovely-jan
 - **Simulated OTP Recovery**: A verification code flow utilizing a 6-digit OTP to reset forgotten passwords.
 
 ### 5. Administrative Console (Admin Privileges)
-- **Admin Authentication**: A special quick-login bypass link for `admin@university.edu`.
+- **Admin Authentication**: A special quick-login bypass link for `***********.edu`.
 - **Private Profile Bypass**: Administrators can view private profiles marked invisible (`isPublic: false`) with a dedicated "Private" badge.
 - **Global Actions**: Quick card-level profile deletions directly in the directory.
 - **Double-Confirmation Workflows**: Secure two-step confirmations on all account deletions to prevent accidental loss.
