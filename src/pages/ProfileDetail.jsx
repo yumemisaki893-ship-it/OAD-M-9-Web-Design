@@ -350,23 +350,28 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
   };
 
   return (
-    <div className="profile-detail-page" style={{ position: 'relative' }}>
-      {/* Full Width Cover Photo */}
-      <div style={{ position: 'relative', width: '100%' }}>
-        <div 
-          style={{ 
-            width: '100%', 
-            aspectRatio: '21 / 9', 
-            background: student.coverPhotoUrl ? `url(${student.coverPhotoUrl}) center/cover no-repeat` : 'var(--bg-secondary)',
-            borderBottom: '1px solid var(--border-color)',
-            cursor: student.coverPhotoUrl ? 'pointer' : 'default',
-            transition: 'filter 0.2s ease'
-          }}
-          onClick={() => { if (student.coverPhotoUrl) { setViewerImage(student.coverPhotoUrl); setViewerCaption('Cover Photo'); } }}
-          onMouseEnter={(e) => { if (student.coverPhotoUrl) e.currentTarget.style.filter = 'brightness(0.85)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
-          title={student.coverPhotoUrl ? 'Click to view full size' : ''}
-        ></div>
+    <div className="app-page-wrapper">
+      <div className="profile-detail-page animate-fade-in" style={{ position: 'relative' }}>
+        {/* Full Width Cover Photo */}
+        <div style={{ position: 'relative', width: '100%' }}>
+          <div 
+            style={{ 
+              width: '100%', 
+              aspectRatio: '21 / 9', 
+              background: student.coverPhotoUrl 
+                ? `url(${student.coverPhotoUrl}) center/cover no-repeat` 
+                : 'linear-gradient(to bottom, var(--primary-glow), var(--accent-glow))',
+              backdropFilter: student.coverPhotoUrl ? 'none' : 'blur(10px) saturate(120%)',
+              WebkitBackdropFilter: student.coverPhotoUrl ? 'none' : 'blur(10px) saturate(120%)',
+              borderBottom: '1px solid var(--border-color)',
+              cursor: student.coverPhotoUrl ? 'pointer' : 'default',
+              transition: 'filter 0.2s ease'
+            }}
+            onClick={() => { if (student.coverPhotoUrl) { setViewerImage(student.coverPhotoUrl); setViewerCaption('Cover Photo'); } }}
+            onMouseEnter={(e) => { if (student.coverPhotoUrl) e.currentTarget.style.filter = 'brightness(0.85)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
+            title={student.coverPhotoUrl ? 'Click to view full size' : ''}
+          ></div>
         {canEdit && (
           <div style={{ position: 'absolute', right: '1.5rem', bottom: '1.5rem', zIndex: 10, display: 'flex', gap: '0.5rem' }}>
             <input 
@@ -754,23 +759,18 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 Educational Background
               </h2>
               
-              <div className="education-timeline" style={{ position: 'relative', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                {/* Timeline vertical bar */}
-                <div style={{ position: 'absolute', left: '4px', top: '8px', bottom: '8px', width: '2px', background: 'var(--border-color)' }}></div>
-
+              <div className="profile-timeline">
                 {/* College */}
                 {student.education?.college?.school && (
-                  <div style={{ position: 'relative' }}>
-                    {/* Circle Node */}
-                    <div style={{ position: 'absolute', left: '-23px', top: '5px', width: '10px', height: '10px', borderRadius: '50%', background: 'var(--primary)', border: '2px solid var(--bg-card)' }}></div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div className="profile-timeline-item">
+                    <div className="profile-timeline-date">
                       {student.education.college.years || "College"}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '0.15rem' }}>
+                    <div className="profile-timeline-title">
                       {student.education.college.school}
                     </div>
                     {student.education.college.degree && (
-                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>
+                      <div className="profile-timeline-subtitle">
                         {student.education.college.degree}
                       </div>
                     )}
@@ -779,17 +779,15 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
                 {/* Senior High School */}
                 {student.education?.seniorHigh?.school && (
-                  <div style={{ position: 'relative' }}>
-                    {/* Circle Node */}
-                    <div style={{ position: 'absolute', left: '-23px', top: '5px', width: '10px', height: '10px', borderRadius: '50%', background: 'var(--accent)', border: '2px solid var(--bg-card)' }}></div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div className="profile-timeline-item">
+                    <div className="profile-timeline-date" style={{ color: 'var(--accent)' }}>
                       {student.education.seniorHigh.years || "High School (Senior High)"}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '0.15rem' }}>
+                    <div className="profile-timeline-title">
                       {student.education.seniorHigh.school}
                     </div>
                     {student.education.seniorHigh.strand && (
-                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.1rem' }}>
+                      <div className="profile-timeline-subtitle">
                         Track / Strand: {student.education.seniorHigh.strand}
                       </div>
                     )}
@@ -798,13 +796,11 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
                 {/* Junior High School */}
                 {student.education?.juniorHigh?.school && (
-                  <div style={{ position: 'relative' }}>
-                    {/* Circle Node */}
-                    <div style={{ position: 'absolute', left: '-23px', top: '5px', width: '10px', height: '10px', borderRadius: '50%', background: 'var(--logo-gold)', border: '2px solid var(--bg-card)' }}></div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--logo-gold)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div className="profile-timeline-item">
+                    <div className="profile-timeline-date" style={{ color: 'var(--logo-gold)' }}>
                       {student.education.juniorHigh.years || "High School (Junior High)"}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '0.15rem' }}>
+                    <div className="profile-timeline-title">
                       {student.education.juniorHigh.school}
                     </div>
                   </div>
@@ -812,13 +808,11 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
                 {/* Elementary */}
                 {student.education?.elementary?.school && (
-                  <div style={{ position: 'relative' }}>
-                    {/* Circle Node */}
-                    <div style={{ position: 'absolute', left: '-23px', top: '5px', width: '10px', height: '10px', borderRadius: '50%', background: 'var(--text-muted)', border: '2px solid var(--bg-card)' }}></div>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div className="profile-timeline-item">
+                    <div className="profile-timeline-date" style={{ color: 'var(--text-muted)' }}>
                       {student.education.elementary.years || "Elementary School"}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)', marginTop: '0.15rem' }}>
+                    <div className="profile-timeline-title">
                       {student.education.elementary.school}
                     </div>
                   </div>
@@ -837,14 +831,12 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 </svg>
                 Work Experience
               </h2>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div className="profile-timeline">
                 {student.experience.map((exp, idx) => (
-                  <div key={exp.id || idx} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <h3 style={{ fontSize: '1.1rem', margin: 0, fontWeight: 700, color: 'var(--text-primary)' }}>{exp.title}</h3>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>{exp.period}</span>
-                    </div>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 600 }}>{exp.company}</div>
+                  <div key={exp.id || idx} className="profile-timeline-item">
+                    <div className="profile-timeline-date">{exp.period}</div>
+                    <div className="profile-timeline-title">{exp.title}</div>
+                    <div className="profile-timeline-subtitle">{exp.company}</div>
                     {exp.description && (
                       <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: '0.5rem 0 0', lineHeight: '1.5', whiteSpace: 'pre-wrap' }}>
                         {exp.description}
@@ -1320,6 +1312,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       )}
     </div>
   </div>
+</div>
   );
 };
 export default ProfileDetail;

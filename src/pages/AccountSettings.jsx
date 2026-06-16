@@ -459,27 +459,28 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
   };
 
   return (
-    <div className="container editor-page" style={{ paddingBottom: '4rem' }}>
-      
-      {/* Back button */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', marginTop: '1.5rem' }}>
-        <button 
-          className="btn btn-secondary btn-sm"
-          onClick={() => navigateTo('profile-detail', { id: student.id })}
-          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
-          Back to Profile
-        </button>
+    <div className="app-page-wrapper">
+      <div className="container editor-page animate-fade-in" style={{ paddingBottom: '4rem', paddingTop: '2.5rem' }}>
+        
+        {/* Back button */}
+        <div className="animate-slide-up" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <button 
+            className="btn btn-secondary btn-sm"
+            onClick={() => navigateTo('profile-detail', { id: student.id })}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back to Profile
+          </button>
 
-        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800 }}>Account Settings</h1>
-      </div>
+          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800 }}>Account Settings</h1>
+        </div>
 
-      {/* Tabs Selector Navigation */}
-      <div className="settings-tabs-container">
+        {/* Tabs Selector Navigation */}
+        <div className="settings-tabs-container animate-slide-up-delay-1">
         <button 
           className={`settings-tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
@@ -541,7 +542,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
 
       {/* Tab 1: Edit Profile Details Section */}
       {activeTab === 'profile' && (
-        <form onSubmit={handleProfileSubmit}>
+        <form onSubmit={handleProfileSubmit} className="animate-slide-up-delay-2">
           <div className="editor-grid">
             
             {/* LEFT SIDEBAR: Avatar & Core Information */}
@@ -1529,7 +1530,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
 
       {/* Tab 2: Account Security Section */}
       {activeTab === 'security' && (
-        <div style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
+        <div className="animate-slide-up-delay-2" style={{ maxWidth: '640px', margin: '0 auto', width: '100%' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             
             {/* Email Settings Card */}
@@ -1688,6 +1689,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
       )}
 
     </div>
+  </div>
   );
 };
 

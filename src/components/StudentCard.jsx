@@ -46,7 +46,7 @@ export const StudentCard = ({ student, currentUser, onClick, onDelete }) => {
         style={{
           width: '100%',
           height: '90px',
-          background: student.coverPhotoUrl ? `url(${student.coverPhotoUrl}) center/cover no-repeat` : 'var(--bg-secondary)',
+          background: student.coverPhotoUrl ? `url(${student.coverPhotoUrl}) center/cover no-repeat` : 'linear-gradient(135deg, var(--primary-glow) 0%, var(--accent-glow) 100%)',
           borderBottom: '1px solid var(--border-color)'
         }}
       />
