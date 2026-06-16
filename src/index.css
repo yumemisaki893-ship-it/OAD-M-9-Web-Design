@@ -1315,126 +1315,97 @@ a:hover {
   transform: translateY(-2px);
 }
 
-/* Hero Stats & Digital Clock Panel */
-.hero-stats-panel {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 800px;
+/* Hero Live Status Bar */
+.hero-live-status-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(244, 180, 0, 0.22);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), inset 0 1px 1px rgba(255, 255, 255, 0.5);
   margin-top: 3.5rem;
-  padding: 1.25rem;
-  border-radius: var(--border-radius-lg);
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(244, 180, 0, 0.25);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-theme="dark"] .hero-stats-panel {
-  background: rgba(15, 15, 15, 0.45);
+[data-theme="dark"] .hero-live-status-bar {
+  background: rgba(10, 10, 10, 0.45);
   border-color: rgba(255, 200, 0, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.02);
 }
 
-.stat-card {
+.hero-live-status-bar:hover {
+  transform: translateY(-2px);
+  border-color: var(--logo-gold);
+  box-shadow: 0 8px 30px var(--logo-gold-glow);
+}
+
+.status-item {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border-radius: var(--border-radius-md);
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-  text-align: left;
+  gap: 0.45rem;
+  font-size: 0.825rem;
 }
 
-[data-theme="dark"] .stat-card {
-  background: rgba(25, 25, 25, 0.3);
-  border-color: rgba(255, 255, 255, 0.03);
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(244, 180, 0, 0.45);
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 6px 20px rgba(244, 180, 0, 0.1);
-}
-
-[data-theme="dark"] .stat-card:hover {
-  border-color: rgba(255, 200, 0, 0.35);
-  background: rgba(30, 30, 30, 0.5);
-  box-shadow: 0 6px 20px rgba(255, 200, 0, 0.15);
-}
-
-.stat-icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--border-radius-sm);
-  background: rgba(244, 180, 0, 0.12);
+.status-icon {
+  width: 15px;
+  height: 15px;
   color: var(--primary);
-  flex-shrink: 0;
+  opacity: 0.85;
 }
 
-[data-theme="dark"] .stat-icon-wrapper {
-  background: rgba(255, 200, 0, 0.12);
+[data-theme="dark"] .status-icon {
   color: var(--logo-gold);
 }
 
-.stat-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.stat-content {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.stat-value {
-  font-size: 1.25rem;
+.status-text {
   font-weight: 700;
   color: var(--text-primary);
-  font-feature-settings: "tnum";
+}
+
+.status-subtext {
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .clock-value {
   font-family: var(--font-mono, monospace);
   color: var(--primary);
-  letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
 }
 
 [data-theme="dark"] .clock-value {
   color: var(--logo-gold);
-  text-shadow: 0 0 10px rgba(255, 200, 0, 0.15);
+  text-shadow: 0 0 8px rgba(255, 200, 0, 0.2);
 }
 
-.stat-label {
-  font-size: 0.725rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 0.15rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.status-divider {
+  color: var(--border-color);
+  font-weight: 300;
+  opacity: 0.7;
+  user-select: none;
 }
 
 @media (max-width: 768px) {
-  .hero-stats-panel {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .hero-live-status-bar {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius-md);
     margin-top: 2.5rem;
-    padding: 1rem;
+    width: 90%;
   }
-  .stat-card {
-    padding: 0.85rem 1rem;
+  .status-divider {
+    display: none;
+  }
+  .status-item {
+    text-align: center;
+    justify-content: center;
+    width: 100%;
   }
 }
 

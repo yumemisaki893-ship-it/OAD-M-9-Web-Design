@@ -166,47 +166,33 @@ const Home = ({ navigateTo, currentUser }) => {
             </button>
           </div>
 
-          <div className="hero-stats-panel animate-slide-up-delay-3">
-            <div className="stat-card clock-card">
-              <div className="stat-icon-wrapper">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
-                  <circle cx="12" cy="12" r="10" />
-                  <polyline points="12 6 12 12 16 14" />
-                </svg>
-              </div>
-              <div className="stat-content">
-                <span className="stat-value clock-value">{time}</span>
-                <span className="stat-label">{dateStr || 'Local Time'}</span>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon-wrapper">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </svg>
-              </div>
-              <div className="stat-content">
-                <span className="stat-value">{registeredCount}</span>
-                <span className="stat-label">Portfolios Created</span>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon-wrapper">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stat-icon">
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
-                </svg>
-              </div>
-              <div className="stat-content">
-                <span className="stat-value">{uaStudentCount.toLocaleString()}</span>
-                <span className="stat-label">UA Student Population</span>
-              </div>
-            </div>
+          <div className="hero-live-status-bar animate-slide-up-delay-3">
+            <span className="status-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="status-icon">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span className="status-text clock-value">{time}</span>
+              <span className="status-subtext">({dateStr})</span>
+            </span>
+            <span className="status-divider">|</span>
+            <span className="status-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="status-icon">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+              </svg>
+              <span className="status-text">{uaStudentCount.toLocaleString()}</span>
+              <span className="status-subtext">UA Students</span>
+            </span>
+            <span className="status-divider">|</span>
+            <span className="status-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="status-icon">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
+              <span className="status-text">{registeredCount}</span>
+              <span className="status-subtext">Portfolios</span>
+            </span>
           </div>
         </div>
       </section>
