@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getStudents } from '../utils/storage';
 
 const goalsData = [
@@ -121,7 +121,7 @@ const campusesData = [
   }
 ];
 
-const Home = ({ navigateTo, currentUser }) => {
+const Home = ({ navigateTo, currentUser, currentTheme }) => {
   const [activeLang, setActiveLang] = useState('en'); // 'en' | 'fil' | 'kr'
   const [activeGoal, setActiveGoal] = useState(null);
   const [selectedCampus, setSelectedCampus] = useState(campusesData[0]);
@@ -129,6 +129,127 @@ const Home = ({ navigateTo, currentUser }) => {
   const [dateStr, setDateStr] = useState('');
   const [registeredCount, setRegisteredCount] = useState(0);
   const [uaStudentCount, setUaStudentCount] = useState(19482);
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  const mapRef = useRef(null);
+  const markersRef = useRef({});
+
+  // 1. Dynamically load Leaflet script & stylesheet from unpkg CDN
+  useEffect(() => {
+    if (window.L) {
+      setMapLoaded(true);
+      return;
+    }
+
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
+    link.crossOrigin = '';
+    document.head.appendChild(link);
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+    script.crossOrigin = '';
+    script.onload = () => {
+      setMapLoaded(true);
+    };
+    document.body.appendChild(script);
+  }, []);
+
+  // 2. Initialize Leaflet Map once script is loaded
+  useEffect(() => {
+    if (!mapLoaded || !window.L || !document.getElementById('leaflet-campus-map')) return;
+
+    const map = window.L.map('leaflet-campus-map', {
+      zoomControl: false,
+      attributionControl: true
+    });
+    mapRef.current = map;
+
+    window.L.control.zoom({ position: 'topright' }).addTo(map);
+
+    const isDark = currentTheme === 'dark';
+    const tileUrl = isDark 
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+
+    window.L.tileLayer(tileUrl, {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+    }).addTo(map);
+
+    const markers = [];
+    const campusesCoords = [
+      { id: 'sibalom', lat: 10.7865, lng: 122.0125 },
+      { id: 'hamtic', lat: 10.6994, lng: 121.9818 },
+      { id: 'tibiao', lat: 11.2922, lng: 122.0384 },
+      { id: 'caluya', lat: 12.1102, lng: 121.5658 },
+      { id: 'libertad', lat: 11.7700, lng: 121.9040 }
+    ];
+
+    campusesData.forEach(campus => {
+      const coord = campusesCoords.find(c => c.id === campus.id);
+      if (coord) {
+        const svgIcon = window.L.divIcon({
+          html: `<div class="custom-leaflet-pin" style="--pin-color: ${campus.color};">
+            <div class="pulse-ring"></div>
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="${campus.color}" stroke="#ffffff" stroke-width="1.5"/>
+            </svg>
+          </div>`,
+          className: 'custom-map-pin',
+          iconSize: [30, 30],
+          iconAnchor: [15, 30]
+        });
+
+        const marker = window.L.marker([coord.lat, coord.lng], { icon: svgIcon }).addTo(map);
+
+        marker.bindPopup(`
+          <div class="leaflet-popup-content-inner">
+            <b>${campus.name}</b>
+            <span>${campus.location}</span>
+          </div>
+        `, {
+          closeButton: false,
+          offset: [0, -20]
+        });
+
+        marker.on('click', () => {
+          setSelectedCampus(campus);
+        });
+
+        markersRef.current[campus.id] = marker;
+        markers.push(marker);
+      }
+    });
+
+    if (markers.length > 0) {
+      const group = new window.L.featureGroup(markers);
+      map.fitBounds(group.getBounds(), { padding: [40, 40] });
+    }
+
+    return () => {
+      map.remove();
+      mapRef.current = null;
+      markersRef.current = {};
+    };
+  }, [mapLoaded, currentTheme]);
+
+  // 3. Pan to active marker when selectedCampus changes from external lists
+  useEffect(() => {
+    if (!mapRef.current || !selectedCampus) return;
+    const marker = markersRef.current[selectedCampus.id];
+    if (marker) {
+      mapRef.current.setView(marker.getLatLng(), Math.max(mapRef.current.getZoom(), 10), {
+        animate: true,
+        duration: 0.8
+      });
+      setTimeout(() => {
+        marker.openPopup();
+      }, 300);
+    }
+  }, [selectedCampus]);
 
   useEffect(() => {
     // 1. Digital Clock ticking
@@ -324,85 +445,8 @@ const Home = ({ navigateTo, currentUser }) => {
             
             <div className="campuses-grid">
               {/* Map Column */}
-              <div className="campus-map-column glass">
-                <div className="map-badge">Interactive Map of Antique</div>
-                <div className="map-wrapper">
-                  <svg viewBox="0 0 120 400" className="campus-svg-map">
-                    {/* Faint coordinate grid lines */}
-                    <line x1="0" y1="100" x2="120" y2="100" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-                    <line x1="0" y1="200" x2="120" y2="200" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-                    <line x1="0" y1="300" x2="120" y2="300" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-                    <line x1="40" y1="0" x2="40" y2="400" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-                    <line x1="80" y1="0" x2="80" y2="400" stroke="var(--border-color)" strokeWidth="0.5" strokeDasharray="3 3" opacity="0.4" />
-                    
-                    {/* Compass Rose icon */}
-                    <g transform="translate(100, 365)" opacity="0.35" stroke="var(--text-secondary)" strokeWidth="1.2" fill="none">
-                      <circle cx="0" cy="0" r="10" strokeDasharray="2 2" />
-                      <line x1="-13" y1="0" x2="13" y2="0" />
-                      <line x1="0" y1="-13" x2="0" y2="13" />
-                      <polygon points="0,-10 2.5,-2.5 0,0 -2.5,-2.5" fill="var(--text-secondary)" />
-                      <polygon points="0,10 2.5,2.5 0,0 -2.5,2.5" fill="var(--text-secondary)" />
-                      <polygon points="10,0 2.5,2.5 0,0 2.5,-2.5" fill="var(--text-secondary)" />
-                      <polygon points="-10,0 -2.5,2.5 0,0 -2.5,-2.5" fill="var(--text-secondary)" />
-                      <text x="-3.5" y="-14" fontSize="7" fontWeight="800" fill="var(--text-secondary)" stroke="none" fontFamily="var(--font-family-heading)">N</text>
-                    </g>
-                    
-                    {/* Province Landmass Polygon (filled) */}
-                    <path 
-                      d="M 60 20 Q 75 60, 68 90 T 50 160 T 55 240 T 48 300 T 45 340 T 35 380 L 42 380 L 52 350 L 58 310 L 65 290 L 70 240 L 68 200 L 64 160 L 70 120 L 80 90 L 77 70 L 73 50 Z" 
-                      fill="var(--primary-glow)" 
-                      stroke="var(--border-color)" 
-                      strokeWidth="1" 
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Actual Coastline path (strong stroke) */}
-                    <path 
-                      d="M 60 20 Q 75 60, 68 90 T 50 160 T 55 240 T 48 300 T 45 340 T 35 380" 
-                      fill="none" 
-                      stroke="var(--primary)" 
-                      strokeWidth="2.5" 
-                      strokeLinecap="round" 
-                    />
-                    
-                    {/* Caluya Island Group representation */}
-                    <circle cx="20" cy="40" r="12" fill="none" stroke="var(--border-color)" strokeWidth="0.75" strokeDasharray="2 2" opacity="0.5" />
-                    <path d="M 16 38 Q 24 35, 22 45 Z" fill="var(--primary-glow)" stroke="var(--primary)" strokeWidth="1.5" />
-                    <path d="M 11 58 Q 17 55, 15 62 Z" fill="var(--primary-glow)" stroke="var(--primary)" strokeWidth="1.5" />
-
-                    {/* Campus Markers */}
-                    {campusesData.map((campus) => {
-                      const isSelected = selectedCampus.id === campus.id;
-                      return (
-                        <g 
-                          key={campus.id} 
-                          className={`map-marker-group ${isSelected ? 'selected' : ''}`}
-                          onMouseEnter={() => setSelectedCampus(campus)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          {/* Pulsing glow ring */}
-                          <circle 
-                            cx={campus.x} 
-                            cy={campus.y} 
-                            r={isSelected ? 10 : 6} 
-                            fill={campus.color} 
-                            opacity={isSelected ? 0.35 : 0.15} 
-                            className="marker-pulse"
-                          />
-                          {/* Inner solid dot */}
-                          <circle 
-                            cx={campus.x} 
-                            cy={campus.y} 
-                            r={isSelected ? 4.5 : 3.5} 
-                            fill={campus.color} 
-                            stroke="#ffffff" 
-                            strokeWidth="1"
-                          />
-                        </g>
-                      );
-                    })}
-                  </svg>
-                </div>
+              <div className="campus-map-column glass" style={{ overflow: 'hidden', padding: 0, position: 'relative' }}>
+                <div id="leaflet-campus-map" style={{ width: '100%', height: '100%', minHeight: '380px', zIndex: 10 }}></div>
               </div>
 
               {/* Detail Column */}

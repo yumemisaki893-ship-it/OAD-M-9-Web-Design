@@ -117,7 +117,7 @@ function App() {
   const renderPage = () => {
     switch (route.page) {
       case 'home':
-        return <Home navigateTo={navigateTo} currentUser={currentUser} />;
+        return <Home navigateTo={navigateTo} currentUser={currentUser} currentTheme={theme} />;
       case 'directory':
         return <Directory navigateTo={navigateTo} currentUser={currentUser} params={route.params} />;
       case 'profile-detail':
