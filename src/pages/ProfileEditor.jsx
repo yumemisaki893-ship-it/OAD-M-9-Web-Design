@@ -522,21 +522,29 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                     list="major-options"
                     id="edit-major"
                     className="form-control"
-                    placeholder="e.g. Computer Science"
+                    placeholder="e.g. Bachelor of Elementary Education"
                     required
                     value={major}
                     onChange={(e) => setMajor(e.target.value)}
                   />
                   <datalist id="major-options">
-                    <option value="Computer Science" />
-                    <option value="Product Design" />
-                    <option value="Data Science" />
-                    <option value="Robotics Engineering" />
-                    <option value="Information Technology" />
-                    <option value="Business Analytics" />
-                    <option value="Mechanical Engineering" />
-                    <option value="Electrical Engineering" />
-                    <option value="Digital Media" />
+                    <option value="Bachelor of Elementary Education" />
+                    <option value="Bachelor of Secondary Education" />
+                    <option value="Bachelor of Science in Agriculture" />
+                    <option value="Bachelor of Science in Fisheries" />
+                    <option value="Bachelor of Science in Forestry" />
+                    <option value="Bachelor of Science in Information Technology" />
+                    <option value="Bachelor of Science in Computer Science" />
+                    <option value="Bachelor of Science in Business Administration" />
+                    <option value="Bachelor of Science in Hospitality Management" />
+                    <option value="Bachelor of Science in Tourism Management" />
+                    <option value="Bachelor of Science in Nursing" />
+                    <option value="Bachelor of Science in Social Work" />
+                    <option value="Bachelor of Science in Criminology" />
+                    <option value="Bachelor of Arts in English" />
+                    <option value="Bachelor of Arts in Filipino" />
+                    <option value="Bachelor of Science in Environmental Science" />
+                    <option value="Bachelor of Public Administration" />
                   </datalist>
                   <div className="form-error-msg">Please specify your major.</div>
                 </div>
@@ -545,7 +553,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
               {/* Tagline Bio */}
               <div className="form-group">
                 <label className="form-label" htmlFor="edit-tagline">Tagline Bio (Short Summary) *</label>
-                <span className="form-hint" id="tagline-hint">A single sentence appearing on your directory card. E.g. fullstack dev, IoT tinkerer</span>
+                <span className="form-hint" id="tagline-hint">A single sentence appearing on your directory card. E.g. aspiring teacher, agriculture enthusiast, future nurse</span>
                 <input
                   type="text"
                   id="edit-tagline"
@@ -562,7 +570,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
               {/* Detailed About Me */}
               <div className="form-group">
                 <label className="form-label" htmlFor="edit-aboutme">About Me (Full Story) *</label>
-                <span className="form-hint">Tell visitors about your background, interests, and what you are learning.</span>
+                <span className="form-hint">Tell visitors about your background, interests, goals, and what you are passionate about.</span>
                 <textarea
                   id="edit-aboutme"
                   className="form-control"
@@ -580,12 +588,12 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
             <div className="editor-form-card glass">
               <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Skills & Tags</h2>
               <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                Add keyword tags representing your programming languages, design tools, or libraries.
+                Add keyword tags representing your skills, expertise, certifications, or areas of interest.
               </p>
 
               <div className="form-group">
                 <label className="form-label" htmlFor="skill-tag-input">Add Skills</label>
-                <span className="form-hint" id="skills-hint">Type a skill (e.g. React, Figma, Python) and press <strong>Enter</strong> or comma to add.</span>
+                <span className="form-hint" id="skills-hint">Type a skill (e.g. Leadership, Research, Public Speaking) and press <strong>Enter</strong> or comma to add.</span>
                 
                 <div className="tags-input-container">
                   {skills.map((skill, index) => (
@@ -605,7 +613,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
                     type="text"
                     id="skill-tag-input"
                     className="tags-input-field"
-                    placeholder={skills.length === 0 ? "e.g. JavaScript" : "Add more..."}
+                    placeholder={skills.length === 0 ? "e.g. Leadership" : "Add more..."}
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
                     onKeyDown={handleSkillKeyDown}
