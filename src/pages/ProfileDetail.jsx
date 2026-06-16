@@ -73,7 +73,11 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
         <p style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
           The student profile you are looking for might have been removed or does not exist.
         </p>
-        <button className="btn btn-primary" onClick={() => navigateTo('directory')}>
+        <button className="btn btn-primary" onClick={() => navigateTo('directory')} style={{ gap: '0.6rem' }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
           Back to Directory
         </button>
       </div>
@@ -109,20 +113,15 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     <div className="profile-detail-page" style={{ position: 'relative' }}>
       <div className="container" style={{ position: 'relative', height: 0, zIndex: 100 }}>
         <button 
-          className="btn btn-secondary btn-sm" 
-          style={{ 
-            position: 'absolute', 
-            top: '1.5rem', 
-            left: '2rem', 
-            minHeight: '34px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-color)',
-            color: 'var(--text-primary)'
-          }}
+          className="btn-back-directory" 
           onClick={() => navigateTo('directory')}
+          aria-label="Back to Directory"
         >
-          ← Back to Directory
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back to Directory
         </button>
       </div>
 
