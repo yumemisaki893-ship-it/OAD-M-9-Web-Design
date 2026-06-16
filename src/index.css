@@ -1065,7 +1065,7 @@ a:hover {
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: 100% auto;
-  filter: blur(8px);
+  filter: blur(5px);
   opacity: 0.9;
   z-index: 0;
   pointer-events: none;
