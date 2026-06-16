@@ -515,171 +515,219 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
         )}
 
         {/* Header Info Card */}
-        <div className="profile-header-card glass" style={{ padding: '1.5rem 2rem', marginBottom: '2rem' }}>
-          <div 
-            style={{ 
-              display: 'flex', 
-              gap: '2rem', 
-              alignItems: 'flex-start',
-              position: 'relative', 
-              zIndex: 10,
-              flexWrap: 'wrap'
-            }}
-            className="profile-header-content"
-          >
-            {/* Circular avatar container overlapping cover photo */}
-<div className="profile-avatar-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '150px' }}>
-  {canEdit && (
-    <button
-      className="btn btn-secondary btn-sm"
-      style={{ marginBottom: '0.5rem', minHeight: '32px' }}
-      onClick={() => navigateTo('edit-profile', { id: student.id })}
-    >
-      Profile Editor
-    </button>
-  )}
-  <div
-    style={{
-      width: '150px',
-      height: '150px',
-      flexShrink: 0,
-      borderRadius: '50%',
-      overflow: 'hidden',
-      border: '6px solid var(--bg-card)',
-      background: 'transparent',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      marginTop: '-50px',
-      position: 'relative',
-      cursor: student.avatarId ? 'pointer' : 'default',
-    }}
-    className="profile-avatar-container"
-    onClick={() => { if (student.avatarId) { setViewerImage(student.avatarId); setViewerCaption(student.name + "'s Profile Photo"); } }}
-    title={student.avatarId ? 'Click to view full size' : ''}
-  >
-    <AvatarImage avatarId={student.avatarId} id={`detail-${student.id}`} />
-    {canEdit && (
-      <>
-        <input
-          type="file"
-          id="inplace-avatar-upload"
-          accept="image/png, image/jpeg, image/jpg"
-          style={{ display: 'none' }}
-          onChange={handleInPlaceAvatarUpload}
-        />
-        <label
-          htmlFor="inplace-avatar-upload"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#fff',
-            opacity: 0,
-            transition: 'opacity 0.2s ease',
-            cursor: 'pointer',
-            gap: '4px',
-          }}
-          className="avatar-upload-overlay"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-            <circle cx="12" cy="13" r="4" />
-          </svg>
-          <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>Change Photo</span>
-        </label>
-      </>
-    )}
-  </div>
-</div>
+        <div className="profile-header-card glass" style={{ padding: '2rem', marginBottom: '2rem', position: 'relative', zIndex: 10 }}>
+          {/* Circular avatar container overlapping cover photo */}
+          <div className="profile-avatar-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '150px', flexShrink: 0 }}>
+            <div
+              style={{
+                width: '150px',
+                height: '150px',
+                flexShrink: 0,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '6px solid var(--bg-card)',
+                background: 'transparent',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                marginTop: '-60px',
+                position: 'relative',
+                cursor: student.avatarId ? 'pointer' : 'default',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+              className="profile-avatar-container"
+              onClick={() => { if (student.avatarId) { setViewerImage(student.avatarId); setViewerCaption(student.name + "'s Profile Photo"); } }}
+              title={student.avatarId ? 'Click to view full size' : ''}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.025)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}
+            >
+              <AvatarImage avatarId={student.avatarId} id={`detail-${student.id}`} />
+              {canEdit && (
+                <>
+                  <input
+                    type="file"
+                    id="inplace-avatar-upload"
+                    accept="image/png, image/jpeg, image/jpg"
+                    style={{ display: 'none' }}
+                    onChange={handleInPlaceAvatarUpload}
+                  />
+                  <label
+                    htmlFor="inplace-avatar-upload"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(0, 0, 0, 0.6)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      opacity: 0,
+                      transition: 'opacity 0.25s ease',
+                      cursor: 'pointer',
+                      gap: '4px',
+                    }}
+                    className="avatar-upload-overlay"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>Change Photo</span>
+                  </label>
+                </>
+              )}
+            </div>
+          </div>
+          
+          {/* Column 2: Meta Info */}
+          <div className="profile-meta" style={{ flex: 1, paddingTop: '0.5rem', paddingLeft: '0.5rem' }}>
+            <h1 style={{ fontSize: '2rem', marginBottom: '0.35rem', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+              {student.name}
+            </h1>
             
-            <div className="profile-meta" style={{ flex: 1, paddingTop: '1rem' }}>
-            <h1 style={{ fontSize: '1.75rem', marginBottom: '0.2rem', fontWeight: 700 }}>{student.name}</h1>
-            <div className="major" style={{ fontSize: '0.95rem', color: 'var(--text-primary)', fontWeight: 600, marginBottom: '0.5rem' }}>{student.major}</div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', maxWidth: '680px' }}>{student.shortBio}</p>
+            {/* Sleek Major/Department Gold Badge */}
+            <div style={{ marginBottom: '0.75rem' }}>
+              <span 
+                className="profile-major-badge"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: '20px',
+                  background: 'rgba(244, 180, 0, 0.1)',
+                  border: '1px solid rgba(244, 180, 0, 0.3)',
+                  color: 'var(--logo-gold, #F4B400)',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em'
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px' }}>
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                  <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+                </svg>
+                {student.major}
+              </span>
+            </div>
+
+            <p style={{ fontSize: '0.925rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', maxWidth: '720px', lineHeight: '1.5' }}>
+              {student.shortBio}
+            </p>
             
-            {/* Quick Contacts */}
-            <div className="profile-contact-list" style={{ marginTop: '0.5rem' }}>
+            {/* Quick Contacts & Socials */}
+            <div className="profile-contact-list">
               {student.email && (
-                <a href={`mailto:${student.email}`} className="contact-link" title="Send Email">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                <a href={`mailto:${student.email}`} className="contact-link-pill" title={`Email: ${student.email}`}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                     <polyline points="22,6 12,13 2,6" />
                   </svg>
                   {student.email}
                 </a>
               )}
-              {student.github && (
-                <a href={student.github} target="_blank" rel="noopener noreferrer" className="contact-link" title="GitHub Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                  </svg>
-                  GitHub
-                </a>
-              )}
-              {student.linkedin && (
-                <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="contact-link" title="LinkedIn Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <rect x="2" y="9" width="4" height="12" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
-                  LinkedIn
-                </a>
-              )}
-              {student.website && (
-                <a href={student.website} target="_blank" rel="noopener noreferrer" className="contact-link" title="Personal Website">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="2" y1="12" x2="22" y2="12" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                  Website
-                </a>
-              )}
-              {student.facebook && (
-                <a href={student.facebook} target="_blank" rel="noopener noreferrer" className="contact-link" title="Facebook Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                  Facebook
-                </a>
-              )}
-              {student.instagram && (
-                <a href={student.instagram} target="_blank" rel="noopener noreferrer" className="contact-link" title="Instagram Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                  </svg>
-                  Instagram
-                </a>
-              )}
-              {student.twitter && (
-                <a href={student.twitter} target="_blank" rel="noopener noreferrer" className="contact-link" title="Twitter / X Profile">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
-                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                  </svg>
-                  Twitter / X
-                </a>
-              )}
               {student.contactNumber && (
-                <a href={`tel:${student.contactNumber.replace(/[^\d+]/g, '')}`} className="contact-link" title="Contact Number">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                <a href={`tel:${student.contactNumber.replace(/[^\d+]/g, '')}`} className="contact-link-pill" title={`Call: ${student.contactNumber}`}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                   </svg>
                   {student.contactNumber}
                 </a>
               )}
+              {student.github && (
+                <a href={student.github} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="GitHub Profile">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                  </svg>
+                </a>
+              )}
+              {student.linkedin && (
+                <a href={student.linkedin} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="LinkedIn Profile">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                    <rect x="2" y="9" width="4" height="12" />
+                    <circle cx="4" cy="4" r="2" />
+                  </svg>
+                </a>
+              )}
+              {student.website && (
+                <a href={student.website} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Personal Website">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  </svg>
+                </a>
+              )}
+              {student.facebook && (
+                <a href={student.facebook} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Facebook Profile">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                  </svg>
+                </a>
+              )}
+              {student.instagram && (
+                <a href={student.instagram} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Instagram Profile">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                  </svg>
+                </a>
+              )}
+              {student.twitter && (
+                <a href={student.twitter} target="_blank" rel="noopener noreferrer" className="contact-link-pill circular" title="Twitter / X Profile">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
+
+          {/* Column 3: Action Panel */}
+          {canEdit && (
+            <div className="profile-header-actions">
+              <button
+                className="btn btn-primary"
+                onClick={() => navigateTo('edit-profile', { id: student.id })}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  borderRadius: '24px',
+                  background: 'linear-gradient(135deg, var(--logo-gold, #F4B400) 0%, #D49B00 100%)',
+                  color: '#000',
+                  border: 'none',
+                  boxShadow: '0 6px 20px rgba(244, 180, 0, 0.25)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  cursor: 'pointer',
+                  minHeight: '44px'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 25px rgba(244, 180, 0, 0.45)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = '0 6px 20px rgba(244, 180, 0, 0.25)';
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+                Profile Editor
+              </button>
+            </div>
+          )}
         </div>
-      </div>
 
       {/* Detailed Content Layout */}
       <div className="profile-layout">

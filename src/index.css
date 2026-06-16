@@ -596,6 +596,7 @@ a:hover {
     flex-direction: column;
     text-align: center;
     padding: 1.5rem;
+    gap: 1.5rem;
   }
 }
 
@@ -621,6 +622,7 @@ a:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-left: 0 !important;
   }
 }
 
@@ -639,7 +641,7 @@ a:hover {
 .profile-contact-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
   margin-top: 0.75rem;
 }
 
@@ -649,18 +651,73 @@ a:hover {
   }
 }
 
-.contact-link {
+/* contact-link-pill styles */
+.contact-link-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: var(--bg-card-glass, rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(244, 180, 0, 0.2);
+  color: var(--text-primary);
+  font-size: 0.825rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.contact-link-pill.circular {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.contact-link-pill svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--logo-gold, #F4B400);
+  fill: none;
+  transition: transform 0.25s ease, stroke 0.25s ease;
+}
+
+.contact-link-pill:hover {
+  background: linear-gradient(135deg, rgba(244, 180, 0, 0.15) 0%, rgba(212, 155, 0, 0.05) 100%);
+  border-color: var(--logo-gold, #F4B400);
+  color: var(--logo-gold, #F4B400);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 180, 0, 0.15);
   text-decoration: none;
 }
 
-.contact-link:hover {
-  color: var(--text-primary);
-  text-decoration: underline;
+.contact-link-pill:hover svg {
+  transform: scale(1.1);
+}
+
+/* For dark/light theme adjustments */
+[data-theme="dark"] .contact-link-pill {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.profile-header-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding-left: 1rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .profile-header-actions {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    justify-content: center;
+    width: 100%;
+    margin-top: 1rem;
+  }
 }
 
 .profile-layout {
