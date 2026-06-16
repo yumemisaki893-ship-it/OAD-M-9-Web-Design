@@ -83,6 +83,11 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
   // Profile Save Status
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  // Extra validation error states
+  const [websiteError, setWebsiteError] = useState('');
+  const [linkedinError, setLinkedinError] = useState('');
+  const [twitterError, setTwitterError] = useState('');
+  const [contactError, setContactError] = useState('');
 
   // Account Security states
   const [newEmail, setNewEmail] = useState(initialProfile?.email || '');
@@ -335,7 +340,37 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
     setSaveSuccess(false);
 
     const form = e.currentTarget;
+    // Reset extra validation errors
+    setWebsiteError('');
+    setLinkedinError('');
+    setTwitterError('');
+    setContactError('');
+
+    // Basic HTML5 validation
     if (!form.checkValidity()) {
+      return;
+    }
+
+    // Extra URL/phone validations
+    const urlRegex = /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/\S*)?$/i;
+    const linkedinRegex = /linkedin\.com\/in\//i;
+    const twitterRegex = /twitter\.com\/|x\.com\//i;
+    const phoneRegex = /^\+?\d{7,15}$/;
+
+    if (website && !urlRegex.test(website)) {
+      setWebsiteError('Please enter a valid URL (e.g., https://example.com).');
+      return;
+    }
+    if (linkedin && !linkedinRegex.test(linkedin)) {
+      setLinkedinError('LinkedIn URL should contain "linkedin.com/in/".');
+      return;
+    }
+    if (twitter && !twitterRegex.test(twitter)) {
+      setTwitterError('Twitter URL should contain "twitter.com" or "x.com".');
+      return;
+    }
+    if (contactNumber && !phoneRegex.test(contactNumber.replace(/[^\d+]/g, ''))) {
+      setContactError('Enter a valid phone number (7-15 digits, optional leading +).');
       return;
     }
 
@@ -1369,27 +1404,33 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="edit-linkedin">LinkedIn Profile Link (URL)</label>
-                  <input
-                    type="url"
-                    id="edit-linkedin"
-                    className="form-control"
-                    placeholder="https://linkedin.com/in/username"
-                    value={linkedin}
-                    onChange={(e) => setLinkedin(e.target.value)}
-                  />
+                    <label className="form-label" htmlFor="edit-linkedin">LinkedIn Profile</label>
+                    <input
+                      type="text"
+                      id="edit-linkedin"
+                      className="form-control"
+                      placeholder="https://linkedin.com/in/username"
+                      value={linkedin}
+                      onChange={(e) => setLinkedin(e.target.value)}
+                    />
+                    {linkedinError && (
+                      <span className="form-hint" style={{ color: 'var(--danger)', marginTop: '0.35rem' }}>{linkedinError}</span>
+                    )}
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="edit-website">Personal Website Link (URL)</label>
-                  <input
-                    type="url"
-                    id="edit-website"
-                    className="form-control"
-                    placeholder="https://yourwebsite.com"
-                    value={website}
-                    onChange={(e) => setWebsite(e.target.value)}
-                  />
+                    <label className="form-label" htmlFor="edit-website">Personal Website</label>
+                    <input
+                      type="text"
+                      id="edit-website"
+                      className="form-control"
+                      placeholder="https://yoursite.com"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                    />
+                    {websiteError && (
+                      <span className="form-hint" style={{ color: 'var(--danger)', marginTop: '0.35rem' }}>{websiteError}</span>
+                    )}
                 </div>
 
                 <div className="form-group">
@@ -1417,27 +1458,33 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="edit-twitter">Twitter / X Profile Link (URL)</label>
-                  <input
-                    type="url"
-                    id="edit-twitter"
-                    className="form-control"
-                    placeholder="https://x.com/username"
-                    value={twitter}
-                    onChange={(e) => setTwitter(e.target.value)}
-                  />
+                    <label className="form-label" htmlFor="edit-twitter">Twitter / X Profile</label>
+                    <input
+                      type="text"
+                      id="edit-twitter"
+                      className="form-control"
+                      placeholder="https://twitter.com/username"
+                      value={twitter}
+                      onChange={(e) => setTwitter(e.target.value)}
+                    />
+                    {twitterError && (
+                      <span className="form-hint" style={{ color: 'var(--danger)', marginTop: '0.35rem' }}>{twitterError}</span>
+                    )}
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="edit-contact">Contact Number / Mobile</label>
-                  <input
-                    type="text"
-                    id="edit-contact"
-                    className="form-control"
-                    placeholder="E.g., +63 912 345 6789"
-                    value={contactNumber}
-                    onChange={(e) => setContactNumber(e.target.value)}
-                  />
+                    <label className="form-label" htmlFor="edit-contact">Contact Number</label>
+                    <input
+                      type="text"
+                      id="edit-contact"
+                      className="form-control"
+                      placeholder="+1234567890"
+                      value={contactNumber}
+                      onChange={(e) => setContactNumber(e.target.value)}
+                    />
+                    {contactError && (
+                      <span className="form-hint" style={{ color: 'var(--danger)', marginTop: '0.35rem' }}>{contactError}</span>
+                    )}
                 </div>
               </div>
 
