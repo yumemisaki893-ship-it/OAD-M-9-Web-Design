@@ -90,8 +90,29 @@ body {
   line-height: 1.5;
   letter-spacing: -0.01em;
   overflow-x: hidden;
-  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-              color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth theme transition for all major elements */
+*,
+*::before,
+*::after {
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              fill 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Exclude elements that need their own fast transitions */
+input, textarea, select,
+.tag-badge,
+.lightbox-overlay,
+.lightbox-image,
+.page-transition-wrapper {
+  transition: none;
 }
 
 /* Scrollbar styling */
@@ -1394,22 +1415,78 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
               transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Theme Toggle Button Rotate Animation */
+/* Theme Toggle Button Animation */
 .theme-toggle-btn {
   overflow: hidden;
   position: relative;
 }
 
 .theme-toggle-icon {
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.3s ease !important;
 }
 
 .theme-toggle-btn:hover .theme-toggle-icon {
-  transform: rotate(20deg) scale(1.05);
+  transform: rotate(25deg) scale(1.1);
 }
 
 .theme-toggle-btn:active .theme-toggle-icon {
-  transform: rotate(180deg) scale(0.85);
+  transform: rotate(360deg) scale(0.8);
+}
+
+/* Animated theme toggle switch */
+.theme-switch {
+  position: relative;
+  width: 56px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-switch-thumb svg {
+  width: 13px;
+  height: 13px;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] .theme-switch-thumb {
+  transform: translateX(28px);
+  background: var(--logo-gold);
+}
+
+[data-theme="dark"] .theme-switch-thumb svg {
+  transform: rotate(-45deg);
+}
+
+[data-theme="light"] .theme-switch-thumb svg {
+  transform: rotate(0deg);
 }
 
 /* Photo Gallery Grid Layout */
