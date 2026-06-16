@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { 
   getStudentById, 
   deleteStudentProfileAndAccount, 
-  signOut
+  signOut,
+  updateStudentProfile
 } from '../utils/storage';
 import { AvatarImage } from '../components/AvatarPicker';
 
@@ -105,6 +106,77 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           if (onLogoutSuccess) onLogoutSuccess();
           navigateTo('home');
         }
+      }
+    }
+  };
+
+  const handleInPlacePhotoUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const currentPhotos = student.photos || [];
+    if (currentPhotos.length >= 50) {
+      alert("Maximum of 50 photos allowed in your gallery album.");
+      return;
+    }
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, and PNG files are supported.");
+      return;
+    }
+
+    if (file.size > 200 * 1024) {
+      alert("File size exceeds 200KB limit. Please optimize your image size.");
+      return;
+    }
+
+    const caption = window.prompt("Enter an optional caption for this photo:") || "";
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const newPhoto = {
+        id: `photo-${Date.now()}`,
+        url: reader.result,
+        caption: caption.trim()
+      };
+      const updatedPhotos = [...currentPhotos, newPhoto];
+
+      try {
+        await updateStudentProfile(student.id, { photos: updatedPhotos });
+        setStudent({ ...student, photos: updatedPhotos });
+      } catch (err) {
+        alert(err.message || "Failed to upload photo.");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleInPlaceEditCaption = async (photoId, currentCaption) => {
+    const newCaption = window.prompt("Edit caption for this photo:", currentCaption);
+    if (newCaption === null) return;
+
+    const updatedPhotos = (student.photos || []).map(p => 
+      p.id === photoId ? { ...p, caption: newCaption.trim() } : p
+    );
+
+    try {
+      await updateStudentProfile(student.id, { photos: updatedPhotos });
+      setStudent({ ...student, photos: updatedPhotos });
+    } catch (err) {
+      alert(err.message || "Failed to update caption.");
+    }
+  };
+
+  const handleInPlaceRemovePhoto = async (photoId) => {
+    if (window.confirm("Are you sure you want to remove this photo from your gallery?")) {
+      const updatedPhotos = (student.photos || []).filter(p => p.id !== photoId);
+
+      try {
+        await updateStudentProfile(student.id, { photos: updatedPhotos });
+        setStudent({ ...student, photos: updatedPhotos });
+      } catch (err) {
+        alert(err.message || "Failed to remove photo.");
       }
     }
   };
@@ -391,32 +463,128 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           </div>
 
           {/* Photo Gallery Section */}
-          {student.photos && student.photos.length > 0 && (
+          {(((student.photos && student.photos.length > 0) || canEdit)) && (
             <div className="profile-section glass">
-              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-                Photo Gallery
-              </h2>
-              <div className="gallery-grid">
-                {student.photos.map((photo, idx) => (
-                  <div 
-                    key={photo.id || idx} 
-                    className="gallery-item"
-                    onClick={() => openLightbox(idx)}
-                  >
-                    <img src={photo.url} alt={photo.caption || `Gallery photo ${idx + 1}`} />
-                    {photo.caption && (
-                      <div className="gallery-caption-overlay">
-                        <span>{photo.caption}</span>
-                      </div>
-                    )}
+              <h2 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  Photo Gallery
+                </div>
+                {canEdit && (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <input 
+                      type="file" 
+                      id="inplace-photo-upload" 
+                      accept="image/png, image/jpeg, image/jpg" 
+                      style={{ display: 'none' }} 
+                      onChange={handleInPlacePhotoUpload} 
+                    />
+                    <label 
+                      htmlFor="inplace-photo-upload" 
+                      className="btn btn-secondary btn-sm" 
+                      style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px', minHeight: '30px', padding: '0.3rem 0.75rem', fontSize: '0.75rem', fontWeight: 600, border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius-md)' }}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '11px', height: '11px' }}>
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Upload Photo
+                    </label>
                   </div>
-                ))}
-              </div>
+                )}
+              </h2>
+              
+              {student.photos && student.photos.length > 0 ? (
+                <div className="gallery-grid">
+                  {student.photos.map((photo, idx) => (
+                    <div 
+                      key={photo.id || idx} 
+                      className="gallery-item"
+                      onClick={() => openLightbox(idx)}
+                      style={{ position: 'relative' }}
+                    >
+                      <img src={photo.url} alt={photo.caption || `Gallery photo ${idx + 1}`} />
+                      {photo.caption && (
+                        <div className="gallery-caption-overlay">
+                          <span>{photo.caption}</span>
+                        </div>
+                      )}
+                      
+                      {canEdit && (
+                        <div 
+                          className="gallery-item-controls"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            position: 'absolute',
+                            top: '0.5rem',
+                            right: '0.5rem',
+                            display: 'flex',
+                            gap: '0.35rem',
+                            zIndex: 10,
+                            opacity: 0,
+                            transition: 'opacity var(--transition-fast)'
+                          }}
+                        >
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            style={{
+                              padding: '0.2rem',
+                              minHeight: '26px',
+                              minWidth: '26px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              background: 'rgba(255, 255, 255, 0.9)',
+                              border: '1px solid var(--border-color)',
+                              color: 'var(--text-primary)',
+                              boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                            }}
+                            onClick={() => handleInPlaceEditCaption(photo.id, photo.caption)}
+                            title="Edit Caption"
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px' }}>
+                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                              <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                            </svg>
+                          </button>
+                          <button
+                            className="btn btn-danger btn-sm"
+                            style={{
+                              padding: '0.2rem',
+                              minHeight: '26px',
+                              minWidth: '26px',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              background: 'rgba(255, 240, 240, 0.9)',
+                              borderColor: 'var(--danger-border)',
+                              color: 'var(--danger)',
+                              boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                            }}
+                            onClick={() => handleInPlaceRemovePhoto(photo.id)}
+                            title="Remove Photo"
+                          >
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '12px', height: '12px' }}>
+                              <polyline points="3 6 5 6 21 6" />
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>
+                  No photos in your gallery yet. Click "Upload Photo" to add some showcase images!
+                </p>
+              )}
             </div>
           )}
         </div>

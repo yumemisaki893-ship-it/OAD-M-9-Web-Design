@@ -1440,6 +1440,10 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 
+.gallery-item:hover .gallery-item-controls {
+  opacity: 1 !important;
+}
+
 [data-theme="dark"] .gallery-item:hover {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
 }
