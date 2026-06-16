@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import { AccountSettings } from './pages/AccountSettings';
 import ProfileDetail from './pages/ProfileDetail';
 import { RegistrarPortal } from './pages/RegistrarPortal';
+import Directory from './pages/Directory';
 import { getCurrentSession, getSessionData, getStudentById } from './utils/storage';
 import { auth, isConfigured } from './utils/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -144,6 +145,8 @@ function App() {
             initialTab="profile"
           />
         );
+      case 'directory':
+        return <Directory navigateTo={navigateTo} currentUser={currentUser} />;
       default:
         return <Home navigateTo={navigateTo} currentUser={currentUser} />;
     }
