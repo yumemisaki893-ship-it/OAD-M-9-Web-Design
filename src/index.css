@@ -12,13 +12,13 @@
   --text-secondary: #666666;
   --text-muted: #888888;
   
-  --primary: #0e1b84; /* Navy blue from logo ring */
-  --primary-hover: #07115c;
-  --primary-glow: rgba(14, 27, 132, 0.05);
+  --primary: #d5001c; /* Red from logo lamp/text */
+  --primary-hover: #a30012;
+  --primary-glow: rgba(213, 0, 28, 0.08);
   
-  --accent: #d5001c; /* Red from logo lamp/text */
-  --accent-hover: #a30012;
-  --accent-glow: rgba(213, 0, 28, 0.08);
+  --accent: #0e1b84; /* Navy blue from logo ring */
+  --accent-hover: #07115c;
+  --accent-glow: rgba(14, 27, 132, 0.05);
   
   --logo-gold: #f4b400; /* Gold/yellow from logo triangle */
   --logo-gold-glow: rgba(244, 180, 0, 0.1);
@@ -56,13 +56,13 @@
   --text-secondary: #888888;
   --text-muted: #555555;
   
-  --primary: #5c70ff; /* Royal blue for dark theme readability */
-  --primary-hover: #7a8cff;
-  --primary-glow: rgba(92, 112, 255, 0.15);
+  --primary: #ff4d64; /* Red for dark theme readability */
+  --primary-hover: #ff7084;
+  --primary-glow: rgba(255, 77, 100, 0.15);
   
-  --accent: #ff4d64; /* Red for dark theme readability */
-  --accent-hover: #ff7084;
-  --accent-glow: rgba(255, 77, 100, 0.15);
+  --accent: #5c70ff; /* Royal blue for dark theme readability */
+  --accent-hover: #7a8cff;
+  --accent-glow: rgba(92, 112, 255, 0.15);
   
   --logo-gold: #ffc800;
   --logo-gold-glow: rgba(255, 200, 0, 0.15);

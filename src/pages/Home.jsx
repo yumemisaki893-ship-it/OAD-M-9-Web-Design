@@ -34,7 +34,7 @@ export const Home = ({ navigateTo, currentUser }) => {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        backgroundImage: 'linear-gradient(rgba(14, 27, 132, 0.7), rgba(0, 0, 0, 0.6)), url("/hero-bg.png")',
+        backgroundImage: 'linear-gradient(rgba(14, 27, 132, 0.7), rgba(0, 0, 0, 0.6)), url("/ua-gate.jpg")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: '#fff',
@@ -158,7 +158,7 @@ export const Home = ({ navigateTo, currentUser }) => {
             </div>
           </div>
           <div style={{ position: 'relative' }}>
-            <div style={{ width: '100%', paddingBottom: '75%', borderRadius: 'var(--border-radius-lg)', background: 'url("/hero-bg.png") center/cover', border: '4px solid var(--logo-gold)' }}></div>
+            <div style={{ width: '100%', paddingBottom: '75%', borderRadius: 'var(--border-radius-lg)', background: 'url("/ua-gate.jpg") center/cover', border: '4px solid var(--logo-gold)' }}></div>
           </div>
         </div>
       </section>
