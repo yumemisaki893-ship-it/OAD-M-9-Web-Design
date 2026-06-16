@@ -1050,6 +1050,11 @@ a:hover {
   flex-direction: column;
   flex: 1;
   width: 100%;
+  position: relative;
+  background-image: url('/statue.png');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: 100% auto;
 }
 
 .home-hero {
@@ -1232,7 +1237,7 @@ a:hover {
 }
 
 .home-vision-mission {
-  background: linear-gradient(to bottom, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  background: transparent;
   border-top: 1px solid var(--border-color);
   padding: 5rem 2rem;
   width: 100%;
