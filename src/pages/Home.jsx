@@ -18,8 +18,8 @@ const Home = ({ navigateTo, currentUser }) => {
   };
 
   return (
-    <div className="home-container" style={{ background: '#0a0a0a', minHeight: '100vh', color: '#fff' }}>
-      {/* Cinematic Hero Section */}
+    <div className="home-container">
+      {/* Cinematic Hero Section - Fixed dark overlay to ensure white text is readable */}
       <section 
         className="hero-section" 
         style={{ 
@@ -28,7 +28,7 @@ const Home = ({ navigateTo, currentUser }) => {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          backgroundImage: 'linear-gradient(to bottom, rgba(10,10,10,0.6) 0%, rgba(10,10,10,0.95) 100%), url("/ua-gate.jpg")',
+          backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 100%), url("/ua-gate.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
@@ -47,7 +47,7 @@ const Home = ({ navigateTo, currentUser }) => {
             <span style={{ 
               display: 'inline-block', 
               padding: '0.4rem 1.2rem', 
-              background: 'rgba(20,20,20,0.8)', 
+              background: 'rgba(0,0,0,0.5)', 
               border: '1px solid rgba(255, 200, 0, 0.4)', 
               borderRadius: '30px', 
               fontSize: '0.85rem', 
@@ -60,7 +60,7 @@ const Home = ({ navigateTo, currentUser }) => {
             </span>
           </div>
 
-          <h1 className="hero-title" style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.03em' }}>
+          <h1 className="hero-title" style={{ fontSize: 'clamp(3rem, 6vw, 5.5rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: '1.5rem', letterSpacing: '-0.03em', color: '#fff' }}>
             Access your official <br />
             <span style={{ 
               background: 'linear-gradient(90deg, #ffc800, #ff4d64)', 
@@ -70,7 +70,7 @@ const Home = ({ navigateTo, currentUser }) => {
             }}>academic records.</span>
           </h1>
           
-          <p className="hero-subtitle" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.3rem)', color: '#888', maxWidth: '700px', margin: '0 auto 3rem', lineHeight: 1.6, fontWeight: 400 }}>
+          <p className="hero-subtitle" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.3rem)', color: '#ccc', maxWidth: '700px', margin: '0 auto 3rem', lineHeight: 1.6, fontWeight: 400 }}>
             A curated platform for students to present their projects, highlight specialized skills, and establish an early career presence.
           </p>
 
@@ -79,14 +79,14 @@ const Home = ({ navigateTo, currentUser }) => {
               className="btn btn-primary" 
               onClick={handlePrimaryAction}
               style={{ 
-                background: '#ff4d64', 
+                background: 'var(--primary)', 
                 color: '#fff', 
                 border: 'none', 
                 padding: '0.9rem 2.2rem', 
                 fontSize: '1.05rem', 
                 fontWeight: 600, 
-                borderRadius: '6px',
-                boxShadow: '0 8px 25px rgba(255, 77, 100, 0.3)',
+                borderRadius: 'var(--border-radius-lg)',
+                boxShadow: '0 8px 25px var(--primary-glow)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
               }}
@@ -97,13 +97,13 @@ const Home = ({ navigateTo, currentUser }) => {
               className="btn" 
               onClick={handleSecondaryAction}
               style={{ 
-                background: 'rgba(20,20,20,0.8)', 
+                background: 'rgba(0,0,0,0.5)', 
                 color: '#fff', 
-                border: '1px solid rgba(255,255,255,0.1)', 
+                border: '1px solid rgba(255,255,255,0.2)', 
                 padding: '0.9rem 2.2rem', 
                 fontSize: '1.05rem', 
                 fontWeight: 600, 
-                borderRadius: '6px',
+                borderRadius: 'var(--border-radius-lg)',
                 backdropFilter: 'blur(10px)',
                 transition: 'all 0.3s ease',
                 cursor: 'pointer'
@@ -115,20 +115,20 @@ const Home = ({ navigateTo, currentUser }) => {
         </div>
       </section>
 
-      {/* Vision, Mission, Mandate Section */}
-      <section style={{ padding: '6rem 1.5rem', background: '#0a0a0a' }}>
+      {/* Vision, Mission, Mandate Section - Responsive to light/dark mode */}
+      <section className="home-vision-mission" style={{ padding: '6rem 1.5rem', background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
         <div className="container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
           
           {/* Language Selector */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '3rem' }}>
-            <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '30px', padding: '0.25rem' }}>
+            <div style={{ display: 'inline-flex', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '30px', padding: '0.25rem' }}>
               {['en', 'fil', 'kr'].map((lang) => (
                 <button
                   key={lang}
                   onClick={() => setActiveLang(lang)}
                   style={{
-                    background: activeLang === lang ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    color: activeLang === lang ? '#fff' : '#888',
+                    background: activeLang === lang ? 'var(--primary-glow)' : 'transparent',
+                    color: activeLang === lang ? 'var(--primary)' : 'var(--text-secondary)',
                     border: 'none',
                     padding: '0.5rem 1.5rem',
                     borderRadius: '20px',
@@ -145,11 +145,11 @@ const Home = ({ navigateTo, currentUser }) => {
           </div>
 
           {/* Mandate */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '2.5rem', marginBottom: '2rem', backdropFilter: 'blur(10px)' }}>
-            <div style={{ display: 'inline-block', background: 'rgba(255, 200, 0, 0.1)', color: '#ffc800', padding: '0.3rem 0.8rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
+          <div className="glass statement-card mandates-card" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
+            <div className="statement-badge" style={{ display: 'inline-block', background: 'var(--logo-gold-glow)', color: 'var(--logo-gold)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-sm)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
               Mandate
             </div>
-            <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: '#ccc' }}>
+            <p className="statement-text" style={{ fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
               {activeLang === 'en' && "The University shall primarily provide advanced education, higher technological, professional instruction and training in the fields of education, agriculture, forestry, fishery, maritime education, ecology, engineering, philosophy, information and communications technology, letters, arts and sciences, nursing, medicine and other relevant fields of study. It shall also undertake research and extension services in support of the socioeconomic development of Antique, and provide progressive leadership in its areas of specialization."}
               {activeLang === 'fil' && "Pangunahing magbibigay ang Unibersidad ng mas mataas na edukasyon, mas mataas na teknolohikal, propesyonal na pagtuturo at pagsasanay sa mga larangan ng edukasyon, agrikultura, paggugubat, pangingisda, edukasyong maritima, ekolohiya, inhinyeriya, pilosopiya, teknolohiya ng impormasyon at komunikasyon, panitikan, sining at agham, pag-aalaga, medisina at iba pang kaugnay na larangan ng pag-aaral. Magsasagawa rin ito ng mga serbisyong pananaliksik at pagpapalawig bilang suporta sa sosyoekonomikong pag-unlad ng Antique, at magbibigay ng progresibong pamumuno sa mga larangan ng espesyalisasyon nito."}
               {activeLang === 'kr' && "Ang Unibersidad ang magaserbe nga panguna nga dalan para sa abanse nga edukasyon, teknolohiya, kag paghanas sa mga kurso parehas kang edukasyon, agrikultura, panggubat kang kagulangan, pangisda, maritime, ekolohiya, inhenyeriya, pilosopiya, ICT, literatura, sining kag agham, narsing, medisina, kag iba pa nga importante nga kurso. Magapatigayon man dya kang mga pananaliksik kag serbisyo sa komunidad para sa pag-uswag kang ekonomiya kag sosyedad sa Antique, kag magaserbe nga giya sa mga kahanas nga dya nagakabase."}
@@ -157,24 +157,24 @@ const Home = ({ navigateTo, currentUser }) => {
           </div>
 
           {/* Vision and Mission Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+          <div className="vision-mission-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
             
-            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '2.5rem', backdropFilter: 'blur(10px)' }}>
-              <div style={{ display: 'inline-block', background: 'rgba(255, 77, 100, 0.1)', color: '#ff4d64', padding: '0.3rem 0.8rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
+            <div className="glass statement-card vision-card" style={{ padding: '2.5rem' }}>
+              <div className="statement-badge" style={{ display: 'inline-block', background: 'var(--primary-glow)', color: 'var(--primary)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-sm)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
                 Vision
               </div>
-              <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: '#ccc' }}>
+              <p className="statement-text" style={{ fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
                 {activeLang === 'en' && "A premier university in transforming lives, and building sustainable and resilient communities"}
                 {activeLang === 'fil' && "Nangungunang Pamantasan sa pagbabanyuhay at sa pagtatag ng matibay at likas-kayang komunidad"}
                 {activeLang === 'kr' && "Nagapanguna nga institusyon sa pagpabag-o kang kabuhi kag pagbalay kang mapag-on kag mapinadayunon nga komunidad"}
               </p>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', padding: '2.5rem', backdropFilter: 'blur(10px)' }}>
-              <div style={{ display: 'inline-block', background: 'rgba(92, 112, 255, 0.1)', color: '#5c70ff', padding: '0.3rem 0.8rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
+            <div className="glass statement-card mission-card" style={{ padding: '2.5rem' }}>
+              <div className="statement-badge" style={{ display: 'inline-block', background: 'var(--accent-glow)', color: 'var(--accent)', padding: '0.3rem 0.8rem', borderRadius: 'var(--border-radius-sm)', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.5rem' }}>
                 Mission
               </div>
-              <p style={{ fontSize: '1.1rem', lineHeight: 1.7, color: '#ccc' }}>
+              <p className="statement-text" style={{ fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--text-primary)' }}>
                 {activeLang === 'en' && "To uplift the lives of the Antiqueños and the Filipinos, UA shall produce empowered individuals through quality instruction, innovative research and development programs, sustainable resource generation activities, and relevant extension services."}
                 {activeLang === 'fil' && "Upang maiangat ang pamumuhay ng mga Antiqueño at ng mga Pilipino, ang UA ay lilikha ng mga indibidwal na may kakayahan sa pamamagitan ng dekalidad na pagtuturo, makabagong pananaliksik at mga programa sa pagpapaunlad, mga likas-kayang aktibidad sa pagbuo ng mapagkukunan, at mga kaugnay na serbisyo ng pagpapalawig."}
                 {activeLang === 'kr' && "Agud mapabakod ang kabuhi kang mga Antiqueño kag Pilipino, ang UA magapabaskug kang mga indibidwal paagi sa kalidad nga edukasyon, inobatibo nga pananaliksik kag programa sa pag-uswag, masustenir nga pagpangita kang pondo, kag mga nagakabagay nga serbisyo sa komunidad."}
