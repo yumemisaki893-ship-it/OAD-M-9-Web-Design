@@ -42,119 +42,57 @@ export const OfficePromotion = ({ navigateTo, currentUser }) => {
         </section>
 
         {/* Program Core Content */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+        <div className="vision-mission-grid animate-slide-up-delay-1" style={{ maxWidth: '1100px', margin: '0 auto 4rem' }}>
           
           {/* Core Course Topics Card */}
-          <div className="office-card animate-slide-up-delay-1">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.75rem' }}>
-              <div className="office-icon-box" style={{ background: 'var(--primary-glow)', color: 'var(--primary)', marginBottom: 0 }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '22px', height: '22px' }}>
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                </svg>
-              </div>
-              <h2 style={{ fontSize: '1.4rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800 }}>
-                Curriculum & Major Topics
-              </h2>
-            </div>
-            
-            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', marginBottom: '1.75rem', lineHeight: '1.6' }}>
-              The BSOA curriculum blends advanced technical skills, administrative software processing, and organizational management methodologies. Key areas of study include:
+          <div className="glass statement-card" style={{ minHeight: 'auto' }}>
+            <div className="statement-badge">Curriculum</div>
+            <h2 style={{ fontSize: '1.4rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800, color: '#ffffff' }}>
+              Curriculum & Major Topics
+            </h2>
+            <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.85)', marginBottom: '0.5rem', lineHeight: '1.6' }}>
+              The BSOA curriculum blends advanced technical skills, administrative software processing, and organizational management methodologies.
             </p>
-            
-            <ul className="office-list">
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Administrative Office Management:</strong> Planning, organizing, and controlling office operations, resources, and facilities.
-                </div>
+            <ul className="objectives-list" style={{ marginTop: '0.5rem' }}>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Administrative Office Management</strong> — Planning, organizing, and controlling office operations, resources, and facilities.
               </li>
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Advanced Document Processing:</strong> Expert speeds in keyboarding, advanced formatting, spreadsheet models, and digital templates.
-                </div>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Advanced Document Processing</strong> — Expert speeds in keyboarding, advanced formatting, spreadsheet models, and digital templates.
               </li>
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Records & Information Management:</strong> Design and audit of secure physical and digital database filing frameworks.
-                </div>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Records & Information Management</strong> — Design and audit of secure physical and digital database filing frameworks.
               </li>
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Business Communication:</strong> Report drafting, executive letters, presentation delivery, and virtual meeting coordination.
-                </div>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Business Communication</strong> — Report drafting, executive letters, presentation delivery, and virtual meeting coordination.
               </li>
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Customer Relations Management:</strong> Excellence in client-facing communications and high-touch corporate services.
-                </div>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Customer Relations Management</strong> — Excellence in client-facing communications and high-touch corporate services.
               </li>
-              <li className="office-list-item">
-                <span className="office-list-bullet">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px' }}>
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </span>
-                <div>
-                  <strong style={{ color: 'var(--text-primary)' }}>Office Technology & Software:</strong> Practical mastery of enterprise productivity suites (Microsoft 365, Google Workspace, CRM tools).
-                </div>
+              <li className="objective-item" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>
+                <strong style={{ color: '#ffffff' }}>Office Technology & Software</strong> — Practical mastery of enterprise productivity suites (Microsoft 365, Google Workspace, CRM tools).
               </li>
             </ul>
           </div>
 
           {/* Importance of Profession Card */}
-          <div className="office-card animate-slide-up-delay-2" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.75rem' }}>
-                <div className="office-icon-box" style={{ background: 'var(--accent-glow)', color: 'var(--accent)', marginBottom: 0 }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '22px', height: '22px' }}>
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                </div>
-                <h2 style={{ fontSize: '1.4rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800 }}>
-                  Importance as a Profession
-                </h2>
-              </div>
-              
-              <p style={{ fontSize: '0.975rem', color: 'var(--text-secondary)', lineHeight: '1.75', marginBottom: '1.5rem' }}>
-                In the modern business landscape, Office Administrators are the <strong>essential structural backbone</strong> of any successful enterprise. They act as strategic coordinators, communication hubs, and digital system controllers.
-              </p>
-              
-              <p style={{ fontSize: '0.975rem', color: 'var(--text-secondary)', lineHeight: '1.75', marginBottom: '1.5rem' }}>
-                From streamlining operations and maintaining records safety to coordinating executive tasks, administrators possess the versatile skills needed to optimize business productivity and client satisfaction across diverse environments.
-              </p>
-              
-              <p style={{ fontSize: '0.975rem', color: 'var(--text-secondary)', lineHeight: '1.75', margin: 0 }}>
-                As business environments become more decentralized and virtual, the demand for office managers who are proficient in digital tools, cloud databases, and hybrid collaboration continues to grow.
-              </p>
-            </div>
+          <div className="glass statement-card" style={{ minHeight: 'auto' }}>
+            <div className="statement-badge">Why It Matters</div>
+            <h2 style={{ fontSize: '1.4rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800, color: '#ffffff' }}>
+              Importance as a Profession
+            </h2>
+            <p className="statement-text" style={{ fontSize: '0.975rem', lineHeight: '1.75', margin: 0 }}>
+              In the modern business landscape, Office Administrators are the <strong>essential structural backbone</strong> of any successful enterprise. They act as strategic coordinators, communication hubs, and digital system controllers.
+            </p>
+            <p className="statement-text" style={{ fontSize: '0.975rem', lineHeight: '1.75', margin: 0 }}>
+              From streamlining operations and maintaining records safety to coordinating executive tasks, administrators possess the versatile skills needed to optimize business productivity and client satisfaction across diverse environments.
+            </p>
+            <p className="statement-text" style={{ fontSize: '0.975rem', lineHeight: '1.75', margin: 0 }}>
+              As business environments become more decentralized and virtual, the demand for office managers who are proficient in digital tools, cloud databases, and hybrid collaboration continues to grow.
+            </p>
 
-            <div style={{ marginTop: '2.5rem', padding: '1.25rem', background: 'var(--bg-secondary)', borderLeft: '4px solid var(--primary)', borderRadius: 'var(--border-radius-md)', backdropFilter: 'blur(5px)' }}>
-              <p style={{ fontSize: '0.9rem', fontStyle: 'italic', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div style={{ padding: '1.25rem', background: 'rgba(255, 255, 255, 0.12)', borderLeft: '4px solid var(--logo-gold)', borderRadius: 'var(--border-radius-md)', backdropFilter: 'blur(5px)' }}>
+              <p style={{ fontSize: '0.9rem', fontStyle: 'italic', color: 'rgba(255, 255, 255, 0.9)', margin: 0, lineHeight: '1.5' }}>
                 "Administrators transform organizational complexity into efficient daily workflows."
               </p>
             </div>
@@ -163,78 +101,86 @@ export const OfficePromotion = ({ navigateTo, currentUser }) => {
         </div>
 
         {/* Career Opportunities */}
-        <section className="office-card animate-slide-up-delay-2" style={{ marginBottom: '4rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '2.5rem' }}>
-            <div className="office-icon-box" style={{ background: 'var(--logo-gold-glow)', color: 'var(--logo-gold)', marginBottom: 0 }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '22px', height: '22px' }}>
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-              </svg>
-            </div>
-            <h2 style={{ fontSize: '1.6rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800 }}>
-              Career Pathways & Opportunities
-            </h2>
-          </div>
-
-          <div className="office-career-grid">
+        <div className="goals-section animate-slide-up-delay-2" style={{ marginTop: 0, marginBottom: '4rem' }}>
+          <h2>Career Pathways & Opportunities</h2>
+          <div className="office-career-grid" style={{ maxWidth: '900px', margin: '0 auto' }}>
             
-            <div className="office-card office-career-card">
-              <h3 className="office-career-title">Executive Assistant</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Executive Assistant
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Direct assistant to executive suites, coordinating agendas, managing high-level relationships, and reviewing executive reports.
               </p>
             </div>
 
-            <div className="office-card office-career-card accent-gold">
-              <h3 className="office-career-title">Office Manager / Supervisor</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Office Manager / Supervisor
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Coordinates office operations, supervises support staff, oversees budget management, and streamlines office technology implementation.
               </p>
             </div>
 
-            <div className="office-card office-career-card accent-red">
-              <h3 className="office-career-title">Records & Database Admin</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Records & Database Admin
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Manages structural document safety, digital directories database, classification architectures, and document life-cycles.
               </p>
             </div>
 
-            <div className="office-card office-career-card accent-gold">
-              <h3 className="office-career-title">Virtual Assistant / Remote Admin</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Virtual Assistant / Remote Admin
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Provides cloud administrative support, calendar management, and client communication services to global partners remotely.
               </p>
             </div>
 
-            <div className="office-card office-career-card accent-red">
-              <h3 className="office-career-title">Customer Relations Lead</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Customer Relations Lead
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Leads communications at the front desk, client inquiries resolution, database registrations, and client reception facilities.
               </p>
             </div>
 
-            <div className="office-card office-career-card">
-              <h3 className="office-career-title">Human Resources Assistant</h3>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+            <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
+              <div className="statement-badge">Career</div>
+              <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: '#ffffff' }}>
+                Human Resources Assistant
+              </h3>
+              <p className="statement-text" style={{ fontSize: '0.9rem', margin: 0, lineHeight: '1.55' }}>
                 Coordinates employee documentation files, job recruitment agendas, new hire orientation schedules, and benefits logs.
               </p>
             </div>
 
           </div>
-        </section>
+        </div>
 
         {/* Explore Section */}
-        <section className="office-card office-cta-panel animate-slide-up-delay-2">
-          <h2 style={{ fontSize: '1.6rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800 }}>
+        <section className="glass statement-card animate-slide-up-delay-2" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', minHeight: 'auto' }}>
+          <div className="statement-badge">Explore</div>
+          <h2 style={{ fontSize: '1.6rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 800, color: '#ffffff' }}>
             Meet Our Office Administration Students
           </h2>
-          <p style={{ maxWidth: '640px', fontSize: '1rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.6' }}>
+          <p className="statement-text" style={{ maxWidth: '640px', fontSize: '1rem', margin: 0, lineHeight: '1.6' }}>
             Review the digital portfolios, capstone projects, curriculum vitae, and specialized tech skills of our current BSOA students.
           </p>
           <button 
             className="btn btn-primary btn-lg-premium" 
             onClick={handleExplorePortfolios}
-            style={{ marginTop: '0.5rem' }}
+            style={{ marginTop: '0.5rem', background: 'var(--logo-gold)', borderColor: 'var(--logo-gold)', color: '#000' }}
           >
             View BSOA Portfolios
           </button>
