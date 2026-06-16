@@ -546,43 +546,6 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 </a>
               )}
             </div>
-
-            {student.resume && (
-              <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                <a
-                  href={student.resume.dataUrl}
-                  download={student.resume.name}
-                  className="btn btn-secondary btn-sm"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.6rem',
-                    minHeight: '34px',
-                    padding: '0.35rem 0.85rem',
-                    fontSize: '0.8rem',
-                    background: 'rgba(255, 255, 255, 0.06)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid var(--border-color)',
-                    color: 'var(--text-primary)',
-                    borderRadius: 'var(--border-radius-sm)',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease-in-out'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)'}
-                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'}
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', color: 'var(--accent)' }}>
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="16" y1="13" x2="8" y2="13" />
-                    <line x1="16" y1="17" x2="8" y2="17" />
-                  </svg>
-                  <span>View/Download Resume ({student.resume.name.split('.').pop().toUpperCase()})</span>
-                </a>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -603,16 +566,100 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
             <p className="about-text">{student.aboutMe || "No detailed description written yet."}</p>
           </div>
 
-          {/* Project Showcase Section */}
+
+
+          {/* CV / Resume Section (Default) */}
           <div className="profile-section glass">
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
               </svg>
-              Project Showreel
+              CV / Resume
             </h2>
-            {student.projects && student.projects.length > 0 ? (
+            {student.resume ? (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  padding: '1rem 1.25rem',
+                  background: 'var(--bg-secondary)',
+                  borderRadius: 'var(--border-radius-md)',
+                  border: '1px solid var(--border-color)'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, var(--accent), var(--accent-hover))',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '22px', height: '22px' }}>
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontWeight: 600, fontSize: '0.95rem', marginBottom: '0.15rem', color: 'var(--text-primary)' }}>
+                      {student.resume.name}
+                    </p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                      {student.resume.name.split('.').pop().toUpperCase()} Document
+                    </p>
+                  </div>
+                  <a
+                    href={student.resume.dataUrl}
+                    download={student.resume.name}
+                    className="btn btn-primary btn-sm"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem 1.1rem',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>
+                No CV or resume uploaded yet.
+              </p>
+            )}
+          </div>
+
+          {/* Project Showcase Section */}
+          {student.projects && student.projects.length > 0 && (
+            <div className="profile-section glass">
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                </svg>
+                Project Showreel
+              </h2>
               <div className="projects-grid">
                 {student.projects.map((proj, idx) => (
                   <div key={proj.id || idx} className="project-item">
@@ -634,12 +681,8 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   </div>
                 ))}
               </div>
-            ) : (
-              <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                No projects added to showcase yet. Check back soon!
-              </p>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Photo Gallery Section */}
           {(((student.photos && student.photos.length > 0) || canEdit)) && (
