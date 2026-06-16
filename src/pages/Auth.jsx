@@ -139,18 +139,6 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
   return (
     <div className="auth-page-container">
       <div className="auth-centered-wrapper animate-fade-in">
-        <div 
-          className="auth-logo-wrapper" 
-          onClick={() => navigateTo('home')} 
-        >
-          <img 
-            src="/ua-logo.png" 
-            alt="University of Antique Logo" 
-            className="auth-logo-img animate-slide-up"
-          />
-          <span className="auth-logo-title animate-slide-up-delay-1">PortfolioHub</span>
-        </div>
-
         <div className="auth-card animate-slide-up-delay-1">
           <div className="auth-header">
             <h1>{isLogin ? 'Welcome back!' : "Let's get started!"}</h1>
