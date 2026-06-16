@@ -568,6 +568,10 @@ a:hover {
   border: 1px solid var(--border-color);
 }
 
+.profile-avatar-container:hover .avatar-upload-overlay {
+  opacity: 1 !important;
+}
+
 .profile-meta {
   flex: 1;
   text-align: left;

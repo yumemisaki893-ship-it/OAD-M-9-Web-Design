@@ -131,7 +131,11 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       return;
     }
 
-    const caption = window.prompt("Enter an optional caption for this photo:") || "";
+    const caption = window.prompt("Enter an optional caption for this photo:");
+    if (caption === null) {
+      e.target.value = null;
+      return;
+    }
 
     const reader = new FileReader();
     reader.onloadend = async () => {
@@ -150,6 +154,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       }
     };
     reader.readAsDataURL(file);
+    e.target.value = null;
   };
 
   const handleInPlaceEditCaption = async (photoId, currentCaption) => {
@@ -181,6 +186,73 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     }
   };
 
+  const handleInPlaceCoverUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, and PNG files are supported.");
+      return;
+    }
+
+    if (file.size > 300 * 1024) {
+      alert("File size exceeds 300KB limit. Please optimize your cover photo size.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        await updateStudentProfile(student.id, { coverPhotoUrl: reader.result });
+        setStudent({ ...student, coverPhotoUrl: reader.result });
+      } catch (err) {
+        alert(err.message || "Failed to upload cover photo.");
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
+
+  const handleInPlaceRemoveCover = async () => {
+    if (window.confirm("Are you sure you want to remove your cover photo?")) {
+      try {
+        await updateStudentProfile(student.id, { coverPhotoUrl: '' });
+        setStudent({ ...student, coverPhotoUrl: '' });
+      } catch (err) {
+        alert(err.message || "Failed to remove cover photo.");
+      }
+    }
+  };
+
+  const handleInPlaceAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, and PNG files are supported.");
+      return;
+    }
+
+    if (file.size > 300 * 1024) {
+      alert("File size exceeds 300KB limit. Please optimize your profile photo size.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        await updateStudentProfile(student.id, { avatarId: reader.result });
+        setStudent({ ...student, avatarId: reader.result });
+      } catch (err) {
+        alert(err.message || "Failed to upload profile photo.");
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = null;
+  };
+
   return (
     <div className="profile-detail-page" style={{ position: 'relative' }}>
       <div className="container" style={{ position: 'relative', height: 0, zIndex: 100 }}>
@@ -198,14 +270,79 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       </div>
 
       {/* Full Width Cover Photo */}
-      <div 
-        style={{ 
-          width: '100%', 
-          aspectRatio: '21 / 9', 
-          background: student.coverPhotoUrl ? `url(${student.coverPhotoUrl}) center/cover no-repeat` : 'var(--bg-secondary)',
-          borderBottom: '1px solid var(--border-color)'
-        }}
-      ></div>
+      <div style={{ position: 'relative', width: '100%' }}>
+        <div 
+          style={{ 
+            width: '100%', 
+            aspectRatio: '21 / 9', 
+            background: student.coverPhotoUrl ? `url(${student.coverPhotoUrl}) center/cover no-repeat` : 'var(--bg-secondary)',
+            borderBottom: '1px solid var(--border-color)'
+          }}
+        ></div>
+        {canEdit && (
+          <div style={{ position: 'absolute', right: '1.5rem', bottom: '1.5rem', zIndex: 10, display: 'flex', gap: '0.5rem' }}>
+            <input 
+              type="file" 
+              id="inplace-cover-upload" 
+              accept="image/png, image/jpeg, image/jpg" 
+              style={{ display: 'none' }} 
+              onChange={handleInPlaceCoverUpload} 
+            />
+            <label 
+              htmlFor="inplace-cover-upload" 
+              className="btn btn-secondary btn-sm" 
+              style={{ 
+                cursor: 'pointer', 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '6px', 
+                background: 'rgba(255, 255, 255, 0.85)',
+                color: 'var(--text-primary)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid var(--border-color)',
+                padding: '0.4rem 0.8rem',
+                borderRadius: '20px',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '13px', height: '13px' }}>
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+              Update Cover
+            </label>
+            {student.coverPhotoUrl && (
+              <button
+                className="btn btn-danger btn-sm"
+                style={{
+                  minHeight: '32px',
+                  minWidth: '32px',
+                  borderRadius: '50%',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'rgba(255, 240, 240, 0.9)',
+                  borderColor: 'var(--danger-border)',
+                  color: 'var(--danger)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                  cursor: 'pointer',
+                  padding: 0
+                }}
+                onClick={handleInPlaceRemoveCover}
+                title="Remove Cover Photo"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '13px', height: '13px' }}>
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="container profile-detail" style={{ marginTop: '-80px' }}>
 
@@ -274,18 +411,60 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
             className="profile-header-content"
           >
             {/* Circular avatar container overlapping cover photo */}
-            <div style={{ 
-              width: '150px', 
-              height: '150px', 
-              flexShrink: 0, 
-              borderRadius: '50%', 
-              overflow: 'hidden',
-              border: '6px solid var(--bg-card)',
-              background: 'var(--bg-card)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              marginTop: '-50px'
-            }}>
+            <div 
+              style={{ 
+                width: '150px', 
+                height: '150px', 
+                flexShrink: 0, 
+                borderRadius: '50%', 
+                overflow: 'hidden',
+                border: '6px solid var(--bg-card)',
+                background: 'var(--bg-card)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                marginTop: '-50px',
+                position: 'relative'
+              }}
+              className="profile-avatar-container"
+            >
               <AvatarImage avatarId={student.avatarId} id={`detail-${student.id}`} />
+              {canEdit && (
+                <>
+                  <input 
+                    type="file" 
+                    id="inplace-avatar-upload" 
+                    accept="image/png, image/jpeg, image/jpg" 
+                    style={{ display: 'none' }} 
+                    onChange={handleInPlaceAvatarUpload} 
+                  />
+                  <label 
+                    htmlFor="inplace-avatar-upload"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      background: 'rgba(0, 0, 0, 0.5)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      opacity: 0,
+                      transition: 'opacity 0.2s ease',
+                      cursor: 'pointer',
+                      gap: '4px'
+                    }}
+                    className="avatar-upload-overlay"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                      <circle cx="12" cy="13" r="4" />
+                    </svg>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>Change Photo</span>
+                  </label>
+                </>
+              )}
             </div>
             
             <div className="profile-meta" style={{ flex: 1, paddingTop: '1rem' }}>
