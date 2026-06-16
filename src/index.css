@@ -2070,7 +2070,13 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   left: 25%;
   width: 50%;
   height: 3px;
-  background: var(--logo-gold);
+  background: linear-gradient(135deg, 
+    var(--accent) 0%, 
+    var(--logo-gold) 50%, 
+    var(--primary) 100%
+  );
+  background-size: 200% auto;
+  animation: textGradientMove 4s ease infinite;
   border-radius: var(--border-radius-sm);
 }
 
