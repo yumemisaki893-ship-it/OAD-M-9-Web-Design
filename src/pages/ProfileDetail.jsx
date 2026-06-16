@@ -920,15 +920,16 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
               </div>
             </div>
           )}
+
           {/* Skills Section */}
-          <div className="profile-section glass">
-            <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
-                <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-              Specialized Skills
-            </h2>
-            {student.skills && student.skills.length > 0 ? (
+          {student.skills && student.skills.length > 0 && (
+            <div className="profile-section glass">
+              <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '15px', height: '15px' }}>
+                  <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                Specialized Skills
+              </h2>
               <div className="detail-skills-list">
                 {student.skills.map((skill, index) => (
                   <span key={index} className="badge badge-primary" style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}>
@@ -936,9 +937,6 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   </span>
                 ))}
               </div>
-            ) : (
-              <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>No skills listed.</p>
-            )}
           </div>
 
           {/* CV / Resume Section (Default) */}
