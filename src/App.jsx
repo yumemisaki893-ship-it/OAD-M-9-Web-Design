@@ -5,6 +5,7 @@ import ProfileDetail from './pages/ProfileDetail';
 import Auth from './pages/Auth';
 import ProfileEditor from './pages/ProfileEditor';
 import Home from './pages/Home';
+import SecuritySettings from './pages/SecuritySettings';
 import { getCurrentSession, getSessionData, getStudentById } from './utils/storage';
 import { auth, isConfigured } from './utils/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -141,6 +142,14 @@ function App() {
             params={route.params}
             navigateTo={navigateTo} 
             onProfileUpdate={handleProfileUpdate} 
+          />
+        );
+      case 'security-settings':
+        return (
+          <SecuritySettings 
+            currentUser={currentUser} 
+            navigateTo={navigateTo}
+            onProfileUpdate={handleProfileUpdate}
           />
         );
       default:

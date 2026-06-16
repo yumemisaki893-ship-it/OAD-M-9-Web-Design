@@ -152,6 +152,13 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
                   )}
                   <a 
                     href="#" 
+                    onClick={(e) => { e.preventDefault(); setFlyoutOpen(false); navigateTo('security-settings'); }}
+                    className="flyout-link"
+                  >
+                    Account Security
+                  </a>
+                  <a 
+                    href="#" 
                     onClick={(e) => { e.preventDefault(); handleLogout(); }}
                     className="flyout-link"
                     style={{ color: 'var(--danger)' }}

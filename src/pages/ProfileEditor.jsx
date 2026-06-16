@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getStudentById, updateStudentProfile, deleteStudentProfileAndAccount, signOut, updateUserEmail, updateUserPassword } from '../utils/storage';
+import { getStudentById, updateStudentProfile, deleteStudentProfileAndAccount, signOut } from '../utils/storage';
 import { AvatarPicker, AvatarImage } from '../components/AvatarPicker';
 import { ProjectManager } from '../components/ProjectManager';
 
@@ -31,16 +31,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Account Security States
-  const [newEmail, setNewEmail] = useState('');
-  const [emailSuccess, setEmailSuccess] = useState(false);
-  const [emailError, setEmailError] = useState('');
-  
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
+
 
   // Load student profile details on mount
   useEffect(() => {
@@ -76,7 +67,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
         setIsPublic(profile.isPublic !== false);
 
         setResume(profile.resume || null);
-        setNewEmail(profile.email || '');
+
       }
     };
     loadProfile();
@@ -227,59 +218,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
     }
   };
 
-  const handleUpdateEmail = async (e) => {
-    e.preventDefault();
-    setEmailError('');
-    setEmailSuccess(false);
 
-    if (!newEmail.trim()) {
-      setEmailError('Email is required.');
-      return;
-    }
-
-    try {
-      await updateUserEmail(student.id, newEmail);
-      setEmailSuccess(true);
-      onProfileUpdate(); // Sync navbar email instantly
-      setTimeout(() => setEmailSuccess(false), 3000);
-    } catch (err) {
-      setEmailError(err.message || 'Failed to update email.');
-    }
-  };
-
-  const handleUpdatePassword = async (e) => {
-    e.preventDefault();
-    setPasswordError('');
-    setPasswordSuccess(false);
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError('All password fields are required.');
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError('Passwords do not match.');
-      return;
-    }
-
-    // Password complexity check: 8+ chars, 1 uppercase, 1 number, 1 special
-    const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}/;
-    if (!passwordRegex.test(newPassword)) {
-      setPasswordError('Password must be at least 8 characters and contain 1 uppercase letter, 1 number, and 1 special character.');
-      return;
-    }
-
-    try {
-      await updateUserPassword(student.id, currentPassword, newPassword);
-      setPasswordSuccess(true);
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      setTimeout(() => setPasswordSuccess(false), 3000);
-    } catch (err) {
-      setPasswordError(err.message || 'Failed to update password.');
-    }
-  };
 
   // Handle Skills Tag Adding
   const handleSkillKeyDown = (e) => {
@@ -940,105 +879,7 @@ export const ProfileEditor = ({ currentUser, params, navigateTo, onProfileUpdate
               </div>
             </div>
 
-            {/* Account Security Card (Only visible to the profile owner) */}
-            {currentUser && currentUser.studentId === student.id && (
-              <div className="editor-form-card glass">
-                <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Account Security Settings</h2>
-                <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                  Manage your account credentials and login details.
-                </p>
 
-                {/* Change Email */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label" htmlFor="sec-new-email">Change Email Address</label>
-                    <input
-                      type="email"
-                      id="sec-new-email"
-                      className="form-control"
-                      placeholder="new-email@university.edu"
-                      value={newEmail}
-                      onChange={(e) => setNewEmail(e.target.value)}
-                    />
-                  </div>
-                  {emailSuccess && (
-                    <div style={{ color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 600 }}>
-                      ✓ Email address updated successfully!
-                    </div>
-                  )}
-                  {emailError && (
-                    <div style={{ color: 'var(--danger)', fontSize: '0.8rem', fontWeight: 600 }}>
-                      ❌ {emailError}
-                    </div>
-                  )}
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary btn-sm" 
-                    style={{ alignSelf: 'flex-start', minHeight: '34px' }}
-                    onClick={handleUpdateEmail}
-                  >
-                    Update Email Address
-                  </button>
-                </div>
-
-                <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '1.5rem 0' }} />
-
-                {/* Change Password */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label" htmlFor="sec-curr-pass">Current Password</label>
-                    <input
-                      type="password"
-                      id="sec-curr-pass"
-                      className="form-control"
-                      placeholder="••••••••"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label" htmlFor="sec-new-pass">New Password</label>
-                    <input
-                      type="password"
-                      id="sec-new-pass"
-                      className="form-control"
-                      placeholder="••••••••"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label className="form-label" htmlFor="sec-conf-pass">Confirm New Password</label>
-                    <input
-                      type="password"
-                      id="sec-conf-pass"
-                      className="form-control"
-                      placeholder="••••••••"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                  </div>
-                  {passwordSuccess && (
-                    <div style={{ color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 600 }}>
-                      ✓ Password updated successfully!
-                    </div>
-                  )}
-                  {passwordError && (
-                    <div style={{ color: 'var(--danger)', fontSize: '0.8rem', fontWeight: 600 }}>
-                      ❌ {passwordError}
-                    </div>
-                  )}
-                  <button 
-                    type="button" 
-                    className="btn btn-secondary btn-sm" 
-                    style={{ alignSelf: 'flex-start', minHeight: '34px' }}
-                    onClick={handleUpdatePassword}
-                  >
-                    Update Password
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* Submit Action */}
             <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'flex-end', marginBottom: '3rem', alignItems: 'center' }}>
