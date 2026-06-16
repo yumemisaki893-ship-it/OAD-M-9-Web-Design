@@ -3695,6 +3695,42 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 }
 
 [data-theme="dark"] .campus-info-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.5);
+  text-align: left;
+  flex: 1;
+}
+
+[data-theme="dark"] .campus-info-card {
+  background: rgba(12, 12, 12, 0.55);
+}
+
+/* Image styling for campus popups */
+.campus-popup-img {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* Image styling for campus detail card */
+.campus-info-img {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.campus-contact p {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+}
   background: rgba(12, 12, 12, 0.55);
 }
 

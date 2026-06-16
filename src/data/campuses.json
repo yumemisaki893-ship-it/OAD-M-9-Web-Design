@@ -1,0 +1,67 @@
+[
+  {
+    "id": "sibalom",
+    "name": "Sibalom (Main Campus)",
+    "location": "Sibalom, Antique",
+    "specialization": "Engineering, ICT, Teacher Education, Arts & Sciences, Nursing & Health Sciences, Criminology",
+    "description": "The administrative heart and largest campus of the University, offering comprehensive advanced technological and professional instruction.",
+    "established": "1954",
+    "color": "var(--accent)",
+    "photo": "https://source.unsplash.com/featured/400x300?university",
+    "address": "University of Antique, Sibalom, Antique, Philippines",
+    "phone": "+63 91 123 4567",
+    "email": "sibalom@ua.edu.ph"
+  },
+  {
+    "id": "hamtic",
+    "name": "Hamtic Campus",
+    "location": "Hamtic, Antique",
+    "specialization": "Agriculture, Forestry, Food Technology, Agricultural Engineering",
+    "description": "Dedicated to agro-forestry research and development, producing leading experts in sustainable agriculture and land conservation.",
+    "established": "1980",
+    "color": "var(--logo-gold)",
+    "photo": "https://source.unsplash.com/featured/400x300?agriculture",
+    "address": "Hamtic Campus, University of Antique, Hamtic, Antique, Philippines",
+    "phone": "+63 92 234 5678",
+    "email": "hamtic@ua.edu.ph"
+  },
+  {
+    "id": "tibiao",
+    "name": "Tibiao Campus",
+    "location": "Tibiao, Antique",
+    "specialization": "Maritime Studies, Fisheries, Marine Biology, Technology",
+    "description": "A premier hub for maritime education and marine biology, situated along the rich coastal waters of northern Antique.",
+    "established": "1982",
+    "color": "var(--primary)",
+    "photo": "https://source.unsplash.com/featured/400x300?maritime",
+    "address": "Tibiao Campus, University of Antique, Tibiao, Antique, Philippines",
+    "phone": "+63 93 345 6789",
+    "email": "tibiao@ua.edu.ph"
+  },
+  {
+    "id": "caluya",
+    "name": "Caluya Campus",
+    "location": "Caluya Island, Antique",
+    "specialization": "Fisheries, Agriculture, Technology, Vocational Education",
+    "description": "Serving offshore island communities, specializing in sustainable island agriculture, marine aquaculture, and local entrepreneurship.",
+    "established": "1994",
+    "color": "#10b981",
+    "photo": "https://source.unsplash.com/featured/400x300?island",
+    "address": "Caluya Campus, University of Antique, Caluya, Antique, Philippines",
+    "phone": "+63 94 456 7890",
+    "email": "caluya@ua.edu.ph"
+  },
+  {
+    "id": "libertad",
+    "name": "Libertad Campus",
+    "location": "Libertad, Antique",
+    "specialization": "Information Technology, Hospitality Management, Technology & Vocational Education",
+    "description": "Serving the northernmost tip of Antique, providing quality education in technology and hospitality management to empower local communities.",
+    "established": "2009",
+    "color": "#ff33b5",
+    "photo": "https://source.unsplash.com/featured/400x300?technology",
+    "address": "Libertad Campus, University of Antique, Libertad, Antique, Philippines",
+    "phone": "+63 95 567 8901",
+    "email": "libertad@ua.edu.ph"
+  }
+]

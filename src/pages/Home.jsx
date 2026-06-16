@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getStudents } from '../utils/storage';
+import campusesData from '../data/campuses.json';
 
 const goalsData = [
   {
@@ -61,65 +62,7 @@ const goalsData = [
       "Objective 5.2. To build safe, secure, gender responsive, sustainable environment, and student friendly campuses"
     ]
   }
-];
-
-const campusesData = [
-  {
-    id: 'sibalom',
-    name: "Sibalom (Main Campus)",
-    location: "Sibalom, Antique",
-    specialization: "Engineering, ICT, Teacher Education, Arts & Sciences, Nursing & Health Sciences, Criminology",
-    description: "The administrative heart and largest campus of the University, offering comprehensive advanced technological and professional instruction.",
-    established: "1954",
-    x: 62,
-    y: 300,
-    color: "var(--accent)"
-  },
-  {
-    id: 'hamtic',
-    name: "Hamtic Campus",
-    location: "Hamtic, Antique",
-    specialization: "Agriculture, Forestry, Food Technology, Agricultural Engineering",
-    description: "Dedicated to agro-forestry research and development, producing leading experts in sustainable agriculture and land conservation.",
-    established: "1980",
-    x: 36,
-    y: 370,
-    color: "var(--logo-gold)"
-  },
-  {
-    id: 'tibiao',
-    name: "Tibiao Campus",
-    location: "Tibiao, Antique",
-    specialization: "Maritime Studies, Fisheries, Marine Biology, Technology",
-    description: "A premier hub for maritime education and marine biology, situated along the rich coastal waters of northern Antique.",
-    established: "1982",
-    x: 70,
-    y: 90,
-    color: "var(--primary)"
-  },
-  {
-    id: 'caluya',
-    name: "Caluya Campus",
-    location: "Caluya Island, Antique",
-    specialization: "Fisheries, Agriculture, Technology, Vocational Education",
-    description: "Serving offshore island communities, specializing in sustainable island agriculture, marine aquaculture, and local entrepreneurship.",
-    established: "1994",
-    x: 18,
-    y: 42,
-    color: "#10b981"
-  },
-  {
-    id: 'libertad',
-    name: "Libertad Campus",
-    location: "Libertad, Antique",
-    specialization: "Information Technology, Hospitality Management, Technology & Vocational Education",
-    description: "Serving the northernmost tip of Antique, providing quality education in technology and hospitality management to empower local communities.",
-    established: "2009",
-    x: 62,
-    y: 22,
-    color: "#ff33b5"
-  }
-];
+];// campuses data imported from '../data/campuses.json'];
 
 const Home = ({ navigateTo, currentUser, currentTheme }) => {
   const [activeLang, setActiveLang] = useState('en'); // 'en' | 'fil' | 'kr'
@@ -205,12 +148,14 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
 
         const marker = window.L.marker([coord.lat, coord.lng], { icon: svgIcon }).addTo(map);
 
-        marker.bindPopup(`
-          <div class="leaflet-popup-content-inner">
-            <b>${campus.name}</b>
-            <span>${campus.location}</span>
-          </div>
-        `, {
+        marker.bindPopup(`<div className=\"leaflet-popup-content-inner campus-popup\">
+  <img src=\"${campus.photo}\" alt=\"${campus.name} photo\" className=\"campus-popup-img\" />
+  <b>${campus.name}</b><br/>
+  <span>${campus.location}</span><br/>
+  <span>${campus.address}</span><br/>
+  <span>📞 ${campus.phone}</span><br/>
+  <span>✉️ ${campus.email}</span>
+</div>`, {
           closeButton: false,
           offset: [0, -20]
         });
@@ -488,7 +433,13 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
                   </div>
 
                   <div className="campus-card-body">
+                    <img src={selectedCampus.photo} alt={`${selectedCampus.name} photo`} className="campus-info-img" />
                     <p className="campus-desc">{selectedCampus.description}</p>
+                    <div className="campus-contact">
+                      <p><strong>Address:</strong> {selectedCampus.address}</p>
+                      <p><strong>Phone:</strong> {selectedCampus.phone}</p>
+                      <p><strong>Email:</strong> {selectedCampus.email}</p>
+                    </div>
                     <div className="campus-specializations">
                       <div className="spec-label">Key Specializations</div>
                       <p className="spec-text">{selectedCampus.specialization}</p>
