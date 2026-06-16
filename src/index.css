@@ -1051,10 +1051,24 @@ a:hover {
   flex: 1;
   width: 100%;
   position: relative;
+  overflow: hidden;
+}
+
+.home-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image: url('/statue.png');
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: 100% auto;
+  filter: blur(8px);
+  opacity: 0.9;
+  z-index: 0;
+  pointer-events: none;
 }
 
 .home-hero {
@@ -1241,6 +1255,8 @@ a:hover {
   border-top: 1px solid var(--border-color);
   padding: 5rem 2rem;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .section-header {
