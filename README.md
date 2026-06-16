@@ -1,3 +1,4 @@
+<img width="1791" height="891" alt="Screenshot 2026-06-16 at 11 38 42 PM" src="https://github.com/user-attachments/assets/aba594aa-9ab8-46d2-9664-15e53345e80f" />
 # OAD M-9 Web Design
 
 A premium, state-of-the-art Student Portfolio Registry and Directory platform designed for the **University of Antique**. Built with a sleek, glassmorphic UI, modern layouts, dynamic client-side state persistence, and full administrator controls.
