@@ -217,9 +217,35 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>© {new Date().getFullYear()} University of Antique. Student Registrar & Academic Portal.</p>
+      <footer className="footer ust-footer">
+        <div className="container footer-grid">
+          <div className="footer-col">
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+              <img src="/ua-logo.png" alt="Logo" style={{ width: '30px', height: '30px' }} />
+              University of Antique
+            </h3>
+            <p>Sibalom, Antique, 5713</p>
+            <p>Philippines</p>
+            <p>Phone: (036) 543-8571</p>
+            <p>Email: info@antiquespride.edu.ph</p>
+          </div>
+          <div className="footer-col">
+            <h4>Quick Links</h4>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>About UA</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('programs-offered'); }}>Academics</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('directory'); }}>Admissions</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>Research & Extension</a>
+          </div>
+          <div className="footer-col">
+            <h4>Resources</h4>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>University Library</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>Alumni Relations</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>Careers at UA</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigateTo('home'); }}>Campus Map</a>
+          </div>
+        </div>
+        <div className="container footer-bottom">
+          <p>© {new Date().getFullYear()} University of Antique. All rights reserved.</p>
         </div>
       </footer>
     </>

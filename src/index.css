@@ -3260,3 +3260,106 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 [data-theme="light"] .admin-table tbody tr:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
+
+
+/* --- UST Style Layout Overhaul --- */
+
+.top-bar {
+  background: var(--primary);
+  color: #fff;
+}
+
+.top-bar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.top-bar a:hover {
+  color: var(--logo-gold);
+}
+
+.ust-navbar {
+  padding: 0.5rem 0;
+}
+
+.desktop-menu .nav-link {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.desktop-menu .nav-link:hover {
+  color: var(--logo-gold);
+}
+
+@media (max-width: 900px) {
+  .desktop-menu .nav-link {
+    display: none;
+  }
+  .mobile-only-links {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+.ust-footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 3rem 0 1rem;
+  margin-top: auto;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footer-col h4 {
+  margin-bottom: 1rem;
+  color: var(--primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.footer-col p {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.footer-col a {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.footer-col a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
