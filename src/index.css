@@ -1014,21 +1014,25 @@ a:hover {
 
 .badge-promo {
   display: inline-block;
-  padding: 0.5rem 1.2rem;
-  border-radius: var(--border-radius-sm);
-  background: var(--logo-gold-glow);
-  border: 1.5px solid var(--logo-gold);
-  font-size: 0.85rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(244, 180, 0, 0.45);
+  font-size: 0.825rem;
   font-weight: 600;
-  color: var(--logo-gold);
+  color: #cc9600;
   margin-bottom: 2rem;
   letter-spacing: -0.01em;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 [data-theme="dark"] .badge-promo {
-  background: var(--logo-gold-glow);
-  border: 1.5px solid var(--logo-gold);
+  background: rgba(10, 10, 10, 0.45);
+  border: 1px solid rgba(255, 200, 0, 0.3);
   color: var(--logo-gold);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
 .hero-title {
