@@ -6,22 +6,27 @@
   --bg-secondary: #fafafa;
   --bg-card: #ffffff;
   --border-color: #eaeaea;
-  --border-hover: #089241;
+  --border-hover: #d5001c;
   
   --text-primary: #111111;
   --text-secondary: #666666;
   --text-muted: #888888;
   
-  --primary: #089241; /* Green from logo flora */
-  --primary-hover: #067c37;
-  --primary-glow: rgba(8, 146, 65, 0.08);
+  --primary: #d5001c; /* Red from logo */
+  --primary-hover: #b80017;
+  --primary-glow: rgba(213, 0, 28, 0.08);
   
-  --accent: #d5001c; /* Red from logo lamp/text */
-  --accent-hover: #a30012;
-  --accent-glow: rgba(213, 0, 28, 0.12);
+  --accent: #f4b400; /* Gold from logo */
+  --accent-hover: #dba200;
+  --accent-glow: rgba(244, 180, 0, 0.12);
   
   --logo-gold: #f4b400; /* Gold/yellow from logo triangle */
   --logo-gold-glow: rgba(244, 180, 0, 0.15);
+  
+  /* Blue for minor buttons */
+  --blue-button: #0e1b84;
+  --blue-button-hover: #07115c;
+  --blue-button-glow: rgba(14, 27, 132, 0.12);
   
   --danger: #e00000;
   --danger-bg: #fff0f0;
@@ -39,9 +44,9 @@
   --transition-fast: 0.12s ease;
   
   /* Layout - Sharp Edges */
-  --border-radius-sm: 2px;
-  --border-radius-md: 4px;
-  --border-radius-lg: 6px;
+  --border-radius-sm: 0px;
+  --border-radius-md: 0px;
+  --border-radius-lg: 0px;
 }
 
 /* Minimalist Dark Theme Overrides */
@@ -50,22 +55,27 @@
   --bg-secondary: #121212;
   --bg-card: #0a0a0a;
   --border-color: #262626;
-  --border-hover: #39d353;
+  --border-hover: #ff4d64;
   
   --text-primary: #ededed;
   --text-secondary: #888888;
   --text-muted: #555555;
   
-  --primary: #39d353; /* Green for dark theme readability */
-  --primary-hover: #2ea44f;
-  --primary-glow: rgba(57, 211, 83, 0.22);
+  --primary: #ff4d64; /* Red for dark theme readability */
+  --primary-hover: #ff7084;
+  --primary-glow: rgba(255, 77, 100, 0.22);
   
-  --accent: #ff4d64; /* Red for dark theme readability */
-  --accent-hover: #ff7084;
-  --accent-glow: rgba(255, 77, 100, 0.22);
+  --accent: #ffc800; /* Gold for dark theme readability */
+  --accent-hover: #ffd54f;
+  --accent-glow: rgba(255, 200, 0, 0.22);
   
   --logo-gold: #ffc800;
   --logo-gold-glow: rgba(255, 200, 0, 0.22);
+  
+  /* Blue for minor buttons */
+  --blue-button: #5c70ff;
+  --blue-button-hover: #7a8cff;
+  --blue-button-glow: rgba(92, 112, 255, 0.22);
   
   --danger: #ff3333;
   --danger-bg: rgba(255, 51, 51, 0.06);
@@ -243,14 +253,16 @@ a:hover {
 }
 
 .btn-secondary {
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  color: var(--text-primary);
+  background: transparent;
+  border-color: var(--blue-button);
+  color: var(--blue-button);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-primary);
-  border-color: var(--text-muted);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
+  color: #ffffff;
+  box-shadow: 0 4px 12px var(--blue-button-glow);
 }
 
 .btn-danger {
@@ -666,7 +678,7 @@ a:hover {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: var(--border-radius-sm);
   background: var(--bg-card-glass, rgba(255, 255, 255, 0.05));
   border: 1px solid rgba(244, 180, 0, 0.2);
   color: var(--text-primary);
@@ -1195,7 +1207,7 @@ a:hover {
 .badge-promo {
   display: inline-block;
   padding: 0.5rem 1.25rem;
-  border-radius: 30px;
+  border-radius: var(--border-radius-sm);
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
@@ -1321,7 +1333,7 @@ a:hover {
   align-items: center;
   gap: 1.25rem;
   padding: 0.6rem 1.5rem;
-  border-radius: 50px;
+  border-radius: var(--border-radius-md);
   background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -2297,7 +2309,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   font-weight: 600;
   padding: 0.5rem 1.1rem;
   min-height: 36px;
-  border-radius: 50px;
+  border-radius: var(--border-radius-md);
   backdrop-filter: blur(12px) saturate(190%);
   -webkit-backdrop-filter: blur(12px) saturate(190%);
   background: rgba(10, 10, 10, 0.45);
@@ -2328,24 +2340,24 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 [data-theme="light"] .btn-back-directory {
   background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(8, 146, 65, 0.15);
-  color: var(--primary);
-  box-shadow: 0 4px 15px rgba(8, 146, 65, 0.08);
+  border-color: rgba(14, 27, 132, 0.15);
+  color: var(--blue-button);
+  box-shadow: 0 4px 15px rgba(14, 27, 132, 0.08);
 }
 
 .btn-back-directory:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--primary-glow);
+  box-shadow: 0 8px 24px var(--blue-button-glow);
 }
 
 [data-theme="light"] .btn-back-directory:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(8, 146, 65, 0.2);
+  box-shadow: 0 8px 24px rgba(14, 27, 132, 0.2);
 }
 
 .btn-back-directory:active {
@@ -3004,7 +3016,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 10% 20%, rgba(8, 146, 65, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 10% 20%, rgba(213, 0, 28, 0.06) 0%, transparent 45%),
     radial-gradient(circle at 90% 80%, rgba(244, 180, 0, 0.08) 0%, transparent 50%),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.94) 70%, var(--bg-primary) 100%);
   z-index: 1;
@@ -3013,7 +3025,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 [data-theme="dark"] .office-promo-container::before {
   background: 
-    radial-gradient(circle at 10% 20%, rgba(57, 211, 83, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 10% 20%, rgba(255, 77, 100, 0.08) 0%, transparent 45%),
     radial-gradient(circle at 90% 80%, rgba(255, 200, 0, 0.12) 0%, transparent 50%),
     linear-gradient(to bottom, rgba(10, 10, 10, 0.85) 0%, rgba(10, 10, 10, 0.97) 70%, var(--bg-primary) 100%);
 }
@@ -3246,16 +3258,16 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 .student-card.glass:hover {
   transform: translateY(-5px);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08), 
-              0 2px 8px rgba(8, 146, 65, 0.04),
+              0 2px 8px rgba(213, 0, 28, 0.04),
               inset 0 1px 1px rgba(255, 255, 255, 0.6);
-  border-color: rgba(8, 146, 65, 0.2);
+  border-color: rgba(213, 0, 28, 0.2);
 }
 
 [data-theme="dark"] .student-card.glass:hover {
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 
-              0 2px 8px rgba(57, 211, 83, 0.1),
+              0 2px 8px rgba(255, 77, 100, 0.1),
               inset 0 1px 1px rgba(255, 255, 255, 0.05);
-  border-color: rgba(57, 211, 83, 0.3);
+  border-color: rgba(255, 77, 100, 0.3);
 }
 
 /* Timeline Indicators on profile page */
@@ -3373,7 +3385,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ededed;
   padding: 0.5rem 1.1rem;
-  border-radius: 50px;
+  border-radius: var(--border-radius-md);
   font-size: 0.825rem;
   font-weight: 600;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
@@ -3383,22 +3395,22 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 [data-theme="light"] .cover-edit-actions label {
   background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(8, 146, 65, 0.15);
-  color: var(--primary);
-  box-shadow: 0 4px 15px rgba(8, 146, 65, 0.08);
+  border-color: rgba(14, 27, 132, 0.15);
+  color: var(--blue-button);
+  box-shadow: 0 4px 15px rgba(14, 27, 132, 0.08);
 }
 
 .cover-edit-actions label:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--primary-glow);
+  box-shadow: 0 8px 24px var(--blue-button-glow);
 }
 
 [data-theme="light"] .cover-edit-actions label:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
 }
 
@@ -3463,7 +3475,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   font-weight: 600;
   padding: 0.5rem 1.1rem;
   min-height: 36px;
-  border-radius: 50px;
+  border-radius: var(--border-radius-md);
   backdrop-filter: blur(12px) saturate(190%);
   -webkit-backdrop-filter: blur(12px) saturate(190%);
   background: rgba(10, 10, 10, 0.45);
@@ -3477,22 +3489,22 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 [data-theme="light"] .btn-back-profile {
   background: rgba(255, 255, 255, 0.65);
-  border-color: rgba(8, 146, 65, 0.15);
-  color: var(--primary);
-  box-shadow: 0 4px 15px rgba(8, 146, 65, 0.08);
+  border-color: rgba(14, 27, 132, 0.15);
+  color: var(--blue-button);
+  box-shadow: 0 4px 15px rgba(14, 27, 132, 0.08);
 }
 
 .btn-back-profile:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--primary-glow);
+  box-shadow: 0 8px 24px var(--blue-button-glow);
 }
 
 [data-theme="light"] .btn-back-profile:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--blue-button);
+  border-color: var(--blue-button);
   color: #ffffff;
 }
 
@@ -3927,6 +3939,114 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 
 [data-theme="dark"] .leaflet-popup-tip {
   background: rgba(18, 18, 18, 0.95) !important;
+}
+
+/* Less opacity blacks for My Profile layout */
+.profile-detail-page {
+  background: var(--bg-primary);
+}
+
+/* Translucent dark panels for the profile page layout */
+.profile-detail-page .glass,
+.profile-detail-page .profile-header-card,
+.profile-detail-page .profile-section,
+.profile-detail-page .project-item,
+.profile-detail-page .timeline-content,
+.profile-detail-page .contact-link-pill {
+  background: rgba(12, 12, 12, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Specific borders/accents for profile layout */
+.profile-detail-page .profile-header-card {
+  border-left: 4px solid var(--logo-gold) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.09) !important;
+}
+
+.profile-detail-page .profile-section {
+  border-left: 3px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.profile-detail-page .profile-section:hover {
+  border-left-color: var(--logo-gold) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 4px 16px var(--logo-gold-glow) !important;
+}
+
+.profile-detail-page .project-item {
+  border-left: 3px solid var(--primary) !important;
+}
+
+.profile-detail-page .project-item:hover {
+  border-color: var(--logo-gold) !important;
+  border-left-color: var(--logo-gold) !important;
+}
+
+/* Ensure text inside cards is highly readable in high-contrast light colors */
+.profile-detail-page .profile-meta h1,
+.profile-detail-page .profile-meta .major,
+.profile-detail-page .profile-section h2,
+.profile-detail-page .about-text,
+.profile-detail-page .project-item h3,
+.profile-detail-page .project-item p,
+.profile-detail-page .timeline-content h3,
+.profile-detail-page .timeline-content p,
+.profile-detail-page .timeline-date,
+.profile-detail-page .contact-link-pill,
+.profile-detail-page .profile-meta .campus-badge,
+.profile-detail-page .profile-meta .major-badge,
+.profile-detail-page .profile-meta div,
+.profile-detail-page .spec-label,
+.profile-detail-page h1,
+.profile-detail-page h2,
+.profile-detail-page h3,
+.profile-detail-page h4,
+.profile-detail-page p,
+.profile-detail-page span,
+.profile-detail-page li {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.profile-detail-page .profile-section h2 {
+  color: var(--logo-gold) !important; /* Gold headings on dark translucent cards */
+}
+
+.profile-detail-page .profile-meta .major {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.profile-detail-page .profile-meta .campus-card-loc {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.profile-detail-page .contact-link-pill {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(244, 180, 0, 0.25) !important;
+}
+
+.profile-detail-page .contact-link-pill svg {
+  stroke: var(--logo-gold) !important;
+}
+
+.profile-detail-page .contact-link-pill:hover {
+  background: rgba(244, 180, 0, 0.18) !important;
+  border-color: var(--logo-gold) !important;
+  color: var(--logo-gold) !important;
+}
+
+.profile-detail-page .contact-link-pill:hover svg {
+  stroke: var(--logo-gold) !important;
+}
+
+.profile-detail-page .badge-major {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
 }
 
 
