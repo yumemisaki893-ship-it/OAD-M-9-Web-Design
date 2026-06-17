@@ -1249,28 +1249,40 @@ a:hover {
   }
 }
 
-.hero-title-gradient {
+.hero-title-gradient,
+.hero h1 span,
+.profile-meta h1,
+.auth-card h1,
+.auth-header h1 {
   background: linear-gradient(135deg, 
-    var(--accent) 0%, 
-    var(--logo-gold) 50%, 
-    var(--accent) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textGradientMove 6s ease infinite;
+    #f4b400 0%, 
+    #ff7300 25%, 
+    #d5001c 50%, 
+    #ff7300 75%, 
+    #f4b400 100%
+  ) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: textGradientMove 6s ease infinite !important;
   display: inline-block;
 }
 
-[data-theme="dark"] .hero-title-gradient {
+[data-theme="dark"] .hero-title-gradient,
+[data-theme="dark"] .hero h1 span,
+[data-theme="dark"] .profile-meta h1,
+[data-theme="dark"] .auth-card h1,
+[data-theme="dark"] .auth-header h1 {
   background: linear-gradient(135deg, 
-    var(--accent) 0%, 
-    var(--logo-gold) 50%, 
-    var(--accent) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+    #ffc800 0%, 
+    #ff6d00 25%, 
+    #ff4d64 50%, 
+    #ff6d00 75%, 
+    #ffc800 100%
+  ) !important;
+  background-size: 200% auto !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 .hero-subtitle {
@@ -2083,10 +2095,10 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
   width: 50%;
   height: 3px;
   background: linear-gradient(135deg, 
-    var(--accent) 0%, 
-    var(--logo-gold) 25%, 
-    #10b981 50%, 
-    var(--primary) 75%
+    #f4b400 0%, 
+    #ff7300 33%, 
+    #d5001c 66%, 
+    #f4b400 100%
   );
   background-size: 200% auto;
   animation: textGradientMove 4s ease infinite;
@@ -3988,7 +4000,6 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 }
 
 /* Ensure text inside cards is highly readable in high-contrast light colors */
-.profile-detail-page .profile-meta h1,
 .profile-detail-page .profile-meta .major,
 .profile-detail-page .profile-section h2,
 .profile-detail-page .about-text,
@@ -4002,7 +4013,6 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 .profile-detail-page .profile-meta .major-badge,
 .profile-detail-page .profile-meta div,
 .profile-detail-page .spec-label,
-.profile-detail-page h1,
 .profile-detail-page h2,
 .profile-detail-page h3,
 .profile-detail-page h4,
