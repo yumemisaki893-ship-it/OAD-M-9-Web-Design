@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { signIn, signUp, resetUserPasswordByEmail, signInWithGoogle } from '../utils/storage';
 import { isConfigured } from '../utils/firebase';
 

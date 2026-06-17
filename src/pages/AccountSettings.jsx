@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   getStudentById, 
   getStudentByIdSync, 
@@ -126,7 +126,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
     }
     
     const loadProfile = async () => {
-      let profile = null;
+      let profile;
       if (currentUser.student && currentUser.student.id === targetStudentId) {
         profile = currentUser.student;
       } else {

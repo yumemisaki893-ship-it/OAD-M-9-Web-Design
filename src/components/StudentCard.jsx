@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { AvatarImage } from './AvatarPicker';
 
 export const StudentCard = ({ student, currentUser, onClick, onDelete }) => {

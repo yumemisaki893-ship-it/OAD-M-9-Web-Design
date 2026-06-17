@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { StudentCard } from '../components/StudentCard';
 import { getStudents, deleteStudentProfileAndAccount } from '../utils/storage';
 

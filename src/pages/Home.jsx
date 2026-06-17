@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { getStudents } from '../utils/storage';
 
 const goalsData = [
@@ -63,7 +63,7 @@ const goalsData = [
   }
 ]; // campuses data imported from '../data/campuses.json'
 
-const Home = ({ navigateTo, currentUser, currentTheme }) => {
+const Home = ({ navigateTo, currentUser }) => {
   const [activeLang, setActiveLang] = useState('en'); // 'en' | 'fil' | 'kr'
   const [activeGoal, setActiveGoal] = useState(null);
   const [time, setTime] = useState('');

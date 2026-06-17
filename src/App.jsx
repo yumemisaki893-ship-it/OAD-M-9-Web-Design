@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import Directory from './pages/Directory';
 import ProfileDetail from './pages/ProfileDetail';

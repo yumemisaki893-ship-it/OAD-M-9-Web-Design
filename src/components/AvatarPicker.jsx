@@ -1,7 +1,5 @@
-import React from 'react';
-
 // Definitions of the 8 different vector SVG avatars with unique backgrounds and features
-export const AVATARS = {
+const AVATARS = {
   "avatar-1": {
     name: "Developer Slate",
     svg: (id = "1") => (

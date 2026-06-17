@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getCourses, updateStudentProfile } from '../utils/storage';
 
-export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) => {
+export const RegistrarPortal = ({ currentUser, onProfileUpdate }) => {
   const [activeTab, setActiveTab] = useState('summary');
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -114,6 +114,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
         setShowPayModal(false);
       }, 3000);
     } catch (err) {
+      console.error(err);
       alert("Failed to record payment.");
     }
   };

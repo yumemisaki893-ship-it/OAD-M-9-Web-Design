@@ -1,6 +1,4 @@
-import React from 'react';
-
-export const OfficePromotion = ({ navigateTo, currentUser }) => {
+export const OfficePromotion = ({ navigateTo }) => {
   const handleExplorePortfolios = () => {
     navigateTo('directory', { major: 'Bachelor of Science in Office Administration' });
   };

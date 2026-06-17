@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { signOut } from '../utils/storage';
 
 export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateTo, onLogoutSuccess }) => {
@@ -26,11 +26,6 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
     e.preventDefault();
     setFlyoutOpen(false);
     navigateTo('home');
-  };
-
-  const handleProfileEdit = () => {
-    setFlyoutOpen(false);
-    navigateTo('edit-profile');
   };
 
   const handleMyProfile = () => {
