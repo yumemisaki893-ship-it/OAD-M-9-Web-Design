@@ -138,7 +138,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
               <span className="badge" style={{ backgroundColor: 'var(--primary-glow)', color: 'var(--primary)', borderColor: 'var(--primary)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.2rem 0.6rem', marginBottom: '0.5rem', display: 'inline-block' }}>
                 Student Portal
               </span>
-              <h1 style={{ fontSize: '2.2rem', margin: '0 0 0.5rem', color: '#ffffff' }}>Registrar Portal</h1>
+              <h1 style={{ fontSize: '2.2rem', margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>Registrar Portal</h1>
               <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
                 Manage course enrollment, check registration approval status, and process mock tuition payments.
               </p>
@@ -215,19 +215,19 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem' }}>
                 <div>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>Student Name</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#ffffff' }}>{student.name}</strong>
+                  <strong style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>{student.name}</strong>
                 </div>
                 <div>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>Degree Program</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#ffffff' }}>{student.major || 'Undeclared'}</strong>
+                  <strong style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>{student.major || 'Undeclared'}</strong>
                 </div>
                 <div>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>Current Term</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#ffffff' }}>First Semester, 2026-2027</strong>
+                  <strong style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>First Semester, 2026-2027</strong>
                 </div>
                 <div>
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'block' }}>Total Credit Units</span>
-                  <strong style={{ fontSize: '1.1rem', color: '#ffffff' }}>{totalUnits} Units</strong>
+                  <strong style={{ fontSize: '1.1rem', color: 'var(--text-primary)' }}>{totalUnits} Units</strong>
                 </div>
               </div>
 
@@ -255,7 +255,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
               )}
 
               {/* Enrolled Courses Summary List */}
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: '#ffffff' }}>Registered Courses ({enrolledCoursesList.length})</h3>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>Registered Courses ({enrolledCoursesList.length})</h3>
               {enrolledCoursesList.length === 0 ? (
                 <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0 }}>No courses selected yet. Go to the "Course Enrollment" tab to add courses.</p>
               ) : (
@@ -265,7 +265,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
                       <div>
                         <strong style={{ color: 'var(--primary)', fontSize: '0.95rem' }}>{course.code || course.id}</strong>
                         <span style={{ margin: '0 0.5rem', color: 'var(--text-secondary)' }}>|</span>
-                        <span style={{ color: '#ffffff', fontSize: '0.95rem' }}>{course.title}</span>
+                        <span style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>{course.title}</span>
                       </div>
                       <span className="badge" style={{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: '0.8rem' }}>
                         {course.units} Units
@@ -295,7 +295,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
             <div className="glass" style={{ padding: '2rem', borderRadius: 'var(--border-radius-lg)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.4rem', margin: 0, color: '#ffffff' }}>Select Courses</h2>
+                  <h2 style={{ fontSize: '1.4rem', margin: 0, color: 'var(--text-primary)' }}>Select Courses</h2>
                   <p style={{ margin: '0.25rem 0 0', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
                     Select courses up to 18 units limit. Current: <strong style={{ color: 'var(--primary)' }}>{totalUnits} / 18 units</strong>
                   </p>
@@ -338,7 +338,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
                             <strong style={{ color: 'var(--primary)', fontSize: '1rem' }}>{course.code || course.id}</strong>
                             <span className="badge" style={{ backgroundColor: 'var(--accent-glow)', color: 'var(--accent)', fontSize: '0.7rem' }}>{course.department}</span>
                           </div>
-                          <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem', color: '#ffffff' }}>{course.title}</h3>
+                          <h3 style={{ fontSize: '1.1rem', margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>{course.title}</h3>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                             <span><strong>Instructor:</strong> {course.instructor}</span>
                             <span><strong>Credits:</strong> {course.units} Units</span>
@@ -375,7 +375,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
             
             {/* Left Column: Account Statement */}
             <div className="glass" style={{ padding: '2rem', borderRadius: 'var(--border-radius-lg)', textAlign: 'left' }}>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: '#ffffff', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Assessment Checklist</h2>
+              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Assessment Checklist</h2>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.95rem' }}>
@@ -433,7 +433,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
 
             {/* Right Column: Transaction History */}
             <div className="glass" style={{ padding: '2rem', borderRadius: 'var(--border-radius-lg)', textAlign: 'left' }}>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: '#ffffff', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Payment Transactions</h2>
+              <h2 style={{ fontSize: '1.4rem', marginBottom: '1.25rem', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Payment Transactions</h2>
               
               {transactions.length === 0 ? (
                 <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic', margin: 0 }}>No payments recorded yet.</p>
@@ -442,7 +442,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
                   {transactions.map((tx) => (
                     <div key={tx.id} className="glass" style={{ padding: '0.75rem 1rem', borderRadius: 'var(--border-radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div>
-                        <div style={{ fontWeight: '600', color: '#ffffff', fontSize: '0.95rem' }}>{tx.method} Settlement</div>
+                        <div style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '0.95rem' }}>{tx.method} Settlement</div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{tx.date} • Ref: {tx.refNum || tx.id}</span>
                       </div>
                       <span className="badge badge-success" style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', textTransform: 'uppercase', fontWeight: 'bold' }}>
@@ -470,7 +470,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
             >
               &times;
             </button>
-            <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: '#ffffff' }}>Tuition Settlement</h3>
+            <h3 style={{ fontSize: '1.3rem', marginBottom: '1.25rem', color: 'var(--text-primary)' }}>Tuition Settlement</h3>
             
             {paymentSuccessMsg ? (
               <div className="glass" style={{ padding: '1.5rem', borderRadius: 'var(--border-radius-md)', border: '1px solid var(--success)', backgroundColor: 'var(--success-bg)', color: 'var(--success)', textAlign: 'center' }}>
@@ -486,7 +486,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
                   <select 
                     value={payMethod} 
                     onChange={(e) => setPayMethod(e.target.value)}
-                    style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: 'var(--border-radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: '#ffffff' }}
+                    style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: 'var(--border-radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
                   >
                     <option value="GCash">GCash E-Wallet</option>
                     <option value="PayMaya">Maya E-Wallet</option>
@@ -504,7 +504,7 @@ export const RegistrarPortal = ({ currentUser, navigateTo, onProfileUpdate }) =>
                       placeholder="XXXX-XXXX-XXXX-XXXX"
                       value={cardNumber}
                       onChange={(e) => setCardNumber(e.target.value.replace(/[^0-9-]/g, ''))}
-                      style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: 'var(--border-radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: '#ffffff' }}
+                      style={{ width: '100%', padding: '0.6rem 0.75rem', borderRadius: 'var(--border-radius-md)', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
                     />
                   </div>
                 )}

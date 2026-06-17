@@ -198,7 +198,7 @@ export const ProgramsOffered = ({ navigateTo }) => {
           <span className="badge" style={{ backgroundColor: 'var(--logo-gold-glow)', color: 'var(--logo-gold)', borderColor: 'var(--logo-gold)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '0.2rem 0.6rem', marginBottom: '0.5rem', display: 'inline-block' }}>
             Academic Catalog
           </span>
-          <h1 style={{ fontSize: '2.2rem', margin: '0 0 0.5rem', color: '#ffffff' }}>Offered Academic Programs</h1>
+          <h1 style={{ fontSize: '2.2rem', margin: '0 0 0.5rem', color: 'var(--text-primary)' }}>Offered Academic Programs</h1>
           <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
             Browse through the degree programs and college curriculum guides offered by the University of Antique.
           </p>
@@ -248,7 +248,7 @@ export const ProgramsOffered = ({ navigateTo }) => {
 
         {/* College Programs List */}
         <div style={{ textAlign: 'left' }}>
-          <h2 style={{ fontSize: '1.4rem', color: '#ffffff', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.4rem', color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             {selectedCollege.icon}
             {selectedCollege.name}
           </h2>
@@ -284,7 +284,7 @@ export const ProgramsOffered = ({ navigateTo }) => {
                       <span className="badge" style={{ backgroundColor: 'var(--primary-glow)', color: 'var(--primary)', borderColor: 'var(--primary)', fontSize: '0.75rem', marginRight: '0.75rem' }}>
                         {program.code}
                       </span>
-                      <strong style={{ fontSize: '1.05rem', color: '#ffffff' }}>{program.title}</strong>
+                      <strong style={{ fontSize: '1.05rem', color: 'var(--text-primary)' }}>{program.title}</strong>
                       <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginLeft: '0.75rem' }}>
                         • {program.duration}
                       </span>
@@ -347,7 +347,7 @@ export const ProgramsOffered = ({ navigateTo }) => {
 
         {/* Call to action */}
         <section className="glass" style={{ padding: '2rem', borderRadius: 'var(--border-radius-lg)', marginTop: '3rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-          <h3 style={{ fontSize: '1.3rem', color: '#ffffff', margin: 0 }}>Ready to enroll in University of Antique?</h3>
+          <h3 style={{ fontSize: '1.3rem', color: 'var(--text-primary)', margin: 0 }}>Ready to enroll in University of Antique?</h3>
           <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', margin: 0, maxWidth: '500px', lineHeight: '1.5' }}>
             Register or sign in to your registrar portal account to submit your draft curriculum enrollment for evaluation.
           </p>

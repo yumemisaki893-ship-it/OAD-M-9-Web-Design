@@ -684,46 +684,13 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
       </div>
 
       {saveSuccess && (
-        <div 
-          className="glass"
-          style={{
-            padding: '1rem',
-            borderRadius: 'var(--border-radius-md)',
-            background: 'var(--success-bg)',
-            border: '1px solid var(--success-border)',
-            color: 'var(--accent)',
-            fontWeight: 600,
-            marginBottom: '2rem',
-            textAlign: 'center'
-          }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', marginRight: '0.5rem', display: 'inline-block', verticalAlign: 'middle' }}>
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-            <polyline points="22 4 12 14.01 9 11.01" />
-          </svg>
+        <div className="auth-msg auth-msg-success" style={{ marginBottom: '2rem' }}>
           Portfolio updated successfully! Redirecting to your public profile page...
         </div>
       )}
 
       {errorMessage && (
-        <div 
-          className="glass"
-          style={{
-            padding: '1rem',
-            borderRadius: 'var(--border-radius-md)',
-            background: 'var(--danger-bg)',
-            border: '1px solid var(--danger-border)',
-            color: 'var(--danger)',
-            fontWeight: 600,
-            marginBottom: '2rem',
-            textAlign: 'center'
-          }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px', marginRight: '0.5rem', display: 'inline-block', verticalAlign: 'middle' }}>
-            <circle cx="12" cy="12" r="10" />
-            <line x1="15" y1="9" x2="9" y2="15" />
-            <line x1="9" y1="9" x2="15" y2="15" />
-          </svg>
+        <div className="auth-msg auth-msg-error" style={{ marginBottom: '2rem' }}>
           Error: {errorMessage}
         </div>
       )}
