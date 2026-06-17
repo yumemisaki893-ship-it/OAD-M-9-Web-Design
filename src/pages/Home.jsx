@@ -62,7 +62,7 @@ const goalsData = [
       "Objective 5.2. To build safe, secure, gender responsive, sustainable environment, and student friendly campuses"
     ]
   }
-];// campuses data imported from '../data/campuses.json'];
+]; // campuses data imported from '../data/campuses.json'
 
 const Home = ({ navigateTo, currentUser, currentTheme }) => {
   const [activeLang, setActiveLang] = useState('en'); // 'en' | 'fil' | 'kr'
@@ -71,130 +71,9 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
   const [time, setTime] = useState('');
   const [dateStr, setDateStr] = useState('');
   const [registeredCount, setRegisteredCount] = useState(0);
-  const [uaStudentCount, setUaStudentCount] = useState(19482);
-  const [mapLoaded, setMapLoaded] = useState(false);
 
-  const mapRef = useRef(null);
-  const markersRef = useRef({});
 
-  // 1. Dynamically load Leaflet script & stylesheet from unpkg CDN
-  useEffect(() => {
-    if (window.L) {
-      setMapLoaded(true);
-      return;
-    }
 
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    link.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=';
-    link.crossOrigin = '';
-    document.head.appendChild(link);
-
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
-    script.crossOrigin = '';
-    script.onload = () => {
-      setMapLoaded(true);
-    };
-    document.body.appendChild(script);
-  }, []);
-
-  // 2. Initialize Leaflet Map once script is loaded
-  useEffect(() => {
-    if (!mapLoaded || !window.L || !document.getElementById('leaflet-campus-map')) return;
-
-    const map = window.L.map('leaflet-campus-map', {
-      zoomControl: false,
-      attributionControl: true
-    });
-    mapRef.current = map;
-
-    window.L.control.zoom({ position: 'topright' }).addTo(map);
-
-    const isDark = currentTheme === 'dark';
-    const tileUrl = isDark 
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-
-    window.L.tileLayer(tileUrl, {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    }).addTo(map);
-
-    const markers = [];
-    const campusesCoords = [
-      { id: 'sibalom', lat: 10.7865, lng: 122.0125 },
-      { id: 'hamtic', lat: 10.6994, lng: 121.9818 },
-      { id: 'tibiao', lat: 11.2922, lng: 122.0384 },
-      { id: 'caluya', lat: 12.1102, lng: 121.5658 },
-      { id: 'libertad', lat: 11.7700, lng: 121.9040 }
-    ];
-
-    campusesData.forEach(campus => {
-      const coord = campusesCoords.find(c => c.id === campus.id);
-      if (coord) {
-        const svgIcon = window.L.divIcon({
-          html: `<div class="custom-leaflet-pin" style="--pin-color: ${campus.color};">
-            <div class="pulse-ring"></div>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="${campus.color}" stroke="#ffffff" stroke-width="1.5"/>
-            </svg>
-          </div>`,
-          className: 'custom-map-pin',
-          iconSize: [30, 30],
-          iconAnchor: [15, 30]
-        });
-
-        const marker = window.L.marker([coord.lat, coord.lng], { icon: svgIcon }).addTo(map);
-
-        marker.bindPopup(`<div className=\"leaflet-popup-content-inner campus-popup\">
-  <img src=\"${campus.photo}\" alt=\"${campus.name} photo\" className=\"campus-popup-img\" />
-  <b>${campus.name}</b><br/>
-  <span>${campus.location}</span><br/>
-  <span>${campus.address}</span><br/>
-  <span>📞 ${campus.phone}</span><br/>
-  <span>✉️ ${campus.email}</span>
-</div>`, {
-          closeButton: false,
-          offset: [0, -20]
-        });
-
-        marker.on('click', () => {
-          setSelectedCampus(campus);
-        });
-
-        markersRef.current[campus.id] = marker;
-        markers.push(marker);
-      }
-    });
-
-    if (markers.length > 0) {
-      const group = new window.L.featureGroup(markers);
-      map.fitBounds(group.getBounds(), { padding: [40, 40] });
-    }
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
-      markersRef.current = {};
-    };
-  }, [mapLoaded, currentTheme]);
-
-  // 3. Pan to active marker when selectedCampus changes from external lists
-  useEffect(() => {
-    if (!mapRef.current || !selectedCampus) return;
-    const marker = markersRef.current[selectedCampus.id];
-    if (marker) {
-      mapRef.current.setView(marker.getLatLng(), Math.max(mapRef.current.getZoom(), 10), {
-        animate: true,
-        duration: 0.8
-      });
-      setTimeout(() => {
-        marker.openPopup();
-      }, 300);
-    }
-  }, [selectedCampus]);
 
   useEffect(() => {
     // 1. Digital Clock ticking
@@ -385,15 +264,10 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
           <div className="campuses-section animate-slide-up-delay-2">
             <h2 className="section-title">Campuses of University of Antique</h2>
             <p className="section-subtitle">
-              UA serves the province of Antique through its strategically located campuses. Hover over the map markers or list items to explore.
+              UA serves the province of Antique through its strategically located campuses. Select a campus to explore details.
             </p>
             
             <div className="campuses-grid">
-              {/* Map Column */}
-              <div className="campus-map-column glass" style={{ overflow: 'hidden', padding: 0, position: 'relative' }}>
-                <div id="leaflet-campus-map" style={{ width: '100%', height: '100%', minHeight: '380px', zIndex: 10 }}></div>
-              </div>
-
               {/* Detail Column */}
               <div className="campus-detail-column">
                 <div className="campus-list">
