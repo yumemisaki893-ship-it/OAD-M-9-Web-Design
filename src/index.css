@@ -1571,46 +1571,47 @@ a:hover {
   align-items: flex-start;
   gap: 1.5rem;
   min-height: 260px;
-  background: linear-gradient(135deg, #b30016 0%, #80000d 100%);
+  background: linear-gradient(135deg, #c51f24 0%, #80000d 100%);
   border: 2px solid var(--logo-gold);
   color: #ffffff;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(128, 0, 13, 0.15);
 }
 
 [data-theme="dark"] .statement-card {
   background: linear-gradient(135deg, #80000d 0%, #4a0006 100%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .statement-card:hover {
   transform: translateY(-4px);
-  background: linear-gradient(135deg, #c7001a 0%, #940011 100%);
-  border: 2px solid var(--logo-gold);
-  color: #ffffff;
-  box-shadow: 0 12px 30px var(--logo-gold-glow);
+  background: linear-gradient(135deg, #d62227 0%, #990010 100%);
+  border-color: #ffd700; /* Bright gold on hover */
+  box-shadow: 0 12px 30px rgba(226, 161, 0, 0.35);
 }
 
 [data-theme="dark"] .statement-card:hover {
-  background: linear-gradient(135deg, #940011 0%, #5e0009 100%);
+  background: linear-gradient(135deg, #990010 0%, #5e0009 100%);
 }
 
-.statement-badge {
+.statement-card .statement-badge {
   text-transform: uppercase;
-  font-size: 0.75rem;
-  font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 0.15em;
-  background: #ffffff;
-  padding: 0.4rem 0.8rem;
-  border-radius: var(--border-radius-sm);
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  color: #80000d !important;
+  letter-spacing: 0.15em !important;
+  background: var(--logo-gold) !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: var(--border-radius-sm) !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.5rem !important;
 }
 
 .statement-text {
   font-size: 1.25rem;
   line-height: 1.6;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 500;
   letter-spacing: -0.015em;
   animation: fadeIn 0.4s ease-out;
@@ -1624,7 +1625,7 @@ a:hover {
 .mandates-card,
 .vision-card,
 .mission-card {
-  border-left: 4px solid var(--logo-gold);
+  border: 2px solid var(--logo-gold);
 }
 
 .mandates-card {
@@ -1637,7 +1638,7 @@ a:hover {
 .mandates-card:hover,
 .vision-card:hover,
 .mission-card:hover {
-  border-left: 4px solid var(--logo-gold);
+  border-color: #ffd700;
 }
 
 .mandates-text {
@@ -2240,7 +2241,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 }
 
 .objective-item::before {
-  content: '•';
+  content: '\2022';
   position: absolute;
   left: 0.4rem;
   color: var(--logo-gold);
@@ -4319,7 +4320,7 @@ body, main, footer, .navbar, .glass, .student-card, .statement-card, .btn, .form
 }
 
 .objective-item {
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.5rem;
   color: var(--text-secondary);
   font-size: 0.9rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);

@@ -227,7 +227,7 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
           </div>
 
           {/* Mandate Panel */}
-          <div className="glass statement-card mandates-card animate-fade-in">
+          <div className="statement-card mandates-card animate-fade-in">
             <div className="statement-badge">Mandate</div>
             <p className="statement-text mandates-text">
               {activeLang === 'en' && "The University shall primarily provide advanced education, higher technological, professional instruction and training in the fields of education, agriculture, forestry, fishery, maritime education, ecology, engineering, philosophy, information and communications technology, letters, arts and sciences, nursing, medicine and other relevant fields of study. It shall also undertake research and extension services in support of the socioeconomic development of Antique, and provide progressive leadership in its areas of specialization."}
@@ -237,7 +237,7 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
           </div>
 
           <div className="vision-mission-grid">
-            <div className="glass statement-card vision-card">
+            <div className="statement-card vision-card">
               <div className="statement-badge">Vision</div>
               <p className="statement-text vision-text">
                 {activeLang === 'en' && "A premier university in transforming lives, and building sustainable and resilient communities"}
@@ -246,7 +246,7 @@ const Home = ({ navigateTo, currentUser, currentTheme }) => {
               </p>
             </div>
 
-            <div className="glass statement-card mission-card">
+            <div className="statement-card mission-card">
               <div className="statement-badge">Mission</div>
               <p className="statement-text mission-text">
                 {activeLang === 'en' && "To uplift the lives of the Antiqueños and the Filipinos, UA shall produce empowered individuals through quality instruction, innovative research and development programs, sustainable resource generation activities, and relevant extension services."}
