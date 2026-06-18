@@ -188,7 +188,7 @@ const AVATARS = {
         {/* Hair */}
         <path d="M33 45C33 30 38 25 50 25C62 25 67 30 67 45V50H33V45Z" fill="#030712" />
         {/* UA Logo */}
-        <image href="/ua-logo.png" x="30" y="10" width="40" height="40" />
+        <image href="/ua-logo.svg" x="30" y="10" width="40" height="40" />
         {/* Smile */}
         <path d="M47 54C47 56 48.5 57 50 57C51.5 57 53 56 53 54" stroke="#030712" strokeWidth="2" strokeLinecap="round" />
         {/* Body (Gown) */}

@@ -40,7 +40,7 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
           {/* Logo with clean UA Logo Image */}
           <a href="#" className="navbar-logo" onClick={handleLogoClick} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <img 
-              src="/ua-logo.png" 
+              src="/ua-logo.svg" 
               alt="University of Antique Logo" 
               style={{ width: '34px', height: '34px', objectFit: 'contain' }} 
             />
@@ -75,7 +75,7 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
           <div className="flyout-header">
             <div className="navbar-logo" style={{ pointerEvents: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <img 
-                src="/ua-logo.png" 
+                src="/ua-logo.svg" 
                 alt="University of Antique Logo" 
                 style={{ width: '34px', height: '34px', objectFit: 'contain' }} 
               />
