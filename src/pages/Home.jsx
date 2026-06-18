@@ -132,20 +132,20 @@ const Home = ({ navigateTo, currentUser }) => {
     // 1. Digital Clock ticking
     const updateTime = () => {
       const now = new Date();
-      
+
       const hours = now.getHours();
       const minutes = now.getMinutes();
       const seconds = now.getSeconds();
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const displayHours = hours % 12 || 12;
       const pad = (num) => String(num).padStart(2, '0');
-      
+
       setTime(`${pad(displayHours)}:${pad(minutes)}:${pad(seconds)} ${ampm}`);
-      
+
       const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
       setDateStr(now.toLocaleDateString('en-US', options));
     };
-    
+
     updateTime();
     const clockInterval = setInterval(updateTime, 1000);
 
@@ -187,35 +187,35 @@ const Home = ({ navigateTo, currentUser }) => {
             Build your professional{' '}
             <span className="hero-title-gradient hero-gradient-loop">digital portfolio</span>.
           </h1>
-          
+
           <p className="hero-subtitle animate-slide-up-delay-1">
             A curated platform for students to present their projects, highlight specialized skills, and establish an early career presence.
           </p>
-          
+
           <div className="hero-actions animate-slide-up-delay-2">
             {!currentUser ? (
-              <button 
+              <button
                 className="btn btn-primary btn-lg-premium btn-view-portfolio"
                 onClick={() => navigateTo('auth')}
               >
                 Create Your Profile
               </button>
             ) : currentUser.isAdmin ? (
-              <button 
+              <button
                 className="btn btn-primary btn-lg-premium btn-view-portfolio"
                 onClick={() => navigateTo('directory')}
               >
                 Manage Portfolios
               </button>
             ) : (
-              <button 
-                className="btn btn-primary btn-lg-premium btn-view-portfolio"
+              <button
+                className="btn btn-primary btn-lg-premium btn-view-portfolio btn-view-portfolio-home"
                 onClick={() => navigateTo('profile-detail', { id: currentUser.studentId })}
               >
                 View My Portfolio
               </button>
             )}
-            <button 
+            <button
               className="btn btn-secondary btn-lg-premium"
               onClick={() => navigateTo(currentUser ? 'directory' : 'auth')}
             >
@@ -259,21 +259,21 @@ const Home = ({ navigateTo, currentUser }) => {
           <div className="section-header">
             <div className="lang-selector">
               <div className="lang-slider"></div>
-              <button 
+              <button
                 className={`lang-tab ${activeLang === 'en' ? 'active' : ''}`}
                 onClick={() => setActiveLang('en')}
                 onMouseEnter={() => setActiveLang('en')}
               >
                 English
               </button>
-              <button 
+              <button
                 className={`lang-tab ${activeLang === 'fil' ? 'active' : ''}`}
                 onClick={() => setActiveLang('fil')}
                 onMouseEnter={() => setActiveLang('fil')}
               >
                 Filipino
               </button>
-              <button 
+              <button
                 className={`lang-tab ${activeLang === 'kr' ? 'active' : ''}`}
                 onClick={() => setActiveLang('kr')}
                 onMouseEnter={() => setActiveLang('kr')}
@@ -352,19 +352,22 @@ const Home = ({ navigateTo, currentUser }) => {
                       <p className="goals-tab-panel-summary">{selectedGoal.summary}</p>
                     </div>
 
-                    <ul className="goals-objectives-grid">
-                      {selectedGoal.objectives.map((obj, i) => {
-                        const match = obj.match(/^Objective\s+\d+\.\d+\.\s*(.*)/i);
-                        const objText = match ? match[1] : obj;
-                        const objNumber = obj.match(/^Objective\s+(\d+\.\d+)/i)?.[1] || `${selectedGoal.id}.${i + 1}`;
-                        return (
-                          <li key={i} className="goals-objective-item">
-                            <span className="goals-objective-num">{objNumber}</span>
-                            <span className="goals-objective-text">{objText}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    <div className="goals-objectives-wrapper">
+                      <p className="goals-objectives-hint">Hover to view objectives</p>
+                      <ul className="goals-objectives-grid">
+                        {selectedGoal.objectives.map((obj, i) => {
+                          const match = obj.match(/^Objective\s+\d+\.\d+\.\s*(.*)/i);
+                          const objText = match ? match[1] : obj;
+                          const objNumber = obj.match(/^Objective\s+(\d+\.\d+)/i)?.[1] || `${selectedGoal.id}.${i + 1}`;
+                          return (
+                            <li key={i} className="goals-objective-item">
+                              <span className="goals-objective-num">{objNumber}</span>
+                              <span className="goals-objective-text">{objText}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
                   </div>
                 );
               })()}

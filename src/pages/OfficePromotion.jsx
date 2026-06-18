@@ -6,7 +6,7 @@ export const OfficePromotion = ({ navigateTo }) => {
   return (
     <div className="office-promo-container">
       <div className="office-content-wrapper container">
-        
+
         {/* Hero Section */}
         <section className="office-hero animate-fade-in">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
@@ -14,24 +14,24 @@ export const OfficePromotion = ({ navigateTo }) => {
               Academic Program Spotlight
             </span>
           </div>
-          
+
           <h1 className="office-hero-title animate-slide-up">
-            Bachelor of Science in <span className="hero-title-gradient text-gradient-animated">Office Administration (BSOAD)</span>
+            Bachelor of Science in <span className="hero-title-gradient text-gradient-animated hero-gradient-loop">Office Administration (BSOAD)</span>
           </h1>
-          
+
           <p className="hero-subtitle animate-slide-up-delay-1" style={{ margin: '0 auto 2.5rem' }}>
             Empowering the next generation of administrative managers, executive coordinators, and digital systems operators at the University of Antique.
           </p>
-          
+
           <div className="hero-actions animate-slide-up-delay-2">
-            <button 
-              className="btn btn-primary btn-lg-premium btn-view-portfolio" 
+            <button
+              className="btn btn-primary btn-lg-premium btn-view-portfolio"
               onClick={handleExplorePortfolios}
             >
               Explore BSOAD Portfolios
             </button>
-            <button 
-              className="btn btn-secondary btn-lg-premium" 
+            <button
+              className="btn btn-secondary btn-lg-premium"
               onClick={() => navigateTo('directory')}
             >
               Browse All Portfolios
@@ -41,7 +41,7 @@ export const OfficePromotion = ({ navigateTo }) => {
 
         {/* Program Core Content */}
         <div className="vision-mission-grid animate-slide-up-delay-1" style={{ maxWidth: '1100px', margin: '0 auto 4rem' }}>
-          
+
           {/* Core Course Topics Card */}
           <div className="glass statement-card" style={{ minHeight: 'auto' }}>
             <div className="statement-badge">Curriculum</div>
@@ -102,7 +102,7 @@ export const OfficePromotion = ({ navigateTo }) => {
         <div className="goals-section animate-slide-up-delay-2" style={{ marginTop: 0, marginBottom: '4rem' }}>
           <h2>Career Pathways & Opportunities</h2>
           <div className="office-career-grid" style={{ maxWidth: '900px', margin: '0 auto' }}>
-            
+
             <div className="glass statement-card" style={{ minHeight: 'auto', padding: '2rem' }}>
               <div className="statement-badge">Career</div>
               <h3 style={{ fontSize: '1.15rem', margin: 0, fontFamily: 'var(--font-family-heading)', fontWeight: 700, color: 'var(--text-primary)' }}>
@@ -175,8 +175,8 @@ export const OfficePromotion = ({ navigateTo }) => {
           <p className="statement-text" style={{ maxWidth: '640px', fontSize: '1rem', margin: 0, lineHeight: '1.6', color: 'var(--text-secondary)' }}>
             Review the digital portfolios, capstone projects, curriculum vitae, and specialized tech skills of our current BSOAD students.
           </p>
-          <button 
-            className="btn btn-primary btn-lg-premium" 
+          <button
+            className="btn btn-primary btn-lg-premium"
             onClick={handleExplorePortfolios}
             style={{ marginTop: '0.5rem', background: 'var(--logo-gold)', borderColor: 'var(--logo-gold)', color: '#000' }}
           >

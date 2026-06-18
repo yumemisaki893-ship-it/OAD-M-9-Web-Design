@@ -67,14 +67,14 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
 
   // Filter and Search logic
   const filteredStudents = students.filter(student => {
-    const matchesSearch = 
+    const matchesSearch =
       student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.shortBio.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.skills?.some(skill => skill.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesMajor = selectedMajor === 'All' || student.major === selectedMajor;
-    const matchesCampus = selectedCampus === 'All' || 
-      student.campus === selectedCampus || 
+    const matchesCampus = selectedCampus === 'All' ||
+      student.campus === selectedCampus ||
       (!student.campus && selectedCampus === 'Sibalom (Main Campus)');
     const isVisible = student.isPublic !== false || !!currentUser?.isAdmin;
 
@@ -101,7 +101,7 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
         {/* Hero Section */}
         <section className="hero animate-slide-up">
           <div className="hero-glow"></div>
-          <h1>Meet the Next Gen of <span className='text-gradient-animated'>Innovators</span></h1>
+          <h1>Meet the Next Gen of <span className='text-gradient-animated hero-gradient-loop'>Innovators</span></h1>
           <p>
             Discover and connect with talented university students showcasing their technical projects, creative portfolios, and specialized skills.
           </p>
@@ -111,16 +111,16 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
                 Create Your Portfolio
               </button>
             ) : currentUser.isAdmin ? (
-              <button 
-                className="btn btn-primary btn-view-portfolio" 
+              <button
+                className="btn btn-primary btn-view-portfolio"
                 style={{ cursor: 'default' }}
                 onClick={(e) => e.preventDefault()}
               >
                 Logged in as Admin
               </button>
             ) : (
-              <button 
-                className="btn btn-primary btn-view-portfolio" 
+              <button
+                className="btn btn-primary btn-view-portfolio"
                 onClick={() => navigateTo('profile-detail', { id: currentUser.studentId })}
               >
                 View My Portfolio
@@ -130,8 +130,8 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
         </section>
 
         {/* Dynamic Statistics Bar */}
-        <div 
-          className="glass animate-slide-up-delay-1" 
+        <div
+          className="glass animate-slide-up-delay-1"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -168,11 +168,11 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{ paddingLeft: '2.5rem', minHeight: '44px' }}
             />
-            <span 
-              style={{ 
-                position: 'absolute', 
-                left: '1rem', 
-                top: '50%', 
+            <span
+              style={{
+                position: 'absolute',
+                left: '1rem',
+                top: '50%',
                 transform: 'translateY(-50%)',
                 color: 'var(--text-muted)',
                 fontSize: '0.95rem',
@@ -258,7 +258,7 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
             ))}
           </div>
         ) : (
-          <div 
+          <div
             className="glass animate-slide-up-delay-2"
             style={{
               padding: '4rem 2rem',
