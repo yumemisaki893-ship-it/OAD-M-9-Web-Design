@@ -1361,7 +1361,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 1.2s linear infinite !important;
+  animation: shine 6s linear infinite !important;
   display: inline-block;
 }
 
@@ -1380,7 +1380,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 1.2s linear infinite !important;
+  animation: shine 6s linear infinite !important;
   display: inline-block;
 }
 
@@ -1399,7 +1399,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 1.2s linear infinite !important;
+  animation: shine 6s linear infinite !important;
 }
 
 [data-theme="dark"] .hero-gradient-loop {
@@ -1417,7 +1417,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 1.2s linear infinite !important;
+  animation: shine 6s linear infinite !important;
 }
 
 .hero-subtitle {
