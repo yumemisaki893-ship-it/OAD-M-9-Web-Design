@@ -4894,31 +4894,72 @@ a {
   box-shadow: 0 12px 30px var(--primary-glow), 0 2px 8px var(--logo-gold-glow);
 }
 
-/* Floating Save Changes Pill for Account Settings */
-.floating-save-container {
+/* Floating Settings Save Changes Button */
+.btn-save-settings {
   position: fixed;
-  bottom: 2.5rem;
-  right: 2.5rem;
-  z-index: 999;
-  display: flex;
+  top: 5rem;
+  right: 2rem;
+  z-index: 100;
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  background-color: color-mix(in srgb, var(--bg-secondary) 85%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
-  border-radius: 50px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--logo-gold-glow);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 0.6rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  min-height: 36px;
+  border-radius: var(--border-radius-md);
+  backdrop-filter: blur(12px) saturate(190%);
+  -webkit-backdrop-filter: blur(12px) saturate(190%);
+  background: rgba(10, 10, 10, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ededed;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  text-decoration: none;
 }
 
-@media (max-width: 576px) {
-  .floating-save-container {
-    bottom: 1.5rem;
-    right: 1.5rem;
-    left: 1.5rem;
-    justify-content: space-between;
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
+[data-theme="light"] .btn-save-settings {
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(226, 161, 0, 0.15);
+  color: var(--accent);
+  box-shadow: 0 4px 15px rgba(226, 161, 0, 0.08);
+}
+
+.btn-save-settings:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+[data-theme="light"] .btn-save-settings:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn-save-settings:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .btn-save-settings {
+    top: 4.5rem;
+    right: 1rem;
+    font-size: 0 !important;
+    gap: 0 !important;
+    padding: 0.5rem !important;
+    min-height: 34px !important;
+    min-width: 34px !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+  }
+
+  .btn-save-settings svg {
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0 !important;
   }
 }

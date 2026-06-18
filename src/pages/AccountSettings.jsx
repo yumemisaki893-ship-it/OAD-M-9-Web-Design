@@ -1708,76 +1708,65 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
                 >
                   Cancel
                 </button>
-                {/* Floating Save Changes & Status Panel */}
-                <div className="floating-save-container">
-                  {autoSaveStatus && (
-                    <div 
-                      style={{ 
-                        fontSize: '0.85rem', 
-                        color: autoSaveStatus === 'saving' 
-                          ? 'var(--text-secondary)' 
-                          : autoSaveStatus === 'saved' 
-                            ? 'var(--success, #2EC4B6)' 
-                            : 'var(--danger, #E71D36)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.35rem',
-                        fontWeight: 600,
-                        marginRight: '0.25rem',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      {autoSaveStatus === 'saving' && (
-                        <>
-                          <svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px', marginRight: '2px', animation: 'spin 1s linear infinite' }}>
-                            <circle cx="12" cy="12" r="10" strokeDasharray="30 10" />
-                          </svg>
-                          Saving...
-                        </>
-                      )}
-                      {autoSaveStatus === 'saved' && (
-                        <>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: 'var(--success, #2EC4B6)' }}>
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                          Saved
-                        </>
-                      )}
-                      {autoSaveStatus === 'error' && (
-                        <>
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: 'var(--danger, #E71D36)' }}>
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="12" y1="8" x2="12" y2="12" />
-                            <line x1="12" y1="16" x2="12.01" y2="16" />
-                          </svg>
-                          Validation error
-                        </>
-                      )}
-                    </div>
-                  )}
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                    style={{
-                      borderRadius: '50px',
-                      padding: '0.65rem 1.5rem',
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.01em',
-                      boxShadow: '0 4px 12px var(--logo-gold-glow)',
-                      transition: 'transform 0.2s ease',
+                {/* Auto-save Status Indicator */}
+                {autoSaveStatus && (
+                  <div 
+                    style={{ 
+                      fontSize: '0.85rem', 
+                      color: autoSaveStatus === 'saving' 
+                        ? 'var(--text-secondary)' 
+                        : autoSaveStatus === 'saved' 
+                          ? 'var(--success, #2EC4B6)' 
+                          : 'var(--danger, #E71D36)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      fontWeight: 500,
+                      marginRight: '0.5rem',
+                      transition: 'all 0.3s ease'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '14px', height: '14px', marginRight: '4px' }}>
-                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                      <polyline points="17 21 17 13 7 13 7 21" />
-                      <polyline points="7 3 7 8 15 8" />
-                    </svg>
-                    Save Changes
-                  </button>
-                </div>
+                    {autoSaveStatus === 'saving' && (
+                      <>
+                        <svg className="animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: '14px', height: '14px', marginRight: '2px', animation: 'spin 1s linear infinite' }}>
+                          <circle cx="12" cy="12" r="10" strokeDasharray="30 10" />
+                        </svg>
+                        Saving changes...
+                      </>
+                    )}
+                    {autoSaveStatus === 'saved' && (
+                      <>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: 'var(--success, #2EC4B6)' }}>
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        All changes saved
+                      </>
+                    )}
+                    {autoSaveStatus === 'error' && (
+                      <>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px', color: 'var(--danger, #E71D36)' }}>
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="8" x2="12" y2="12" />
+                          <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        Validation error (check inputs)
+                      </>
+                    )}
+                  </div>
+                )}
+                {/* Floating Save Changes Button */}
+                <button 
+                  type="submit" 
+                  className="btn-save-settings"
+                  aria-label="Save Changes"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '15px', height: '15px' }}>
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                  <span>Save Changes</span>
+                </button>
               </div>
 
             </div>
