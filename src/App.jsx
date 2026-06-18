@@ -78,14 +78,24 @@ function App() {
 
   // Centralized Navigation function
   const navigateTo = (page, params = {}) => {
+    let targetPage = page;
+    let targetParams = params;
+
+    // Auth protection interceptor: redirect to auth if navigating to protected pages without currentUser
+    const protectedPages = ['directory', 'edit-profile', 'security-settings', 'office-admin'];
+    if (protectedPages.includes(targetPage) && !currentUser) {
+      targetPage = 'auth';
+      targetParams = {};
+    }
+
     if (!document.startViewTransition) {
-      setRoute({ page, params });
+      setRoute({ page: targetPage, params: targetParams });
       window.scrollTo({ top: 0, behavior: 'instant' });
       return;
     }
     
     document.startViewTransition(() => {
-      setRoute({ page, params });
+      setRoute({ page: targetPage, params: targetParams });
       window.scrollTo({ top: 0, behavior: 'instant' });
     });
   };

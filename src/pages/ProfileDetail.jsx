@@ -656,7 +656,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 overflow: 'hidden',
                 border: '6px solid var(--bg-card)',
                 background: 'transparent',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                boxShadow: 'none',
                 marginTop: '-60px',
                 position: 'relative',
                 cursor: student.avatarId ? 'pointer' : 'default',
@@ -976,9 +976,9 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   whiteSpace: 'nowrap',
                   padding: '0.6rem 1.2rem',
                   fontSize: '0.85rem',
-                  borderRadius: '30px',
+                  borderRadius: 'var(--border-radius-sm)',
                   fontWeight: 600,
-                  boxShadow: '0 4px 12px var(--logo-gold-glow)'
+                  boxShadow: 'none'
                 }}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '14px', height: '14px' }}>
@@ -2061,14 +2061,14 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                               padding: '0.2rem',
                               minHeight: '26px',
                               minWidth: '26px',
-                              borderRadius: '50%',
+                              borderRadius: 'var(--border-radius-sm)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               background: 'rgba(255, 255, 255, 0.9)',
                               border: '1px solid var(--border-color)',
                               color: 'var(--text-primary)',
-                              boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                              boxShadow: 'none'
                             }}
                             onClick={() => handleInPlaceEditCaption(photo.id, photo.caption)}
                             title="Edit Caption"
@@ -2084,14 +2084,14 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                               padding: '0.2rem',
                               minHeight: '26px',
                               minWidth: '26px',
-                              borderRadius: '50%',
+                              borderRadius: 'var(--border-radius-sm)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               background: 'rgba(255, 240, 240, 0.9)',
                               borderColor: 'var(--danger-border)',
                               color: 'var(--danger)',
-                              boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+                              boxShadow: 'none'
                             }}
                             onClick={() => handleInPlaceRemovePhoto(photo.id)}
                             title="Remove Photo"
@@ -2288,7 +2288,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           <div className="lightbox-main" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
             <div className="lightbox-image-container" onClick={(e) => e.stopPropagation()} style={{ transform: `scale(${zoom})` }}>
               {viewerImage.startsWith('avatar-') ? (
-                <div style={{ width: '280px', height: '280px', background: 'var(--bg-card)', borderRadius: '50%', border: '6px solid rgba(255,255,255,0.1)', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                <div style={{ width: '280px', height: '280px', background: 'var(--bg-card)', borderRadius: '50%', border: '6px solid rgba(255,255,255,0.1)', overflow: 'hidden', boxShadow: 'none' }}>
                   <AvatarImage avatarId={viewerImage} id="viewer-avatar-display" />
                 </div>
               ) : (

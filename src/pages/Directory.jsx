@@ -8,13 +8,11 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
   const [selectedMajor, setSelectedMajor] = useState(params?.major || 'All');
   const [selectedCampus, setSelectedCampus] = useState(params?.campus || 'All');
   const [sortBy, setSortBy] = useState('name-asc');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   // Load students on mount
   useEffect(() => {
-    if (!currentUser) {
-      navigateTo('auth');
-      return;
-    }
+    if (!currentUser) return;
     const loadData = async () => {
       const list = await getStudents();
       setStudents(list);
@@ -103,187 +101,219 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
 
   return (
     <div className="app-page-wrapper">
-      <div className="container animate-fade-in" style={{ paddingBottom: '4rem' }}>
-        {/* Hero Section */}
-        <section className="hero animate-slide-up">
-          <div className="hero-glow"></div>
-          <h1>Meet the Next Gen of <span className='text-gradient-animated hero-gradient-loop'>Innovators</span></h1>
-          <p>
-            Discover and connect with talented university students showcasing their technical projects, creative portfolios, and specialized skills.
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem' }}>
-            {!currentUser ? (
-              <button className="btn btn-primary btn-view-portfolio" onClick={() => navigateTo('auth')}>
-                Create Your Portfolio
-              </button>
-            ) : currentUser.isAdmin ? (
-              <button
-                className="btn btn-primary btn-view-portfolio"
-                style={{ cursor: 'default' }}
-                onClick={(e) => e.preventDefault()}
+      <div className="container directory-dashboard-container animate-fade-in" style={{ paddingBottom: '4rem' }}>
+        
+        {/* Left Column: Sidebar Filters Panel */}
+        <aside className={`directory-sidebar glass ${filtersOpen ? 'mobile-open' : ''}`}>
+          <div className="sidebar-header">
+            <h3>Directory Filters</h3>
+            <button className="sidebar-close-btn" onClick={() => setFiltersOpen(false)} aria-label="Close filters">
+              &times;
+            </button>
+          </div>
+
+          <div className="sidebar-content">
+            {/* Stat Counters */}
+            <div className="sidebar-section stats-section">
+              <div className="sidebar-section-title">Directory Metrics</div>
+              <div className="bento-mini-stats">
+                <div className="mini-stat-item">
+                  <div className="mini-stat-num">{totalStudents}</div>
+                  <div className="mini-stat-label">Portfolios</div>
+                </div>
+                <div className="mini-stat-item">
+                  <div className="mini-stat-num">{totalProjects}</div>
+                  <div className="mini-stat-label">Projects</div>
+                </div>
+                <div className="mini-stat-item">
+                  <div className="mini-stat-num">{uniqueSkills}</div>
+                  <div className="mini-stat-label">Skills</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Campus Select */}
+            <div className="sidebar-section">
+              <label htmlFor="sidebar-campus" className="sidebar-section-title">Campus</label>
+              <select
+                id="sidebar-campus"
+                className="form-control sidebar-select"
+                value={selectedCampus}
+                onChange={(e) => setSelectedCampus(e.target.value)}
               >
-                Logged in as Admin
-              </button>
-            ) : (
-              <button
-                className="btn btn-primary btn-view-portfolio btn-view-portfolio-directory"
-                onClick={() => navigateTo('profile-detail', { id: currentUser.studentId })}
+                <option value="All">All Campuses</option>
+                {uniqueCampuses.map((campus, index) => (
+                  <option key={index} value={campus}>{campus}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Major Select */}
+            <div className="sidebar-section">
+              <label htmlFor="sidebar-major" className="sidebar-section-title">Major</label>
+              <select
+                id="sidebar-major"
+                className="form-control sidebar-select"
+                value={selectedMajor}
+                onChange={(e) => setSelectedMajor(e.target.value)}
               >
-                View My Portfolio
+                <option value="All">All Majors</option>
+                {uniqueMajors.map((major, index) => (
+                  <option key={index} value={major}>{major}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Sort Options */}
+            <div className="sidebar-section">
+              <label htmlFor="sidebar-sort" className="sidebar-section-title">Sort order</label>
+              <select
+                id="sidebar-sort"
+                className="form-control sidebar-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="name-asc">Alphabetical (A-Z)</option>
+                <option value="name-desc">Alphabetical (Z-A)</option>
+                <option value="projects-count">Most Projects</option>
+                <option value="skills-count">Most Skills</option>
+              </select>
+            </div>
+
+            {/* Reset Button */}
+            {(selectedCampus !== 'All' || selectedMajor !== 'All' || searchQuery !== '') && (
+              <button 
+                className="btn btn-secondary btn-reset-filters" 
+                onClick={() => {
+                  setSelectedCampus('All');
+                  setSelectedMajor('All');
+                  setSearchQuery('');
+                }}
+                style={{ width: '100%', marginTop: '1rem' }}
+              >
+                Reset Filters
               </button>
             )}
           </div>
-        </section>
+        </aside>
 
-        {/* Dynamic Statistics Bar */}
-        <div
-          className="glass animate-slide-up-delay-1"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            padding: '1.5rem',
-            borderRadius: 'var(--border-radius-lg)',
-            textAlign: 'center',
-            marginBottom: '3rem',
-            gap: '1rem'
-          }}
-        >
-          <div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)' }}>{totalStudents}</div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Active Portfolios</div>
-          </div>
-          <div style={{ borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--accent)' }}>{totalProjects}</div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Projects Showcased</div>
-          </div>
-          <div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--logo-gold)' }}>{uniqueSkills}</div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Unique Skills</div>
-          </div>
-        </div>
-
-        {/* Search and Filter Controls */}
-        <div className="search-filter-section glass animate-slide-up-delay-1">
-          {/* Search Field */}
-          <div style={{ position: 'relative', flex: 1 }}>
-            <input
-              type="search"
-              className="form-control"
-              placeholder="Search by name, bio, or skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: '2.5rem', minHeight: '44px' }}
-            />
-            <span
-              style={{
-                position: 'absolute',
-                left: '1rem',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-muted)',
-                fontSize: '0.95rem',
-                pointerEvents: 'none'
-              }}
+        {/* Right Column: Main Content Area */}
+        <main className="directory-main-content">
+          
+          {/* Header row with Title and Mobile Filters toggle */}
+          <div className="directory-header-row animate-slide-up">
+            <div>
+              <h1 className="directory-title">
+                UA <span className="text-gradient-animated hero-gradient-loop">Portfolios Directory</span>
+              </h1>
+              <p className="directory-subtitle">
+                Discover innovative capstones, digital assets, and student profiles from the University of Antique.
+              </p>
+            </div>
+            <button 
+              className="btn btn-secondary mobile-filters-toggle-btn"
+              onClick={() => setFiltersOpen(true)}
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '14px', height: '14px' }}>
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              Filters
+            </button>
+          </div>
+
+          {/* Search Bar Row */}
+          <div className="directory-search-row animate-slide-up-delay-1">
+            <div className="search-input-wrapper">
+              <input
+                type="search"
+                className="form-control main-search-input"
+                placeholder="Search portfolios by student name, bio keywords, or skill sets..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-            </span>
-          </div>
-
-          {/* Campus Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="campus-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-              Campus:
-            </label>
-            <select
-              id="campus-select"
-              className="form-control"
-              value={selectedCampus}
-              onChange={(e) => setSelectedCampus(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
-            >
-              <option value="All">All Campuses</option>
-              {uniqueCampuses.map((campus, index) => (
-                <option key={index} value={campus}>{campus}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Major Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="major-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-              Major:
-            </label>
-            <select
-              id="major-select"
-              className="form-control"
-              value={selectedMajor}
-              onChange={(e) => setSelectedMajor(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
-            >
-              <option value="All">All Majors</option>
-              {uniqueMajors.map((major, index) => (
-                <option key={index} value={major}>{major}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="sort-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
-              Sort By:
-            </label>
-            <select
-              id="sort-select"
-              className="form-control"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
-            >
-              <option value="name-asc">Alphabetical (A-Z)</option>
-              <option value="name-desc">Alphabetical (Z-A)</option>
-              <option value="projects-count">Most Projects</option>
-              <option value="skills-count">Most Skills</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Student Cards Grid */}
-        {sortedStudents.length > 0 ? (
-          <div className="student-grid animate-slide-up-delay-2">
-            {sortedStudents.map(student => (
-              <StudentCard
-                key={student.id}
-                student={student}
-                currentUser={currentUser}
-                onClick={() => navigateTo('profile-detail', { id: student.id })}
-                onDelete={() => handleDelete(student)}
-              />
-            ))}
-          </div>
-        ) : (
-          <div
-            className="glass animate-slide-up-delay-2"
-            style={{
-              padding: '4rem 2rem',
-              textAlign: 'center',
-              borderRadius: 'var(--border-radius-lg)',
-              border: '2px dashed var(--border-color)',
-            }}
-          >
-            <div style={{ marginBottom: '1rem', color: 'var(--text-muted)' }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '48px', height: '48px' }}>
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-              </svg>
             </div>
-            <h3>No Student Portfolios Found</h3>
-            <p style={{ marginTop: '0.5rem' }}>Try clearing your search queries or selecting a different major filter.</p>
           </div>
-        )}
+
+          {/* Active Filters Badges */}
+          {(selectedCampus !== 'All' || selectedMajor !== 'All' || searchQuery !== '') && (
+            <div className="active-filters-row animate-fade-in">
+              <span className="filter-label">Active Filters:</span>
+              <div className="filter-badges-container">
+                {selectedCampus !== 'All' && (
+                  <span className="active-filter-badge">
+                    {selectedCampus}
+                    <button className="badge-clear" onClick={() => setSelectedCampus('All')}>&times;</button>
+                  </span>
+                )}
+                {selectedMajor !== 'All' && (
+                  <span className="active-filter-badge">
+                    {selectedMajor.length > 20 ? `${selectedMajor.substring(0, 20)}...` : selectedMajor}
+                    <button className="badge-clear" onClick={() => setSelectedMajor('All')}>&times;</button>
+                  </span>
+                )}
+                {searchQuery !== '' && (
+                  <span className="active-filter-badge">
+                    "{searchQuery}"
+                    <button className="badge-clear" onClick={() => setSearchQuery('')}>&times;</button>
+                  </span>
+                )}
+                <button 
+                  className="clear-all-link-btn"
+                  onClick={() => {
+                    setSelectedCampus('All');
+                    setSelectedMajor('All');
+                    setSearchQuery('');
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Student Grid */}
+          <div className="directory-results-container">
+            {sortedStudents.length > 0 ? (
+              <div className="student-grid animate-slide-up-delay-2">
+                {sortedStudents.map(student => (
+                  <StudentCard
+                    key={student.id}
+                    student={student}
+                    currentUser={currentUser}
+                    onClick={() => navigateTo('profile-detail', { id: student.id })}
+                    onDelete={() => handleDelete(student)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="glass bento-empty-state animate-slide-up-delay-2">
+                <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                </svg>
+                <h3>No Portfolios Found</h3>
+                <p>We couldn't find any portfolios matching your selected filters or search terms.</p>
+                <button 
+                  className="btn btn-primary btn-reset-empty"
+                  onClick={() => {
+                    setSelectedCampus('All');
+                    setSelectedMajor('All');
+                    setSearchQuery('');
+                  }}
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            )}
+          </div>
+
+        </main>
+
       </div>
     </div>
   );
