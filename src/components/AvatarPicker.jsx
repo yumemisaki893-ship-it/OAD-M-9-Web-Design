@@ -187,11 +187,8 @@ const AVATARS = {
         <circle cx="50" cy="45" r="17" fill="#fed7aa" />
         {/* Hair */}
         <path d="M33 45C33 30 38 25 50 25C62 25 67 30 67 45V50H33V45Z" fill="#030712" />
-        {/* Graduation Cap */}
-        <path d="M50 18L78 28L50 38L22 28L50 18Z" fill="#1f2937" />
-        <rect x="44" y="28" width="12" height="8" fill="#1f2937" />
-        {/* Tassel */}
-        <path d="M72 29L75 42L72 45L69 42L72 29Z" fill="#fbbf24" />
+        {/* UA Logo */}
+        <image href="/ua-logo.png" x="30" y="10" width="40" height="40" />
         {/* Smile */}
         <path d="M47 54C47 56 48.5 57 50 57C51.5 57 53 56 53 54" stroke="#030712" strokeWidth="2" strokeLinecap="round" />
         {/* Body (Gown) */}
