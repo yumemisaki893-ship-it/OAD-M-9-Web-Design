@@ -2392,7 +2392,7 @@ a {
   margin-left: 1rem;
 }
 
-.goal-item.active .goal-icon {
+.goal-item:hover .goal-icon {
   transform: rotate(180deg);
   color: var(--logo-gold);
 }
@@ -2404,7 +2404,7 @@ a {
   padding: 0 1.75rem;
 }
 
-.goal-item.active .goal-content {
+.goal-item:hover .goal-content {
   max-height: 800px;
   /* higher max-height for text container */
   padding: 1.25rem 1.75rem 1.75rem 1.75rem;
@@ -4706,19 +4706,22 @@ a {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-left: 4px solid var(--logo-gold);
-  transition: all 0.25s ease;
+  border-radius: var(--border-radius-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 0.75rem;
+  overflow: hidden;
 }
 
 .goal-item:hover,
 .goal-item.active {
   border-left-color: var(--primary);
-  box-shadow: 0 4px 15px var(--logo-gold-glow);
+  box-shadow: 0 8px 24px var(--logo-gold-glow);
   background: var(--bg-secondary);
+  transform: translateY(-2px);
 }
 
 .goal-header {
-  padding: 1.25rem 1.5rem;
+  padding: 1.1rem 1.5rem;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -4750,13 +4753,30 @@ a {
   flex-shrink: 0;
 }
 
+.goal-item:hover .goal-icon,
 .goal-item.active .goal-icon {
   transform: rotate(180deg);
   color: var(--accent);
 }
 
+/* Collapsed by default: section stays small and the objectives list
+   (Objective 1.1, 1.2, etc.) is fully hidden until the card is hovered */
 .goal-content {
+  max-height: 0;
+  padding: 0 1.5rem;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease;
+}
+
+/* Reveal only while hovering the card - no click/active needed */
+.goal-item:hover .goal-content {
+  max-height: 800px;
   padding: 0 1.5rem 1.5rem;
+  opacity: 1;
+  border-top: 1px solid var(--border-color);
 }
 
 .objective-item {
@@ -4764,6 +4784,7 @@ a {
   color: var(--text-secondary);
   font-size: 0.9rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  transition: padding-left 0.2s ease, color 0.2s ease;
 }
 
 [data-theme="dark"] .objective-item {
@@ -4772,6 +4793,11 @@ a {
 
 .objective-item:last-child {
   border-bottom: none;
+}
+
+.goal-item:hover .objective-item:hover {
+  padding-left: 1.85rem;
+  color: var(--text-primary);
 }
 
 /* Floating Responsive Navbar */
