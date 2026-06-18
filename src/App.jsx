@@ -137,9 +137,9 @@ function App() {
         );
       case 'auth':
         if (currentUser) {
-          const profileComplete = currentUser.student && (currentUser.student.major !== 'Undeclared' || (currentUser.student.photos && currentUser.student.photos.length > 0));
-          const targetPage = profileComplete ? 'profile-detail' : 'edit-profile';
-          const targetParams = profileComplete ? { id: currentUser.studentId } : {};
+          // Returning/old user lands in profile detail page
+          const targetPage = 'profile-detail';
+          const targetParams = { id: currentUser.studentId };
           setTimeout(() => navigateTo(targetPage, targetParams), 0);
           return null;
         }

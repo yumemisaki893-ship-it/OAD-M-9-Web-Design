@@ -399,8 +399,10 @@ export const signInWithGoogle = async () => {
   
   let sessionData = await getSessionData(user);
   let student = null;
+  let isNewUser = false;
 
   if (!sessionData) {
+    isNewUser = true;
     // Provision a new student profile and maps it to Google credentials
     const cleanName = user.displayName || 'Google Student';
     const cleanEmail = user.email || '';
@@ -451,7 +453,8 @@ export const signInWithGoogle = async () => {
 
   return {
     user: sessionData,
-    student
+    student,
+    isNewUser
   };
 };
 

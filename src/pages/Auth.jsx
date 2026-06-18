@@ -109,17 +109,12 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
       if (isLogin) {
         const session = await signIn(email, password);
         onLoginSuccess(session.user);
-        const student = session.student;
-        const profileComplete = student && (student.major !== 'Undeclared' || (student.photos && student.photos.length > 0));
-        if (profileComplete) {
-          navigateTo('profile-detail', { id: session.user.studentId });
-        } else {
-          navigateTo('edit-profile');
-        }
+        // Returning/old user lands in profile detail page
+        navigateTo('profile-detail', { id: session.user.studentId });
       } else {
         const session = await signUp(name, email, password);
         onLoginSuccess(session.user);
-        // Navigate straight to profile creator/editor page for newly registered students!
+        // First-time user lands in profile editor
         navigateTo('edit-profile');
       }
     } catch (err) {
@@ -132,11 +127,11 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
     try {
       const session = await signInWithGoogle();
       onLoginSuccess(session.user);
-      const profileComplete = session.student && (session.student.major !== 'Undeclared' || (session.student.photos && session.student.photos.length > 0));
-      if (profileComplete) {
-        navigateTo('profile-detail', { id: session.user.studentId });
-      } else {
+      // Google sign-in can be first-time (new user) or returning (old user)
+      if (session.isNewUser) {
         navigateTo('edit-profile');
+      } else {
+        navigateTo('profile-detail', { id: session.user.studentId });
       }
     } catch (err) {
       setErrorMessage(err.message || 'Google authentication failed.');
@@ -196,11 +191,8 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
                   try {
                     const session = await signIn('admin@university.edu', 'Admin123!');
                     onLoginSuccess(session.user);
-                    if (session.student && session.student.major !== 'Undeclared') {
-          navigateTo('profile-detail', { id: session.user.studentId });
-        } else {
-          navigateTo('edit-profile');
-        }
+                    // Admin is a returning/old user, lands in profile detail
+                    navigateTo('profile-detail', { id: session.user.studentId });
                   } catch (err) {
                     setErrorMessage(err.message);
                   }
