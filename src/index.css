@@ -4927,21 +4927,23 @@ a {
 }
 
 .btn-save-settings:hover {
-  background: var(--blue-button);
-  border-color: var(--blue-button);
+  background: var(--primary);
+  border-color: var(--primary);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--blue-button-glow);
+  box-shadow: 0 8px 24px var(--primary-glow);
 }
 
 [data-theme="light"] .btn-save-settings:hover {
-  background: var(--blue-button);
-  border-color: var(--blue-button);
+  background: var(--primary);
+  border-color: var(--primary);
   color: #ffffff;
 }
 
 .btn-save-settings:active {
   transform: translateY(0);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 @media (max-width: 768px) {
