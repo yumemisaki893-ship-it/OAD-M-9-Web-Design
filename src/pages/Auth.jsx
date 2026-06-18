@@ -109,7 +109,7 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
       if (isLogin) {
         const session = await signIn(email, password);
         onLoginSuccess(session.user);
-        navigateTo('directory');
+        navigateTo('profile-detail', { id: session.user.studentId });
       } else {
         const session = await signUp(name, email, password);
         onLoginSuccess(session.user);
@@ -127,7 +127,7 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
       const session = await signInWithGoogle();
       onLoginSuccess(session.user);
       if (session.student && session.student.major !== 'Undeclared') {
-        navigateTo('directory');
+        navigateTo('profile-detail', { id: session.user.studentId });
       } else {
         navigateTo('edit-profile');
       }

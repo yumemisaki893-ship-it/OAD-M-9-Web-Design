@@ -136,6 +136,13 @@ function App() {
           />
         );
       case 'auth':
+        if (currentUser) {
+          const hasBuiltProfile = currentUser.student && currentUser.student.major !== 'Undeclared';
+          const targetPage = hasBuiltProfile ? 'profile-detail' : 'edit-profile';
+          const targetParams = hasBuiltProfile ? { id: currentUser.studentId } : {};
+          setTimeout(() => navigateTo(targetPage, targetParams), 0);
+          return null;
+        }
         return (
           <Auth 
             navigateTo={navigateTo} 
@@ -143,6 +150,14 @@ function App() {
           />
         );
       case 'edit-profile':
+        if (!currentUser) {
+          return (
+            <Auth 
+              navigateTo={navigateTo} 
+              onLoginSuccess={handleLoginSuccess} 
+            />
+          );
+        }
         return (
           <AccountSettings 
             currentUser={currentUser} 
@@ -153,6 +168,14 @@ function App() {
           />
         );
       case 'security-settings':
+        if (!currentUser) {
+          return (
+            <Auth 
+              navigateTo={navigateTo} 
+              onLoginSuccess={handleLoginSuccess} 
+            />
+          );
+        }
         return (
           <AccountSettings 
             currentUser={currentUser} 

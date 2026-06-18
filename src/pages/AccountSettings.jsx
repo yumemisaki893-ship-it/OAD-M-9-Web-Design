@@ -129,10 +129,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
 
   // Load student profile details on mount or ID switch
   useEffect(() => {
-    if (!currentUser) {
-      navigateTo('auth');
-      return;
-    }
+    if (!currentUser) return;
     
     const loadProfile = async () => {
       let profile;
