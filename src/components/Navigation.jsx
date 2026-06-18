@@ -44,7 +44,7 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
               alt="University of Antique Logo" 
               style={{ width: '34px', height: '34px', objectFit: 'contain' }} 
             />
-            <span>UAPortfolioHub</span>
+            <span>PortfolioHub</span>
           </a>
 
           {/* Menu Items: Minimalist Hamburger Button */}
@@ -79,7 +79,7 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
                 alt="University of Antique Logo" 
                 style={{ width: '34px', height: '34px', objectFit: 'contain' }} 
               />
-              <span>UAPortfolioHub</span>
+              <span>University of Antique Portfolio Hub</span>
             </div>
             <button 
               className="flyout-close" 
