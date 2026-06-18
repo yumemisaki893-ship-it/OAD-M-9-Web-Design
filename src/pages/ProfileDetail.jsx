@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { 
   getStudentById, 
   getStudentByIdSync,
@@ -16,6 +16,8 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
   // Lightbox Modal States
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const [zoom, setZoom] = useState(1);
+  const lightboxRef = useRef(null);
 
   // Image Viewer for profile picture / banner
   const [viewerImage, setViewerImage] = useState(null);
@@ -153,23 +155,83 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
   const openLightbox = (index) => {
     setPhotoIndex(index);
+    setZoom(1);
     setLightboxOpen(true);
   };
 
   const closeLightbox = () => {
     setLightboxOpen(false);
+    setZoom(1);
   };
 
   const prevPhoto = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     if (!student?.photos) return;
+    setZoom(1);
     setPhotoIndex((prevIndex) => (prevIndex === 0 ? student.photos.length - 1 : prevIndex - 1));
   };
 
   const nextPhoto = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     if (!student?.photos) return;
+    setZoom(1);
     setPhotoIndex((prevIndex) => (prevIndex === student.photos.length - 1 ? 0 : prevIndex + 1));
+  };
+
+  const zoomIn = (e) => {
+    e?.stopPropagation();
+    setZoom(prev => Math.min(prev + 0.25, 3));
+  };
+
+  const zoomOut = (e) => {
+    e?.stopPropagation();
+    setZoom(prev => Math.max(prev - 0.25, 0.5));
+  };
+
+  const resetZoom = (e) => {
+    e?.stopPropagation();
+    setZoom(1);
+  };
+
+  const toggleFullscreen = (e) => {
+    e?.stopPropagation();
+    if (!lightboxRef.current) return;
+    if (!document.fullscreenElement) {
+      lightboxRef.current.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  const handleInPlaceRemovePhotoInsideLightbox = async (photoId) => {
+    if (window.confirm("Are you sure you want to remove this photo from your gallery?")) {
+      const updatedPhotos = (student.photos || []).filter(p => p.id !== photoId);
+      try {
+        await updateStudentProfile(student.id, { photos: updatedPhotos });
+        setStudent({ ...student, photos: updatedPhotos });
+        if (updatedPhotos.length === 0) {
+          closeLightbox();
+        } else {
+          setPhotoIndex(prev => Math.min(prev, updatedPhotos.length - 1));
+          setZoom(1);
+        }
+      } catch (err) {
+        alert(err.message || "Failed to remove photo.");
+      }
+    }
+  };
+
+  const handleThumbnailClick = (index) => {
+    setPhotoIndex(index);
+    setZoom(1);
+  };
+
+  const openImageViewer = (imageUrl, caption) => {
+    setViewerImage(imageUrl);
+    setViewerCaption(caption);
+    setZoom(1);
   };
 
   useEffect(() => {
@@ -467,7 +529,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
               cursor: student.coverPhotoUrl ? 'pointer' : 'default',
               transition: 'filter 0.2s ease'
             }}
-            onClick={() => { if (student.coverPhotoUrl) { setViewerImage(student.coverPhotoUrl); setViewerCaption('Cover Photo'); } }}
+            onClick={() => { if (student.coverPhotoUrl) { openImageViewer(student.coverPhotoUrl, 'Cover Photo'); } }}
             onMouseEnter={(e) => { if (student.coverPhotoUrl) e.currentTarget.style.filter = 'brightness(0.85)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.filter = ''; }}
             title={student.coverPhotoUrl ? 'Click to view full size' : ''}
@@ -601,7 +663,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
               className="profile-avatar-container"
-              onClick={() => { if (student.avatarId) { setViewerImage(student.avatarId); setViewerCaption(student.name + "'s Profile Photo"); } }}
+              onClick={() => { if (student.avatarId) { openImageViewer(student.avatarId, student.name + "'s Profile Photo"); } }}
               title={student.avatarId ? 'Click to view full size' : ''}
               onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.025)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; }}
@@ -2081,31 +2143,103 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
       {/* Lightbox Modal */}
       {lightboxOpen && student.photos && student.photos[photoIndex] && (
-        <div className="lightbox-overlay" onClick={closeLightbox}>
-          <button className="lightbox-close" onClick={closeLightbox} aria-label="Close Lightbox">
-            &times;
-          </button>
+        <div ref={lightboxRef} className="lightbox-overlay" onClick={closeLightbox}>
+          <div className="lightbox-toolbar" onClick={(e) => e.stopPropagation()}>
+            <div className="lightbox-counter">
+              IMAGE {photoIndex + 1} OF {student.photos.length}
+            </div>
+            <div className="lightbox-actions">
+              <button className="toolbar-btn" onClick={zoomOut} title="Zoom Out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <span className="zoom-level">{Math.round(zoom * 100)}%</span>
+              <button className="toolbar-btn" onClick={zoomIn} title="Zoom In">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <button className="toolbar-btn" onClick={resetZoom} title="Reset Zoom">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                </svg>
+              </button>
+              <button className="toolbar-btn" onClick={toggleFullscreen} title="Toggle Fullscreen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+              </button>
+              {canEdit && (
+                <>
+                  <button className="toolbar-btn edit" onClick={() => handleInPlaceEditCaption(student.photos[photoIndex].id, student.photos[photoIndex].caption)} title="Edit Caption">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button className="toolbar-btn delete" onClick={() => handleInPlaceRemovePhotoInsideLightbox(student.photos[photoIndex].id)} title="Delete Photo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
+                </>
+              )}
+              <button className="toolbar-btn close" onClick={closeLightbox} title="Close Lightbox">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
           
-          {student.photos.length > 1 && (
-            <>
-              <button className="lightbox-prev" onClick={prevPhoto} aria-label="Previous Photo">
-                &#10094;
+          <div className="lightbox-main" onClick={closeLightbox}>
+            {student.photos.length > 1 && (
+              <button className="lightbox-nav-btn prev" onClick={prevPhoto} aria-label="Previous Photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px' }}>
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
               </button>
-              <button className="lightbox-next" onClick={nextPhoto} aria-label="Next Photo">
-                &#10095;
-              </button>
-            </>
-          )}
+            )}
 
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <img 
-              src={student.photos[photoIndex].url} 
-              alt={student.photos[photoIndex].caption || `Gallery view ${photoIndex + 1}`} 
-              className="lightbox-image"
-            />
+            <div className="lightbox-image-container" onClick={(e) => e.stopPropagation()} style={{ transform: `scale(${zoom})` }}>
+              <img 
+                src={student.photos[photoIndex].url} 
+                alt={student.photos[photoIndex].caption || `Gallery view ${photoIndex + 1}`} 
+                className="lightbox-image"
+              />
+            </div>
+
+            {student.photos.length > 1 && (
+              <button className="lightbox-nav-btn next" onClick={nextPhoto} aria-label="Next Photo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ width: '24px', height: '24px' }}>
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          <div className="lightbox-bottom-section" onClick={(e) => e.stopPropagation()}>
             {student.photos[photoIndex].caption && (
-              <div className="lightbox-caption">
+              <div className="lightbox-caption-panel">
                 {student.photos[photoIndex].caption}
+              </div>
+            )}
+            
+            {student.photos.length > 1 && (
+              <div className="lightbox-thumbnails">
+                {student.photos.map((photo, idx) => (
+                  <div 
+                    key={photo.id || idx}
+                    className={`lightbox-thumbnail-item ${idx === photoIndex ? 'active' : ''}`}
+                    onClick={() => handleThumbnailClick(idx)}
+                  >
+                    <img src={photo.url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -2114,31 +2248,60 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
       {/* Image Viewer Modal for Profile Picture / Banner */}
       {viewerImage && (
-        <div 
-          className="lightbox-overlay" 
-          onClick={() => { setViewerImage(null); setViewerCaption(''); }}
-          style={{ zIndex: 10000 }}
-        >
-          <button 
-            className="lightbox-close" 
-            onClick={() => { setViewerImage(null); setViewerCaption(''); }} 
-            aria-label="Close Viewer"
-          >
-            &times;
-          </button>
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <img 
-              src={viewerImage} 
-              alt={viewerCaption || 'Full size view'} 
-              className="lightbox-image"
-              style={{ borderRadius: '8px' }}
-            />
-            {viewerCaption && (
-              <div className="lightbox-caption">
-                {viewerCaption}
-              </div>
-            )}
+        <div ref={lightboxRef} className="lightbox-overlay" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
+          <div className="lightbox-toolbar" onClick={(e) => e.stopPropagation()}>
+            <div className="lightbox-counter" style={{ textTransform: 'uppercase' }}>
+              {viewerCaption || 'Image Viewer'}
+            </div>
+            <div className="lightbox-actions">
+              <button className="toolbar-btn" onClick={zoomOut} title="Zoom Out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <span className="zoom-level">{Math.round(zoom * 100)}%</span>
+              <button className="toolbar-btn" onClick={zoomIn} title="Zoom In">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </button>
+              <button className="toolbar-btn" onClick={resetZoom} title="Reset Zoom">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                </svg>
+              </button>
+              <button className="toolbar-btn" onClick={toggleFullscreen} title="Toggle Fullscreen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+              </button>
+              <button className="toolbar-btn close" onClick={() => { setViewerImage(null); setViewerCaption(''); }} title="Close Viewer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
           </div>
+          
+          <div className="lightbox-main" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
+            <div className="lightbox-image-container" onClick={(e) => e.stopPropagation()} style={{ transform: `scale(${zoom})` }}>
+              {viewerImage.startsWith('avatar-') ? (
+                <div style={{ width: '280px', height: '280px', background: 'var(--bg-card)', borderRadius: '50%', border: '6px solid rgba(255,255,255,0.1)', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                  <AvatarImage avatarId={viewerImage} id="viewer-avatar-display" />
+                </div>
+              ) : (
+                <img 
+                  src={viewerImage} 
+                  alt={viewerCaption || 'Full size view'} 
+                  className="lightbox-image"
+                />
+              )}
+            </div>
+          </div>
+          
+          <div style={{ height: '20px' }}></div>
         </div>
       )}
     </div>
