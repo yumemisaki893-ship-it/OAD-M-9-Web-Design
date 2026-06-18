@@ -1337,7 +1337,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 3s linear infinite !important;
+  animation: shine 1.2s linear infinite !important;
   display: inline-block;
 }
 
@@ -1356,7 +1356,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 3s linear infinite !important;
+  animation: shine 1.2s linear infinite !important;
   display: inline-block;
 }
 
@@ -1377,7 +1377,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 3s linear infinite !important;
+  animation: shine 1.2s linear infinite !important;
 }
 
 [data-theme="dark"] .hero-gradient-loop {
@@ -1395,7 +1395,7 @@ a:hover {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  animation: shine 3s linear infinite !important;
+  animation: shine 1.2s linear infinite !important;
 }
 
 .hero-subtitle {
@@ -2320,7 +2320,7 @@ a {
       #d5001c 66%,
       #f4b400 100%);
   background-size: 200% auto;
-  animation: textGradientMove 4s ease infinite;
+  animation: textGradientMove 1.5s ease infinite;
   border-radius: var(--border-radius-sm);
 }
 
@@ -4818,9 +4818,19 @@ a {
   font-weight: 700;
   letter-spacing: -0.03em;
   font-family: var(--font-family-heading);
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  background: linear-gradient(90deg,
+      var(--primary) 0%,
+      var(--accent) 25%,
+      var(--primary) 50%,
+      var(--accent) 75%,
+      var(--primary) 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shine 1.2s linear infinite;
+  display: inline-block;
 }
 
 /* Modernized Student Cards - Glass UI with Clean Accents */
