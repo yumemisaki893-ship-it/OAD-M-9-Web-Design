@@ -4927,11 +4927,11 @@ a {
 }
 
 .btn-save-settings:hover {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--danger);
+  border-color: var(--danger);
   color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--primary-glow);
+  box-shadow: 0 8px 24px var(--danger);
 }
 
 [data-theme="light"] .btn-save-settings:hover {
