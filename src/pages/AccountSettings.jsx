@@ -215,7 +215,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
     loadProfile();
   }, [currentUser, targetStudentId]);
 
-  if (!currentUser || !student) {
+  if (!currentUser || isLoading) {
     return (
       <div className="container" style={{ padding: '6rem 2rem', textAlign: 'center' }}>
         <h2>Loading Account Settings...</h2>
