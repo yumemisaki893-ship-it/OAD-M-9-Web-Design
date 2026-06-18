@@ -189,7 +189,11 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
                   try {
                     const session = await signIn('admin@university.edu', 'Admin123!');
                     onLoginSuccess(session.user);
-                    navigateTo('directory');
+                    if (session.student && session.student.major !== 'Undeclared') {
+          navigateTo('profile-detail', { id: session.user.studentId });
+        } else {
+          navigateTo('edit-profile');
+        }
                   } catch (err) {
                     setErrorMessage(err.message);
                   }
