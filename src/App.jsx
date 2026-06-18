@@ -137,9 +137,9 @@ function App() {
         );
       case 'auth':
         if (currentUser) {
-          const hasBuiltProfile = currentUser.student && currentUser.student.major !== 'Undeclared';
-          const targetPage = hasBuiltProfile ? 'profile-detail' : 'edit-profile';
-          const targetParams = hasBuiltProfile ? { id: currentUser.studentId } : {};
+          const profileComplete = currentUser.student && (currentUser.student.major !== 'Undeclared' || (currentUser.student.photos && currentUser.student.photos.length > 0));
+          const targetPage = profileComplete ? 'profile-detail' : 'edit-profile';
+          const targetParams = profileComplete ? { id: currentUser.studentId } : {};
           setTimeout(() => navigateTo(targetPage, targetParams), 0);
           return null;
         }

@@ -109,7 +109,13 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
       if (isLogin) {
         const session = await signIn(email, password);
         onLoginSuccess(session.user);
-        navigateTo('profile-detail', { id: session.user.studentId });
+        const student = session.student;
+        const profileComplete = student && (student.major !== 'Undeclared' || (student.photos && student.photos.length > 0));
+        if (profileComplete) {
+          navigateTo('profile-detail', { id: session.user.studentId });
+        } else {
+          navigateTo('edit-profile');
+        }
       } else {
         const session = await signUp(name, email, password);
         onLoginSuccess(session.user);
@@ -126,7 +132,8 @@ export const Auth = ({ navigateTo, onLoginSuccess }) => {
     try {
       const session = await signInWithGoogle();
       onLoginSuccess(session.user);
-      if (session.student && session.student.major !== 'Undeclared') {
+      const profileComplete = session.student && (session.student.major !== 'Undeclared' || (session.student.photos && session.student.photos.length > 0));
+      if (profileComplete) {
         navigateTo('profile-detail', { id: session.user.studentId });
       } else {
         navigateTo('edit-profile');
