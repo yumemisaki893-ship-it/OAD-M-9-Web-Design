@@ -4944,6 +4944,13 @@ a {
   transform: translateY(0);
   background: var(--primary-hover);
   border-color: var(--primary-hover);
+  color: #ffffff;
+}
+
+[data-theme="light"] .btn-save-settings:active {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
