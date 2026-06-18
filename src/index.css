@@ -1341,7 +1341,10 @@ a:hover {
    leftward by exactly one background-size cycle so it loops seamlessly
    (works because each gradient below starts and ends on the same color) */
 @keyframes shine {
-  to {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
     background-position: -200% center;
   }
 }
@@ -1350,7 +1353,7 @@ a:hover {
 .hero h1 span,
 .profile-meta h1,
 .text-gradient-animated {
-  background: linear-gradient(90deg,
+  background-image: linear-gradient(90deg,
       #f4b400 0%,
       #ff7300 25%,
       #d5001c 50%,
@@ -1366,7 +1369,7 @@ a:hover {
 }
 
 .hero-gradient-loop {
-  background: linear-gradient(90deg,
+  background-image: linear-gradient(90deg,
       #d5001c 0%,
       #ff7300 15%,
       #f4b400 30%,
@@ -1388,7 +1391,7 @@ a:hover {
 [data-theme="dark"] .hero h1 span,
 [data-theme="dark"] .profile-meta h1,
 [data-theme="dark"] .text-gradient-animated {
-  background: linear-gradient(90deg,
+  background-image: linear-gradient(90deg,
       #ffc800 0%,
       #ff6d00 25%,
       #ff4d64 50%,
@@ -1403,7 +1406,7 @@ a:hover {
 }
 
 [data-theme="dark"] .hero-gradient-loop {
-  background: linear-gradient(90deg,
+  background-image: linear-gradient(90deg,
       #ff4d64 0%,
       #ff6d00 15%,
       #ffc800 30%,
