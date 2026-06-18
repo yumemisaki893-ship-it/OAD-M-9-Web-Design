@@ -25,7 +25,7 @@ export const OfficePromotion = ({ navigateTo }) => {
 
           <div className="hero-actions animate-slide-up-delay-2">
             <button
-              className="btn btn-primary btn-lg-premium btn-view-portfolio"
+              className="btn btn-primary btn-lg-premium btn-view-portfolio btn-explore-bsoad"
               onClick={handleExplorePortfolios}
             >
               Explore BSOAD Portfolios

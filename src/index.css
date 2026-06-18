@@ -1311,13 +1311,12 @@ a:hover {
   }
 }
 
-@keyframes heroGradientLoop {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 300% 50%;
+/* Moving gradient-text animation: scroll the gradient's background-position
+   leftward by exactly one background-size cycle so it loops seamlessly
+   (works because each gradient below starts and ends on the same color) */
+@keyframes shine {
+  to {
+    background-position: -200% center;
   }
 }
 
@@ -1327,7 +1326,7 @@ a:hover {
 .auth-card h1,
 .auth-header h1,
 .text-gradient-animated {
-  background: linear-gradient(135deg,
+  background: linear-gradient(90deg,
       #f4b400 0%,
       #ff7300 25%,
       #d5001c 50%,
@@ -1337,7 +1336,8 @@ a:hover {
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  animation: textGradientMove 6s ease infinite !important;
+  color: transparent !important;
+  animation: shine 3s linear infinite !important;
   display: inline-block;
 }
 
@@ -1351,11 +1351,12 @@ a:hover {
       #ff7300 75%,
       #f4b400 90%,
       #d5001c 100%) !important;
-  background-size: 300% auto !important;
+  background-size: 200% auto !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  animation: heroGradientLoop 5s linear infinite !important;
+  color: transparent !important;
+  animation: shine 3s linear infinite !important;
   display: inline-block;
 }
 
@@ -1365,7 +1366,7 @@ a:hover {
 [data-theme="dark"] .auth-card h1,
 [data-theme="dark"] .auth-header h1,
 [data-theme="dark"] .text-gradient-animated {
-  background: linear-gradient(135deg,
+  background: linear-gradient(90deg,
       #ffc800 0%,
       #ff6d00 25%,
       #ff4d64 50%,
@@ -1375,7 +1376,8 @@ a:hover {
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  animation: textGradientMove 6s ease infinite !important;
+  color: transparent !important;
+  animation: shine 3s linear infinite !important;
 }
 
 [data-theme="dark"] .hero-gradient-loop {
@@ -1388,11 +1390,12 @@ a:hover {
       #ff6d00 75%,
       #ffc800 90%,
       #ff4d64 100%) !important;
-  background-size: 300% auto !important;
+  background-size: 200% auto !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
-  animation: heroGradientLoop 5s linear infinite !important;
+  color: transparent !important;
+  animation: shine 3s linear infinite !important;
 }
 
 .hero-subtitle {
@@ -1779,6 +1782,54 @@ a:hover {
 .btn-view-portfolio.btn-view-portfolio-home:hover {
   background: var(--logo-gold) !important;
   border-color: var(--logo-gold) !important;
+  color: #000000 !important;
+  box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
+}
+
+/* Homepage "Create Your Profile" button: solid red, no outline, turns solid yellow on hover */
+.btn-view-portfolio.btn-create-profile-home {
+  background: var(--primary) !important;
+  border: none !important;
+  color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.btn-view-portfolio.btn-create-profile-home:hover {
+  background: var(--logo-gold) !important;
+  border: none !important;
+  color: #000000 !important;
+  box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
+}
+
+/* Office Promotion "Explore BSOAD Portfolios" button: solid red, no outline, turns solid yellow on hover */
+.btn-view-portfolio.btn-explore-bsoad {
+  background: var(--primary) !important;
+  border: none !important;
+  color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.btn-view-portfolio.btn-explore-bsoad:hover {
+  background: var(--logo-gold) !important;
+  border: none !important;
+  color: #000000 !important;
+  box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
+}
+
+/* Directory "View My Portfolio" button: solid red, no outline, turns solid yellow on hover */
+.btn-view-portfolio.btn-view-portfolio-directory {
+  background: var(--primary) !important;
+  border: none !important;
+  color: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.btn-view-portfolio.btn-view-portfolio-directory:hover {
+  background: var(--logo-gold) !important;
+  border: none !important;
   color: #000000 !important;
   box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
 }
@@ -2535,24 +2586,6 @@ a {
   position: relative;
 }
 
-.goals-objectives-hint {
-  margin: 0;
-  font-size: 0.85rem;
-  font-style: italic;
-  color: var(--text-muted);
-  text-align: center;
-  padding: 0.75rem 0;
-  opacity: 1;
-  transition: opacity 0.25s ease;
-}
-
-.goals-objectives-wrapper:hover .goals-objectives-hint {
-  opacity: 0;
-  height: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
 .goals-objectives-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2566,7 +2599,7 @@ a {
   transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
 }
 
-.goals-objectives-wrapper:hover .goals-objectives-grid {
+.goals-tab-panel:hover .goals-objectives-grid {
   max-height: 900px;
   opacity: 1;
 }

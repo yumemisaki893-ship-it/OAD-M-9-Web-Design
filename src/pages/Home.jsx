@@ -195,7 +195,7 @@ const Home = ({ navigateTo, currentUser }) => {
           <div className="hero-actions animate-slide-up-delay-2">
             {!currentUser ? (
               <button
-                className="btn btn-primary btn-lg-premium btn-view-portfolio"
+                className="btn btn-primary btn-lg-premium btn-view-portfolio btn-create-profile-home"
                 onClick={() => navigateTo('auth')}
               >
                 Create Your Profile
@@ -353,7 +353,6 @@ const Home = ({ navigateTo, currentUser }) => {
                     </div>
 
                     <div className="goals-objectives-wrapper">
-                      <p className="goals-objectives-hint">Hover to view objectives</p>
                       <ul className="goals-objectives-grid">
                         {selectedGoal.objectives.map((obj, i) => {
                           const match = obj.match(/^Objective\s+\d+\.\d+\.\s*(.*)/i);

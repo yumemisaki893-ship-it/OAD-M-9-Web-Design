@@ -120,7 +120,7 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
               </button>
             ) : (
               <button
-                className="btn btn-primary btn-view-portfolio"
+                className="btn btn-primary btn-view-portfolio btn-view-portfolio-directory"
                 onClick={() => navigateTo('profile-detail', { id: currentUser.studentId })}
               >
                 View My Portfolio
