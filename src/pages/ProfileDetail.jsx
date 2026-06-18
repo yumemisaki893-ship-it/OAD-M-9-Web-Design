@@ -732,7 +732,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
-                  <button className="btn btn-secondary btn-sm" onClick={() => { setIsEditingHeader(false); }} style={{ padding: '0.4rem 1rem', minHeight: '32px', borderRadius: '20px' }}>Cancel</button>
+                  
                   <button className="btn btn-primary btn-sm" onClick={async () => {
                     if (!headerName.trim()) { alert('Name is required'); return; }
                     try {
