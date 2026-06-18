@@ -1244,13 +1244,13 @@ a:hover {
   left: 0;
   right: 0;
   height: 35%;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, rgba(248, 249, 250, 0) 0%, var(--bg-primary) 100%);
   z-index: 1;
   pointer-events: none;
 }
 
 [data-theme="dark"] .home-hero::after {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #000000 100%);
+  background: linear-gradient(to bottom, rgba(13, 15, 18, 0) 0%, var(--bg-primary) 100%);
 }
 
 [data-theme="dark"] .home-hero::before {
@@ -1305,10 +1305,12 @@ a:hover {
 /* "Now available for all University of Antique students" badge: black text on glass in light mode, white text in dark mode */
 .badge-promo.badge-promo-availability {
   color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 [data-theme="dark"] .badge-promo.badge-promo-availability {
   color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .hero-title {
