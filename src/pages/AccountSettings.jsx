@@ -1698,7 +1698,7 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
                 </div>
               </div>
 
-              {/* Submit Action */}
+              {/* Bottom Action: Cancel & Status */}
               <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'flex-end', marginBottom: '3rem', alignItems: 'center', flexWrap: 'wrap' }}>
                 <button 
                   type="button" 
@@ -1754,24 +1754,25 @@ export const AccountSettings = ({ currentUser, params, navigateTo, onProfileUpda
                     )}
                   </div>
                 )}
-                {/* Floating Save Changes Button */}
-                <button 
-                  type="submit" 
-                  className="btn-save-settings"
-                  aria-label="Save Changes"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '15px', height: '15px' }}>
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                    <polyline points="17 21 17 13 7 13 7 21" />
-                    <polyline points="7 3 7 8 15 8" />
-                  </svg>
-                  <span>Save Changes</span>
-                </button>
               </div>
 
             </div>
 
           </div>
+
+          {/* Floating Save Changes Button — mirrors Back to Profile */}
+          <button 
+            type="submit" 
+            className="btn-save-settings"
+            aria-label="Save Changes"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '15px', height: '15px' }}>
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            Save Changes
+          </button>
         </form>
       )}
 
