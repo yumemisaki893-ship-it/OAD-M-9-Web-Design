@@ -203,6 +203,12 @@ select,
   padding: 0 2rem;
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
+
 /* Typography */
 h1,
 h2,
@@ -279,6 +285,14 @@ a:hover {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   min-height: 40px;
   text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.5rem 1rem;
+    min-height: 36px;
+    font-size: 0.8125rem;
+  }
 }
 
 .btn-primary {
@@ -556,6 +570,65 @@ a:hover {
 @media (max-width: 768px) {
   .search-filter-section {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.directory-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  margin-bottom: 3rem;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .directory-stats-bar {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .directory-stats-bar > div:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+  }
+  
+  .directory-stats-bar > div:nth-child(2) {
+    border-left: none !important;
+    border-right: none !important;
+  }
+}
+
+.directory-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.directory-filter-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.directory-filter-select {
+  width: 180px;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .directory-filter-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .directory-filter-select {
+    width: 100%;
   }
 }
 
@@ -1581,6 +1654,12 @@ a:hover {
   width: 100%;
   position: relative;
   z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .home-vision-mission {
+    padding: 3rem 1rem;
+  }
 }
 
 .section-header {
@@ -3526,6 +3605,21 @@ a {
   }
 }
 
+@media (max-width: 480px) {
+  .auth-centered-wrapper {
+    padding: 1rem 0.5rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .auth-btn-sso {
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+}
+
 /* ==========================================
    Office Administration Dashboard Styles
    ========================================== */
@@ -3913,10 +4007,28 @@ a {
 @media (max-width: 768px) {
   .office-hero {
     padding: 4rem 1rem 2.5rem;
+    min-height: 60vh;
   }
 
   .office-card {
     padding: 1.75rem;
+  }
+
+  .statement-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .office-promo-container {
+    padding-bottom: 2.5rem;
+  }
+
+  .office-career-card {
+    padding: 1.5rem;
+  }
+
+  .btn-lg-premium {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -3927,6 +4039,14 @@ a {
   margin-bottom: 2.5rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.settings-tabs-container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .settings-tab-btn {
@@ -4930,6 +5050,12 @@ a {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .goal-header {
+    padding: 1rem 1.25rem;
+  }
 }
 
 .goal-title {

@@ -136,18 +136,7 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
         </section>
 
         {/* Dynamic Statistics Bar */}
-        <div
-          className="glass animate-slide-up-delay-1"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            padding: '1.5rem',
-            borderRadius: 'var(--border-radius-lg)',
-            textAlign: 'center',
-            marginBottom: '3rem',
-            gap: '1rem'
-          }}
-        >
+        <div className="glass animate-slide-up-delay-1 directory-stats-bar">
           <div>
             <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)' }}>{totalStudents}</div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Active Portfolios</div>
@@ -193,16 +182,15 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
           </div>
 
           {/* Campus Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="campus-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+          <div className="directory-filter-item">
+            <label htmlFor="campus-select" className="directory-filter-label">
               Campus:
             </label>
             <select
               id="campus-select"
-              className="form-control"
+              className="form-control directory-filter-select"
               value={selectedCampus}
               onChange={(e) => setSelectedCampus(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
             >
               <option value="All">All Campuses</option>
               {uniqueCampuses.map((campus, index) => (
@@ -212,16 +200,15 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
           </div>
 
           {/* Major Filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="major-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+          <div className="directory-filter-item">
+            <label htmlFor="major-select" className="directory-filter-label">
               Major:
             </label>
             <select
               id="major-select"
-              className="form-control"
+              className="form-control directory-filter-select"
               value={selectedMajor}
               onChange={(e) => setSelectedMajor(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
             >
               <option value="All">All Majors</option>
               {uniqueMajors.map((major, index) => (
@@ -231,16 +218,15 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
           </div>
 
           {/* Sort Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <label htmlFor="sort-select" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+          <div className="directory-filter-item">
+            <label htmlFor="sort-select" className="directory-filter-label">
               Sort By:
             </label>
             <select
               id="sort-select"
-              className="form-control"
+              className="form-control directory-filter-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{ width: '180px', minHeight: '44px', padding: '0.5rem 1rem' }}
             >
               <option value="name-asc">Alphabetical (A-Z)</option>
               <option value="name-desc">Alphabetical (Z-A)</option>
