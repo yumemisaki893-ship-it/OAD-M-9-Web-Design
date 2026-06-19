@@ -2128,7 +2128,7 @@ a {
   bottom: 0;
   height: 100dvh;
   overflow: hidden;
-  touch-action: none;
+  overscroll-behavior: contain;
   background: rgba(5, 5, 5, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -2229,7 +2229,7 @@ a {
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .lightbox-image-container {
