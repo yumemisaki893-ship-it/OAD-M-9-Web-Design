@@ -516,6 +516,41 @@ a:hover {
   color: var(--text-primary);
 }
 
+.navbar-nav-link {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.navbar-nav-link:hover {
+  color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.navbar-nav-link.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav-links {
+    display: none;
+  }
+}
+
+.navbar-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
 /* User Profile Badge in Nav */
 .user-menu-btn {
   display: inline-flex;
@@ -2390,6 +2425,23 @@ a {
 }
 
 /* Flyout Panel */
+.flyout-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flyout-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .flyout-menu {
   position: absolute;
   top: 0;
@@ -2468,6 +2520,11 @@ a {
 .flyout-link:hover {
   color: var(--accent);
   left: 6px;
+}
+
+.flyout-link.active {
+  color: var(--accent);
+  font-weight: 700;
 }
 
 .flyout-divider {
@@ -5129,27 +5186,7 @@ a {
   color: var(--text-primary);
 }
 
-/* Floating Responsive Navbar */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(12px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(190%) !important;
-  background: light-dark(rgba(255, 255, 255, 0.8), rgba(13, 15, 18, 0.8)) !important;
-  border-bottom: 1px solid var(--border-color);
-  min-height: 60px;
-  display: flex;
-  align-items: center;
-}
 
-.navbar-logo span {
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  font-family: var(--font-family-heading);
-  color: var(--text-primary);
-  display: inline-block;
-}
 
 /* Modernized Student Cards - Glass UI with Clean Accents */
 .student-card.glass {
