@@ -2601,28 +2601,33 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
           </div> {/* closes media-panel */}
 
           {/* Right: Info Sidebar */}
-          <div className="lightbox-sidebar" onClick={(e) => e.stopPropagation()}>
-            <div className="lightbox-sidebar-header">
-              <div className="user-info">
-                <AvatarImage avatarId={student?.profilePicture} className="user-avatar" />
-                <div className="user-details">
-                  <h4>{student?.firstName} {student?.lastName}</h4>
-                  <span className="user-title">Student</span>
+          <div className="lightbox-info-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="lightbox-info-header">
+              <div className="lightbox-uploader-info">
+                <div className="lightbox-uploader-avatar">
+                  <AvatarImage avatarId={student?.avatarId || 'avatar-1'} id="lightbox-sidebar-avatar" />
+                </div>
+                <div className="lightbox-uploader-details">
+                  <div className="uploader-name">{student?.name || `${student?.firstName} ${student?.lastName}`}</div>
+                  <div className="uploader-meta">{student?.program || 'Student'}</div>
                 </div>
               </div>
-              <button className="close-sidebar-btn" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <button className="sidebar-close-btn" onClick={() => { setViewerImage(null); setViewerCaption(''); }} title="Close Lightbox">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ width: '16px', height: '16px' }}>
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
 
-            <div className="lightbox-sidebar-content">
-              <div className="photo-info">
-                <span className="photo-index">{viewerCaption?.toUpperCase() || 'VIEWER'}</span>
-                <h5 className="section-label">DESCRIPTION</h5>
-                <p className="photo-caption">
+            <div className="lightbox-info-body">
+              <div className="lightbox-counter-badge">
+                {viewerCaption?.toUpperCase() || 'VIEWER'}
+              </div>
+
+              <div className="lightbox-caption-section">
+                <h3>Description</h3>
+                <p className="lightbox-caption-text">
                   {viewerIsAvatar ? 'Profile picture' : 'Banner cover'}
                 </p>
               </div>
