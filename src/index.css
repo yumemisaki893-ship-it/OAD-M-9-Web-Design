@@ -2251,19 +2251,36 @@ a {
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 3rem;
-  overflow: hidden;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* Custom WebKit scrollbar for lightbox viewport */
+.lightbox-image-viewport::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.lightbox-image-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lightbox-image-viewport::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.lightbox-image-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .lightbox-image-wrapper {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
-  max-height: 100%;
 }
 
 .lightbox-image-wrapper img {

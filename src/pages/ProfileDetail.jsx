@@ -2194,10 +2194,18 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
               {/* Image Viewport */}
               <div className="lightbox-image-viewport">
-                <div className="lightbox-image-wrapper" style={{ transform: `scale(${zoom})` }} onClick={(e) => e.stopPropagation()}>
+                <div className="lightbox-image-wrapper" onClick={(e) => e.stopPropagation()}>
                   <img 
                     src={student.photos[photoIndex].url} 
                     alt={student.photos[photoIndex].caption || `Gallery view ${photoIndex + 1}`} 
+                    style={{ 
+                      maxWidth: zoom === 1 ? '100%' : 'none', 
+                      maxHeight: zoom === 1 ? '85vh' : 'none',
+                      width: zoom === 1 ? 'auto' : `${zoom * 100}%`,
+                      height: zoom === 1 ? 'auto' : 'auto',
+                      objectFit: 'contain',
+                      transition: 'width 0.2s ease, max-width 0.2s ease, max-height 0.2s ease'
+                    }}
                   />
                 </div>
               </div>
@@ -2289,11 +2297,13 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       {/* Image Viewer Modal for Profile Picture / Banner */}
       {viewerImage && (
         <div ref={lightboxRef} className="lightbox-overlay" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
-          <div className="lightbox-toolbar" onClick={(e) => e.stopPropagation()}>
-            <div className="lightbox-counter" style={{ textTransform: 'uppercase' }}>
-              {viewerCaption || 'Image Viewer'}
-            </div>
-            <div className="lightbox-actions">
+          <div className="lightbox-media-panel" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
+            
+            {/* Toolbar floating at the top */}
+            <div className="lightbox-media-toolbar" onClick={(e) => e.stopPropagation()}>
+              <span className="zoom-level" style={{ marginRight: '0.5rem', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {viewerCaption || 'Viewer'}
+              </span>
               <button className="toolbar-btn" onClick={zoomOut} title="Zoom Out">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
                   <line x1="5" y1="12" x2="19" y2="12" />
@@ -2316,32 +2326,47 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
                 </svg>
               </button>
-              <button className="toolbar-btn close" onClick={() => { setViewerImage(null); setViewerCaption(''); }} title="Close Viewer">
+              <button className="toolbar-btn close" onClick={() => { setViewerImage(null); setViewerCaption(''); }} title="Close Viewer" style={{ background: '#ef4444', borderColor: '#ef4444' }}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '16px', height: '16px' }}>
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
-          </div>
-          
-          <div className="lightbox-main" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
-            <div className="lightbox-image-container" onClick={(e) => e.stopPropagation()} style={{ transform: `scale(${zoom})` }}>
-              {viewerImage.startsWith('avatar-') ? (
-                <div style={{ width: '280px', height: '280px', background: 'var(--bg-card)', borderRadius: '50%', border: '6px solid rgba(255,255,255,0.1)', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
-                  <AvatarImage avatarId={viewerImage} id="viewer-avatar-display" />
-                </div>
-              ) : (
-                <img 
-                  src={viewerImage} 
-                  alt={viewerCaption || 'Full size view'} 
-                  className="lightbox-image"
-                />
-              )}
+
+            <div className="lightbox-image-viewport">
+              <div className="lightbox-image-wrapper" onClick={(e) => e.stopPropagation()}>
+                {viewerImage.startsWith('avatar-') || viewerImage.startsWith('data:image/') ? (
+                  <div style={{ 
+                    width: zoom === 1 ? '280px' : `${280 * zoom}px`, 
+                    height: zoom === 1 ? '280px' : `${280 * zoom}px`, 
+                    background: 'var(--bg-card)', 
+                    borderRadius: '50%', 
+                    border: '6px solid rgba(255,255,255,0.1)', 
+                    overflow: 'hidden', 
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                    transition: 'width 0.2s ease, height 0.2s ease'
+                  }}>
+                    <AvatarImage avatarId={viewerImage} id="viewer-avatar-display" />
+                  </div>
+                ) : (
+                  <img 
+                    src={viewerImage} 
+                    alt={viewerCaption || 'Full size view'} 
+                    style={{ 
+                      maxWidth: zoom === 1 ? '100%' : 'none', 
+                      maxHeight: zoom === 1 ? '85vh' : 'none',
+                      width: zoom === 1 ? 'auto' : `${zoom * 100}%`,
+                      height: zoom === 1 ? 'auto' : 'auto',
+                      objectFit: 'contain',
+                      transition: 'width 0.2s ease, max-width 0.2s ease, max-height 0.2s ease'
+                    }}
+                  />
+                )}
+              </div>
             </div>
+
           </div>
-          
-          <div style={{ height: '20px' }}></div>
         </div>
       )}
     </div>
