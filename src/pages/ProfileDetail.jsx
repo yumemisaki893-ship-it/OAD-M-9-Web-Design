@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   getStudentById, 
   getStudentByIdSync,
@@ -2286,7 +2287,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
       </div>
 
       {/* Lightbox Modal */}
-      {lightboxOpen && student.photos && student.photos[photoIndex] && (
+      {lightboxOpen && student.photos && student.photos[photoIndex] && createPortal((
         <div ref={lightboxRef} className="lightbox-overlay" onClick={closeLightbox}>
           <div className="lightbox-split-container" onClick={(e) => e.stopPropagation()}>
             
@@ -2470,10 +2471,10 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
           </div>
         </div>
-      )}
+      ), document.body)}
 
       {/* Image Viewer Modal for Profile Picture / Banner */}
-      {viewerImage && (
+      {viewerImage && createPortal((
         <div ref={lightboxRef} className="lightbox-overlay" onClick={() => { setViewerImage(null); setViewerCaption(''); }}>
           <div className="lightbox-media-panel" onClick={() => { setViewerImage(null); setViewerCaption(''); }} style={{ width: '100%', height: '100%' }}>
             
@@ -2599,7 +2600,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
 
           </div>
         </div>
-      )}
+      ), document.body)}
     </div>
   </div>
 </div>
