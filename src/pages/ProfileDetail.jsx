@@ -348,13 +348,28 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     }
   };
 
+  // Reset scroll position of the viewport whenever the active photo changes or lightbox opens
   useEffect(() => {
-    if (lightboxOpen || viewerImage) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    const viewports = document.querySelectorAll('.lightbox-image-viewport');
+    viewports.forEach(viewport => {
+      viewport.scrollLeft = 0;
+      viewport.scrollTop = 0;
+    });
+  }, [photoIndex, viewerImage, lightboxOpen]);
 
+  // Reset scroll position when zoom resets to 1 (centered view)
+  useEffect(() => {
+    if (zoom === 1) {
+      const viewports = document.querySelectorAll('.lightbox-image-viewport');
+      viewports.forEach(viewport => {
+        viewport.scrollLeft = 0;
+        viewport.scrollTop = 0;
+      });
+    }
+  }, [zoom]);
+
+  useEffect(() => {
+    // Removed document.body.style.overflow = 'hidden' to allow page scrolling in background
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         if (lightboxOpen) closeLightbox();
@@ -373,7 +388,6 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
     };
   }, [lightboxOpen, viewerImage, student?.photos]);
 
