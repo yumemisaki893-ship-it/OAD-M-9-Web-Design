@@ -192,17 +192,6 @@ export const Navigation = ({ currentUser, currentTheme, onThemeToggle, navigateT
                 Browse Portfolios
               </a>
 
-              {/* Programs Offered */}
-              <a 
-                href="#" 
-                onClick={(e) => { e.preventDefault(); handleNav('programs-offered'); }}
-                className={`flyout-link ${isActive('programs-offered') ? 'active' : ''}`}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flyout-link-icon">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-                Programs Offered
-              </a>
 
               {/* BSOAD */}
               <a 
