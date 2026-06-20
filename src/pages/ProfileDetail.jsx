@@ -2328,7 +2328,8 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     width: zoom === 1 ? '100%' : 'auto',
-                    height: zoom === 1 ? '100%' : 'auto'
+                    height: zoom === 1 ? '100%' : 'auto',
+                    margin: zoom > 1 ? '0' : 'auto'
                   }}
                 >
                   <img 
@@ -2504,7 +2505,8 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   width: zoom === 1 ? '100%' : 'auto',
-                  height: zoom === 1 ? '100%' : 'auto'
+                  height: zoom === 1 ? '100%' : 'auto',
+                  margin: zoom > 1 ? '0' : 'auto'
                 }}
               >
                 {viewerIsAvatar ? (
