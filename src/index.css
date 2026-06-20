@@ -5472,3 +5472,16 @@ a {
     margin: 0 !important;
   }
 }
+
+/* Red buttons in My Profile and Account Settings pages turn yellow on hover */
+.profile-detail-page .btn-primary:hover,
+.profile-detail-page .btn-danger:hover,
+.profile-detail-page .toolbar-btn.close:hover,
+.profile-detail-page .sidebar-action-btn.delete-btn:hover,
+.editor-page .btn-primary:hover,
+.editor-page .btn-danger:hover {
+  background: var(--logo-gold) !important;
+  border-color: var(--logo-gold) !important;
+  color: #000000 !important;
+  box-shadow: 0 8px 20px var(--logo-gold-glow) !important;
+}
