@@ -2543,7 +2543,7 @@ export const ProfileDetail = ({ params, currentUser, navigateTo, onLogoutSuccess
                   margin: zoom > 1 ? '0' : 'auto'
                 }}
               >
-                {viewerIsAvatar ? (
+                {viewerIsAvatar && !viewerImage?.startsWith('http') && !viewerImage?.startsWith('data:') ? (
                   <div 
                     onClick={(e) => {
                       e.stopPropagation();
