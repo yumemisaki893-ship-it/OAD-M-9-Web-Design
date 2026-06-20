@@ -1303,7 +1303,11 @@ a:hover {
   overflow: hidden;
 }
 
-.home-container::before {
+.home-container .goals-section {
+  position: relative;
+}
+
+.home-container .goals-section::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1312,7 +1316,7 @@ a:hover {
   bottom: 0;
   background-image: url('/statue.png');
   background-repeat: no-repeat;
-  background-position: bottom center;
+  background-position: center center;
   background-size: 100% auto;
   filter: blur(5px);
   opacity: 0.9;
@@ -1321,8 +1325,8 @@ a:hover {
 }
 
 @media (max-width: 768px) {
-  .home-container::before {
-    background-size: cover;
+  .home-container .goals-section::before {
+    background-size: contain;
     background-position: center center;
   }
 }
