@@ -2653,6 +2653,13 @@ a {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+[data-theme="dark"] .flyout-menu {
+  background: rgba(15, 20, 28, 0.75) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
 .flyout-overlay.open .flyout-menu {
   transform: translateX(0);
 }
