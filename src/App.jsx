@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Navigation from './components/Navigation';
 import Directory from './pages/Directory';
 import ProfileDetail from './pages/ProfileDetail';
@@ -13,7 +13,12 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 function App() {
   // Theme State
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('portfolio_theme') || 'dark';
+  });
+  
+  // Ref to hold theme transition timeout ID
+  const transitionTimeoutRef = useRef(null);
   
   // Custom Navigation Router State
   // Format: { page: 'home' | 'directory' | 'profile-detail' | 'auth' | 'edit-profile', params: { id?: string } }
@@ -60,20 +65,35 @@ function App() {
       setCurrentUser(getCurrentSession());
     }
 
-    // 2. Theme Setup
-    const savedTheme = localStorage.getItem('portfolio_theme') || 'dark';
-    setTheme(savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Theme toggle action
   const toggleTheme = () => {
     const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    
+    // Clear any existing transition timeout
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+    }
+    
+    // Add transitioning class to enable transition animations temporarily
+    document.documentElement.classList.add('theme-transitioning');
+    
     setTheme(nextTheme);
     localStorage.setItem('portfolio_theme', nextTheme);
     document.documentElement.setAttribute('data-theme', nextTheme);
+    
+    // Remove the transitioning class after transition finishes (500ms)
+    transitionTimeoutRef.current = setTimeout(() => {
+      document.documentElement.classList.remove('theme-transitioning');
+      transitionTimeoutRef.current = null;
+    }, 500);
   };
 
   // Centralized Navigation function
