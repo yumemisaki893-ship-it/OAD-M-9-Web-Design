@@ -109,7 +109,9 @@ export const Auth = ({ params, navigateTo, onLoginSuccess }) => {
       if (isLogin) {
         const session = await signIn(email, password);
         onLoginSuccess(session.user);
-        if (session.student) {
+        if (session.user.isAdmin) {
+          navigateTo('office-admin');
+        } else if (session.student) {
           navigateTo('profile-detail', { id: session.user.studentId });
         } else {
           navigateTo('edit-profile');
@@ -131,7 +133,9 @@ export const Auth = ({ params, navigateTo, onLoginSuccess }) => {
       const session = await signInWithGoogle();
       onLoginSuccess(session.user);
       // Google sign-in can be first-time (new user) or returning (old user)
-      if (session.isNewUser || !session.student) {
+      if (session.user.isAdmin) {
+        navigateTo('office-admin');
+      } else if (session.isNewUser || !session.student) {
         navigateTo('edit-profile');
       } else {
         navigateTo('profile-detail', { id: session.user.studentId });
@@ -237,11 +241,7 @@ export const Auth = ({ params, navigateTo, onLoginSuccess }) => {
                   try {
                     const session = await signIn('admin@university.edu', 'Admin123!');
                     onLoginSuccess(session.user);
-                    if (session.student) {
-                      navigateTo('profile-detail', { id: session.user.studentId });
-                    } else {
-                      navigateTo('edit-profile');
-                    }
+                    navigateTo('office-admin');
                   } catch (err) {
                     setErrorMessage(err.message);
                   }

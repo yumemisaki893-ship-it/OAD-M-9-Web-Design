@@ -137,10 +137,14 @@ function App() {
         );
       case 'auth':
         if (currentUser) {
-          // Check if profile exists; if not, route to profile builder
-          const targetPage = currentUser.student ? 'profile-detail' : 'edit-profile';
-          const targetParams = currentUser.student ? { id: currentUser.studentId } : {};
-          setTimeout(() => navigateTo(targetPage, targetParams), 0);
+          if (currentUser.isAdmin) {
+            setTimeout(() => navigateTo('office-admin'), 0);
+          } else {
+            // Check if profile exists; if not, route to profile builder
+            const targetPage = currentUser.student ? 'profile-detail' : 'edit-profile';
+            const targetParams = currentUser.student ? { id: currentUser.studentId } : {};
+            setTimeout(() => navigateTo(targetPage, targetParams), 0);
+          }
           return null;
         }
         return (
