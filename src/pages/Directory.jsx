@@ -118,7 +118,7 @@ export const Directory = ({ navigateTo, currentUser, params }) => {
               </button>
             ) : currentUser.isAdmin ? (
               <button
-                className="btn btn-primary btn-view-portfolio"
+                className="btn btn-primary btn-view-portfolio btn-create-profile-home"
                 style={{ cursor: 'default' }}
                 onClick={(e) => e.preventDefault()}
               >
